@@ -1,12 +1,12 @@
-import React from 'react';
-
+import React, {Fragment} from 'react';
+import RouterComponent from "./router/router";
 
 
 function App() {
   return (
-    <div className="App">
-
-    </div>
+    <Fragment>
+        <RouterComponent></RouterComponent>
+    </Fragment>
   );
 }
 

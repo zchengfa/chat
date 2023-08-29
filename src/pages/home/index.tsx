@@ -1,6 +1,7 @@
 import WithHook from "../../hook/withHook";
-import {Component} from "react";
-
+import {Component,Fragment} from "react";
+import SiderMenu from "../../components/SiderMenu/SiderMenu";
+import {Layout} from "antd";
 
 class Home extends Component<any, any>{
 
@@ -14,11 +15,21 @@ class Home extends Component<any, any>{
 
     render(){
         const { message } = this.props.Zustand
-        return <div>
-            <button  onClick={this.toLogin}>登录</button>
-            <button  onClick={this.addMsg}>增加</button>
-            <span>{message}</span>
-        </div>
+
+        const { Sider } = Layout
+        // return <div>
+        //     {/*<button  onClick={this.toLogin}>登录</button>*/}
+        //     {/*<button  onClick={this.addMsg}>增加</button>*/}
+        //     {/*<span>{message}</span>*/}
+        // </div>
+
+        return <Fragment>
+            <Layout>
+                <Sider width={'60px'}>
+                    <SiderMenu></SiderMenu>
+                </Sider>
+            </Layout>
+        </Fragment>
     }
 
 

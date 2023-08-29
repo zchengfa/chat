@@ -2,7 +2,7 @@ import { Component } from "react";
 import './siderMenu.sass'
 import {Avatar} from "antd";
 import { UserOutlined } from '@ant-design/icons'
-import {menu, menuType} from "../../common/staticData/data";
+import { menuType} from "../../common/staticData/data";
 
 export default class SiderMenu extends Component<any, any>{
     constructor(props:any) {
@@ -33,7 +33,7 @@ export default class SiderMenu extends Component<any, any>{
     render(){
 
       return <div className={'side'}>
-        <Avatar size={64} icon={<UserOutlined />}></Avatar>
+        <Avatar className={'avatar'} size={64} icon={<UserOutlined />}></Avatar>
         <div className={'side-top'}>{this.correctMenuHtml(this.props.menu,'menu')}</div>
         <div className={'side-bottom'}>{this.correctMenuHtml(this.props.otherMenu,'otherMenu')}</div>
       </div>

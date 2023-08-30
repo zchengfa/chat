@@ -1,7 +1,10 @@
 @import "./reset.css";
 
 :root{
-    --white-color:#fff
+    --white-color:#fff;
+    --gray-color: #eae5e5;
+    --mini-font-size: 12px;
+    --normal-text-color: #000;
 }
 
 .App{

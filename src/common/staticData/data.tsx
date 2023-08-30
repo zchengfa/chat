@@ -1,3 +1,5 @@
+
+import {PlusOutlined, UserAddOutlined} from '@ant-design/icons'
 export interface menuType {
   title:string,
   image:string,
@@ -61,5 +63,15 @@ export const otherMenu:menuType[] = [
     image:require('../images/other.png'),
     imageAc:require('../images/other_ac.png'),
     isActived:false
+  }
+]
+export const correctIconComponent = [
+  {
+    title:'聊天',
+    component:()=> <PlusOutlined />
+  },
+  {
+    title:'通讯录',
+    component:()=> <UserAddOutlined />
   }
 ]

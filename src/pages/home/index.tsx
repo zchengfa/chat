@@ -1,8 +1,10 @@
 import WithHook from "../../hook/withHook";
 import {Component,Fragment} from "react";
 import SiderMenu from "../../components/SiderMenu/SiderMenu";
-import {Layout} from "antd";
-import { menu,menuType,otherMenu } from "../../common/staticData/data";
+import {Layout,Space,Input,Button} from "antd";
+import { menu,menuType,otherMenu,correctIconComponent } from "../../common/staticData/data";
+import './index.sass'
+import { SearchOutlined,CloseCircleOutlined } from '@ant-design/icons'
 
 
 class Home extends Component<any, any>{
@@ -12,7 +14,11 @@ class Home extends Component<any, any>{
         this.state = {
             menu,
             otherMenu,
-            nameArr:[]
+            nameArr:[],
+            searchRightComponent:correctIconComponent[0].component(),
+            inputProp:undefined,
+            isInputBlur:undefined,
+            inputRef:this.props.Refs
         }
     }
 
@@ -47,9 +53,8 @@ class Home extends Component<any, any>{
             return null
         })
 
-        //this.state.nameArr.map((i:any)=> this.state[i].map((item:any)=> item.isActived = false))
-
         m.map((item:menuType,index:number)=>{
+
             return index === childIndex ? item.isActived = true : item.isActived = false
         })
 
@@ -57,15 +62,57 @@ class Home extends Component<any, any>{
             ...this.state.nameArr
         })
 
+        try {
+           if(menuName === 'menu'){
+               this.setState({
+                   searchRightComponent:correctIconComponent[childIndex].component()
+               })
+           }
+        }catch (e){}
+
+    }
+    /**
+     * 输入框聚焦时，在输入框后面添加关闭组件
+     */
+    inputFocus = ()=>{
+
+       this.setState({
+           inputProp:<CloseCircleOutlined onClick={(event)=> this.closeInputStatus(event,this.state.inputRef)}/>
+       })
+    }
+    /**
+     * 点击关闭组件
+     * 1.清楚输入框内容
+     * 2.隐藏关闭组件
+     * 3.隐藏搜索结果组件
+     */
+    closeInputStatus = (e:any,ref:any)=>{
+        //阻止事件冒泡
+        e.stopPropagation()
+        ref.current.blur()
+
+    }
+    /**
+     * 失去焦点后触发
+     */
+    inputBlur = ()=>{
+        console.log('失去焦点')
     }
     render(){
         const { Sider } = Layout
+        const { menu,otherMenu,searchRightComponent,inputProp,inputRef } = this.state
 
         return <Fragment>
             <Layout>
                 <Sider width={'70px'}>
-                    <SiderMenu menu = {this.state.menu} otherMenu= {this.state.otherMenu} changeMenuContent={this.changeMenu}></SiderMenu>
+                    <SiderMenu menu = {menu} otherMenu= {otherMenu} changeMenuContent={this.changeMenu}></SiderMenu>
                 </Sider>
+                <div className={'middle-com'}>
+                    <Space direction={'horizontal'} style={{width:'100%'}} className={'space-self'}>
+                        <Input ref={inputRef}  style={{backgroundColor:'var(--gray-color)'}} onBlur={this.inputBlur} suffix={inputProp} onFocus={this.inputFocus} prefix={<SearchOutlined />} placeholder={'搜索'}></Input>
+                        <Button style={{backgroundColor:'var(--gray-color)'}} icon={searchRightComponent}></Button>
+                    </Space>
+                </div>
             </Layout>
         </Fragment>
     }

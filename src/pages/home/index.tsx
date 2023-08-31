@@ -1,6 +1,7 @@
 import WithHook from "../../hook/withHook";
 import {Component,Fragment} from "react";
 import SiderMenu from "../../components/SiderMenu/SiderMenu";
+import ChatList from "../../components/ChatList/ChatList";
 import {Layout,Space,Input,Button} from "antd";
 import { menu,menuType,otherMenu,correctIconComponent } from "../../common/staticData/data";
 import './index.sass'
@@ -17,8 +18,8 @@ class Home extends Component<any, any>{
             nameArr:[],
             searchRightComponent:correctIconComponent[0].component(),
             inputProp:undefined,
-            isInputBlur:undefined,
-            inputRef:this.props.Refs
+            inputRef:this.props.Refs,
+            placeholder:'搜索'
         }
     }
 
@@ -77,6 +78,7 @@ class Home extends Component<any, any>{
     inputFocus = ()=>{
 
        this.setState({
+           placeholder:'',
            inputProp:<CloseCircleOutlined onClick={(event)=> this.closeInputStatus(event,this.state.inputRef)}/>
        })
     }
@@ -97,22 +99,32 @@ class Home extends Component<any, any>{
      */
     inputBlur = ()=>{
         console.log('失去焦点')
+        this.setState({
+            placeholder:'搜索',
+            inputProp:null
+        })
     }
     render(){
         const { Sider } = Layout
-        const { menu,otherMenu,searchRightComponent,inputProp,inputRef } = this.state
+        const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder } = this.state
 
         return <Fragment>
             <Layout>
+                {/*侧边栏*/}
                 <Sider width={'70px'}>
                     <SiderMenu menu = {menu} otherMenu= {otherMenu} changeMenuContent={this.changeMenu}></SiderMenu>
                 </Sider>
+                {/*中部搜索框及各个菜单项详情列表*/}
                 <div className={'middle-com'}>
                     <Space direction={'horizontal'} style={{width:'100%'}} className={'space-self'}>
-                        <Input ref={inputRef}  style={{backgroundColor:'var(--gray-color)'}} onBlur={this.inputBlur} suffix={inputProp} onFocus={this.inputFocus} prefix={<SearchOutlined />} placeholder={'搜索'}></Input>
+                        <Input ref={inputRef}  style={{backgroundColor:'var(--gray-color)'}} onBlur={this.inputBlur} suffix={inputProp} onFocus={this.inputFocus} prefix={<SearchOutlined />} placeholder={placeholder}></Input>
                         <Button style={{backgroundColor:'var(--gray-color)'}} icon={searchRightComponent}></Button>
                     </Space>
+                    <div className={'middle-list'}>
+                        <ChatList></ChatList>
+                    </div>
                 </div>
+
             </Layout>
         </Fragment>
     }

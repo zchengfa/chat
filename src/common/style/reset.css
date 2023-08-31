@@ -32,6 +32,10 @@ body {
 }
 menu, ol, ul {
     list-style: none;
+    overflow: scroll;
+}
+ul::-webkit-scrollbar{
+    display: none;
 }
 blockquote, q {
     quotes: none;

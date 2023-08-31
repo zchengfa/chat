@@ -3,8 +3,10 @@
 :root{
     --white-color:#fff;
     --gray-color: #eae5e5;
+    --deep-gray-color: #b7b3b3;
     --mini-font-size: 12px;
     --normal-text-color: #000;
+    --middle-font-size: 14px;
 }
 
 .App{

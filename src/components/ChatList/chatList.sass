@@ -1,0 +1,38 @@
+.list-container
+  height: 100%
+.message-box
+  display: flex
+  justify-content: space-between
+  align-content: center
+  .msg-left
+    margin-left: .6rem
+    margin-right: .6rem
+  .msg-right
+    display: flex
+    justify-content: space-between
+    align-items: flex-start
+    flex: 1
+    padding: 1rem 0
+    border-bottom: 1px solid var(--deep-gray-color)
+    .user-msg
+      font-size: var(--middle-font-size)
+      .chat-user
+        text-align: left
+      .chat-msg
+        max-width: 10rem
+        white-space: nowrap
+        text-overflow: ellipsis
+        font-size: var(--mini-font-size)
+        color: var(--deep-gray-color)
+        overflow: hidden
+    .time-mute
+      display: flex
+      flex-direction: column
+      align-items: flex-end
+      margin-right: .6rem
+      font-size: var(--mini-font-size)
+      color: var(--deep-gray-color)
+    .chat-msg,.chat-mute
+      margin-top: .5rem
+
+

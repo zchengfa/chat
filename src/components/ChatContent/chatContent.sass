@@ -1,0 +1,60 @@
+.content-con
+  position: relative
+  width: 100%
+  height: 100%
+  .user-box
+    padding: 0
+    height: 4rem
+    border-bottom: 1px solid var(--deep-gray-color)
+    background-color: var(--white-color)
+    .receiver-title
+      margin-left: 1rem
+      line-height: 4rem
+      font-size: 1rem
+  .sender-operations
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: flex-start
+    padding: 1rem 1rem 0 1rem
+    width: 100%
+    height: 14rem
+    .icon-list
+      display: flex
+      justify-content: space-between
+      align-items: center
+      width: 100%
+      .operations-box,.chat-way
+        display: flex
+        justify-content: space-between
+        align-items: center
+        .icon-box
+          cursor: pointer
+      .operations-box
+        width: 6rem
+      .chat-way
+        width: 3rem
+
+  .msg-content
+    flex: 1
+  .chat-divider
+    margin: 0
+    height: 4px
+  .chat-divider:hover
+    cursor: n-resize
+  .text-area-box
+    flex: 1
+    width: 100%
+    padding: 1rem 0
+  .send-btn-box
+    width: 100%
+    padding: .5rem 0
+    text-align: right
+  .send-button
+    border: none
+    font-size: var(--mini-font-size)
+    background-color: var(--gray-color)
+    color: var(--success-font-color)
+  .send-button:hover
+    color: var(--success-font-color) !important
+    background-color: var(--deep-gray-color)

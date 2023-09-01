@@ -1,12 +1,13 @@
 
 import {PlusOutlined, UserAddOutlined} from '@ant-design/icons'
-export interface menuType {
+import { EmojiIconComponent,FileIconComponent,ScissorsIconComponent,MessageIconComponent,TelephoneIconComponent,CameraIconComponent } from '../svg/svg'
+export interface MenuType {
   title:string,
   image:string,
   imageAc:string,
   isActived:boolean
 }
-export const menu:menuType[] = [
+export const menu:MenuType[] = [
   {
     title:'聊天',
     image:require('../images/chat.png'),
@@ -45,7 +46,7 @@ export const menu:menuType[] = [
   }
 ]
 
-export const otherMenu:menuType[] = [
+export const otherMenu:MenuType[] = [
   {
     title:'小程序面板',
     image:require('../images/miniprogram.png'),
@@ -76,7 +77,18 @@ export const correctIconComponent = [
   }
 ]
 
-export const messageData = [
+export interface MsgDataType {
+  id:number,
+  user:string,
+  type:string,
+  msg:string,
+  avatar:string,
+  time:string,
+  isMute:boolean,
+  hasBeenRead:boolean,
+  isGroupChat:boolean
+}
+export const messageData:MsgDataType[] = [
   {
     id:3156987,
     user:'阿藏',
@@ -85,7 +97,8 @@ export const messageData = [
     avatar:'',
     time:'刚刚',
     isMute:false,
-    hasBeenRead:false
+    hasBeenRead:false,
+    isGroupChat:false
   },
   {
     id:5678453,
@@ -95,6 +108,42 @@ export const messageData = [
     avatar:'',
     time:'08/10',
     isMute:true,
-    hasBeenRead:false
+    hasBeenRead:false,
+    isGroupChat: false
   }
 ]
+
+export interface IconMenu {
+  title:string
+  component:Function
+}
+export const operationsData = {
+  operations:[
+    {
+      title:'表情',
+      component:()=> <EmojiIconComponent />
+    },
+    {
+      title:'发送文件',
+      component:()=> <FileIconComponent />
+    },
+    {
+      title:'截图',
+      component:()=> <ScissorsIconComponent />
+    },
+    {
+      title:'聊天记录',
+      component:()=> <MessageIconComponent />
+    }
+  ],
+  chatWay:[
+    {
+      title:'语音聊天',
+      component:()=> <TelephoneIconComponent />
+    },
+    {
+      title:'视频聊天',
+      component:()=> <CameraIconComponent />
+    }
+  ]
+}

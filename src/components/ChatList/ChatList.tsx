@@ -2,13 +2,16 @@ import './chatList.sass'
 import { Avatar,Badge,Space } from "antd";
 import { UserOutlined } from '@ant-design/icons'
 import { BellIconComponent } from '../../common/svg/svg'
-import { messageData } from '../../common/staticData/data'
+import { messageData,MsgDataType } from '../../common/staticData/data'
 
-export default function ChatList (){
+export default function ChatList (props:any){
+  const chatWithSender = (item:MsgDataType)=>{
+    props.chatWithSender(item)
+  }
   const chatListElement = ()=>{
     return messageData.map((item:any,index:number)=>{
       return <li key={index}>
-        <div className={'message-box'}>
+        <div className={'message-box'} onClick={()=> chatWithSender(item)}>
           <Space className={'msg-left'}>
             <Badge dot={!item.hasBeenRead}>
               <Avatar shape={'square'} icon={<UserOutlined />}></Avatar>

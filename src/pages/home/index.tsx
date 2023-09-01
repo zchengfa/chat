@@ -2,8 +2,9 @@ import WithHook from "../../hook/withHook";
 import {Component,Fragment} from "react";
 import SiderMenu from "../../components/SiderMenu/SiderMenu";
 import ChatList from "../../components/ChatList/ChatList";
+import ChatContent from "../../components/ChatContent/ChatContent";
 import {Layout,Space,Input,Button} from "antd";
-import { menu,menuType,otherMenu,correctIconComponent } from "../../common/staticData/data";
+import {menu, MenuType, otherMenu, correctIconComponent, MsgDataType} from "../../common/staticData/data";
 import './index.sass'
 import { SearchOutlined,CloseCircleOutlined } from '@ant-design/icons'
 
@@ -19,7 +20,8 @@ class Home extends Component<any, any>{
             searchRightComponent:correctIconComponent[0].component(),
             inputProp:undefined,
             inputRef:this.props.Refs,
-            placeholder:'搜索'
+            placeholder:'搜索',
+            recieverInfo:{}
         }
     }
 
@@ -29,7 +31,7 @@ class Home extends Component<any, any>{
      * @param menuName { string } 列表名
      */
     changeMenu = (childIndex:number,menuName:string)=>{
-        const m:menuType[] = this.state[menuName]
+        const m:MenuType[] = this.state[menuName]
 
         if(this.state.nameArr.indexOf(menuName) === -1 ){
             this.state.nameArr.push(menuName)
@@ -54,7 +56,7 @@ class Home extends Component<any, any>{
             return null
         })
 
-        m.map((item:menuType,index:number)=>{
+        m.map((item:MenuType,index:number)=>{
 
             return index === childIndex ? item.isActived = true : item.isActived = false
         })
@@ -104,9 +106,14 @@ class Home extends Component<any, any>{
             inputProp:null
         })
     }
+    chatWithSender = (data:MsgDataType)=>{
+       this.setState({
+           recieverInfo:data
+       })
+    }
     render(){
-        const { Sider } = Layout
-        const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder } = this.state
+        const { Sider,Content } = Layout
+        const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder,recieverInfo } = this.state
 
         return <Fragment>
             <Layout>
@@ -121,10 +128,12 @@ class Home extends Component<any, any>{
                         <Button style={{backgroundColor:'var(--gray-color)'}} icon={searchRightComponent}></Button>
                     </Space>
                     <div className={'middle-list'}>
-                        <ChatList></ChatList>
+                        <ChatList chatWithSender={this.chatWithSender}></ChatList>
                     </div>
                 </div>
-
+                <Content>
+                    <ChatContent recieverInfo={recieverInfo}></ChatContent>
+                </Content>
             </Layout>
         </Fragment>
     }

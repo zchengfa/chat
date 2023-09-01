@@ -2,7 +2,7 @@ import { Component } from "react";
 import './siderMenu.sass'
 import {Avatar} from "antd";
 import { UserOutlined } from '@ant-design/icons'
-import { menuType} from "../../common/staticData/data";
+import { MenuType} from "../../common/staticData/data";
 
 export default class SiderMenu extends Component<any, any>{
     constructor(props:any) {
@@ -19,7 +19,7 @@ export default class SiderMenu extends Component<any, any>{
       <img className={'menu-img'} src={htmlProps.image} alt="menu_img" title={htmlProps.title}/>
     </div>
 
-    correctMenuHtml = (data:menuType[],menuName:string)=> {
+    correctMenuHtml = (data:MenuType[],menuName:string)=> {
       return data.map((item:any,index:number) => {
         if(item.isActived){
           return this.menuHtml({index,image:item.imageAc,title:item.title,menuName})

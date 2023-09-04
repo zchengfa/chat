@@ -3,11 +3,12 @@
 :root{
     --white-color:#fff;
     --gray-color: #eae5e5;
-    --deep-gray-color: #b7b3b3;
+    --deep-gray-color: #c7c3c3;
     --mini-font-size: 12px;
     --normal-text-color: #000;
     --middle-font-size: 14px;
-    --success-font-color: #06e852
+    --success-font-color: #06e852;
+    --deep-green-color: #0aa23d;
 }
 
 .App{

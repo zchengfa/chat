@@ -131,7 +131,7 @@ class Home extends Component<any, any>{
                         <ChatList chatWithSender={this.chatWithSender}></ChatList>
                     </div>
                 </div>
-                <Content>
+                <Content className={'index-content'}>
                     <ChatContent recieverInfo={recieverInfo}></ChatContent>
                 </Content>
             </Layout>

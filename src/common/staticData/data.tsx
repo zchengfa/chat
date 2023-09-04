@@ -91,7 +91,7 @@ export interface MsgDataType {
 export const messageData:MsgDataType[] = [
   {
     id:3156987,
-    user:'阿藏',
+    user:'用户1号',
     type:'text',
     msg:'这是一条用于测试的聊天消息',
     avatar:'',
@@ -102,7 +102,7 @@ export const messageData:MsgDataType[] = [
   },
   {
     id:5678453,
-    user:'沙雕',
+    user:'沙雕1号',
     type:'text',
     msg:'你好',
     avatar:'',

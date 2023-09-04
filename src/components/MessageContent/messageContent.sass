@@ -1,0 +1,69 @@
+#last-empty-msg
+  width: 100%
+  height: 2rem
+.message-content
+  width: 100%
+  height: 100%
+  .msg-ul
+    display: flex
+    flex-direction: column
+    align-items: flex-start
+    margin: 0 auto
+    width: 96%
+    height: 100%
+    max-height: 430px
+    .msg-li
+      padding: .5rem 0
+      width: 100%
+      .timeout
+        margin: .5rem 0
+        width: 100%
+        text-align: center
+        .timeout-span
+          display: inline-block
+          padding: .2rem
+          border-radius: .1rem
+          color: var(--white-color)
+          font-size: var(--mini-font-size)
+          background-color: var(--deep-gray-color)
+    .message-item-box
+      display: flex
+      justify-content: flex-start
+      align-items: flex-start
+      width: 100%
+      .msg-avatar
+        display: block
+        width: 32px
+        height: 32px
+        cursor: pointer
+      .msg-box
+        max-width: 50%
+        .msg
+          line-height: 1.2rem
+          letter-spacing: 1px
+      .msg-img-box
+        max-width: 30%
+        .msg-image
+          width: 100%
+          background-size: contain
+      .msg-box,.msg-img-box
+        padding: .5rem
+        font-size: var(--middle-font-size)
+        border-radius: .2rem
+
+    .message-item-left-box
+        justify-content: flex-start
+    .message-item-right-box
+      flex-direction: row-reverse
+      .msg-avatar-box
+        flex-direction: row-reverse
+        .angle
+          border: .4rem solid transparent
+
+    .msg-avatar-box
+      display: flex
+      justify-content: space-between
+      align-items: center
+      .angle
+        border: .4rem solid transparent
+

@@ -8,7 +8,6 @@ import {menu, MenuType, otherMenu, correctIconComponent, MsgDataType} from "../.
 import './index.sass'
 import { SearchOutlined,CloseCircleOutlined } from '@ant-design/icons'
 
-
 class Home extends Component<any, any>{
 
     constructor(props:any) {
@@ -21,10 +20,23 @@ class Home extends Component<any, any>{
             inputProp:undefined,
             inputRef:this.props.Refs,
             placeholder:'搜索',
-            recieverInfo:{}
+            currentMenu:'聊天',
+            menuList:{
+                '聊天':<ChatList chatWithSender={this.chatWithSender}></ChatList>
+            },
+            listContent:{
+                '聊天':<ChatContent></ChatContent>
+            }
         }
     }
-
+    showListContent = ()=>{
+        switch (this.state.currentMenu) {
+            case '聊天':
+                return <ChatContent></ChatContent>
+            default:
+                return true
+        }
+    }
     /**
      * 接受SiderMenu子组件发出的点击事件
      * @param childIndex { number } 点击的项在列表中的索引
@@ -33,6 +45,7 @@ class Home extends Component<any, any>{
     changeMenu = (childIndex:number,menuName:string)=>{
         const m:MenuType[] = this.state[menuName]
 
+        this.getMenuTitle(menuName,childIndex)
         if(this.state.nameArr.indexOf(menuName) === -1 ){
             this.state.nameArr.push(menuName)
         }
@@ -62,7 +75,7 @@ class Home extends Component<any, any>{
         })
 
         this.setState({
-            ...this.state.nameArr
+            nameArr:this.state.nameArr
         })
 
         try {
@@ -73,6 +86,18 @@ class Home extends Component<any, any>{
            }
         }catch (e){}
 
+    }
+    /**
+     * 获取用户点击的具体项的菜单项名称
+     * @param name { string } 数组名
+     * @param index { number } 索引
+     */
+    getMenuTitle = (name:string,index:number)=>{
+        let arr = []
+        name === 'menu' ? arr = this.state.menu : arr = this.state.otherMenu
+        this.setState({
+            currentMenu:arr[index].title
+        })
     }
     /**
      * 输入框聚焦时，在输入框后面添加关闭组件
@@ -100,20 +125,24 @@ class Home extends Component<any, any>{
      * 失去焦点后触发
      */
     inputBlur = ()=>{
-        console.log('失去焦点')
+
         this.setState({
             placeholder:'搜索',
             inputProp:null
         })
     }
-    chatWithSender = (data:MsgDataType)=>{
-       this.setState({
-           recieverInfo:data
-       })
+    chatWithSender = (data:MsgDataType,id:number)=>{
+        const { changeListId,saveFriendInfo } = this.props.Zustand
+        this.setState({
+            recieverInfo:data
+        })
+        changeListId(id)
+        saveFriendInfo(data)
     }
     render(){
         const { Sider,Content } = Layout
-        const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder,recieverInfo } = this.state
+        const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder } = this.state
+        const { listId } = this.props.Zustand
 
         return <Fragment>
             <Layout>
@@ -128,11 +157,11 @@ class Home extends Component<any, any>{
                         <Button style={{backgroundColor:'var(--gray-color)'}} icon={searchRightComponent}></Button>
                     </Space>
                     <div className={'middle-list'}>
-                        <ChatList chatWithSender={this.chatWithSender}></ChatList>
+                        {this.state.menuList[this.state.currentMenu]}
                     </div>
                 </div>
                 <Content className={'index-content'}>
-                    <ChatContent recieverInfo={recieverInfo}></ChatContent>
+                    {listId !== undefined ? this.state.listContent[this.state.currentMenu] : null}
                 </Content>
             </Layout>
         </Fragment>

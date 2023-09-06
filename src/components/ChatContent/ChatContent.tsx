@@ -2,102 +2,95 @@ import './chatContent.sass'
 import { Layout,Divider,Input,Button } from "antd";
 import { operationsData,IconMenu } from "../../common/staticData/data";
 import MessageContent from "../MessageContent/MessageContent";
-import { useState} from "react";
+import {useEffect, useState} from "react";
+import {useMessageStore} from "../../zustand/store";
 
 export default function ChatContent (props:any){
     const { Header,Content,Footer } = Layout
     const { operations,chatWay } = operationsData
     const { TextArea } = Input
-    const [msgData,setMsgData] = useState([
-        {
-            userId:0,
-            avatar:'https://img0.baidu.com/it/u=2977473448,4146980684&fm=253&fmt=auto&app=138&f=JPEG?w=190&h=190',
-            msg:'分别输出接口分步实施从色粉色粉色色好好发育粉我等哈我到五级大佬吊袜带',
-            isLeft:false,
-            bgColor:'var(--success-font-color)'
-        },
-        {
-            userId:0,
-            avatar:'https://img0.baidu.com/it/u=3891406513,1665181090&fm=253&fmt=auto&app=138&f=JPEG?w=200&h=200',
-            msg:'耦合',
-            isLeft:true,
-            bgColor:'var(--white-color)'
-        },
-        {
-            userId:0,
-            avatar:'https://img0.baidu.com/it/u=3891406513,1665181090&fm=253&fmt=auto&app=138&f=JPEG?w=200&h=200',
-            msg:'分手十年方式VS VS瑟夫',
-            isLeft:true,
-            bgColor:'var(--white-color)'
-        },
-        {
-            userId:0,
-            avatar:'https://img0.baidu.com/it/u=436036379,447094936&fm=253&fmt=auto&app=138&f=JPEG?w=200&h=200',
-            img:'https://t7.baidu.com/it/u=2295973985,242574375&fm=193&f=GIF',
-            isLeft:true,
-            timeout:'20:03',
-            bgColor:'var(--white-color)'
-
-        },
-        {
-            userId:0,
-            avatar:'https://img0.baidu.com/it/u=2977473448,4146980684&fm=253&fmt=auto&app=138&f=JPEG?w=190&h=190',
-            img:'https://t7.baidu.com/it/u=2295973985,242574375&fm=193&f=GIF',
-            isLeft:false,
-            bgColor:'var(--success-font-color)'
-        },
-
-    ])
-
+    const msgData = useMessageStore((state:any)=> state.msgData)
     const [msg,setMsg] = useState('')
+    const [count,setCount] = useState(0)
+
+    const friendInfo = useMessageStore((state:any)=> state.friendInfo)
+    const saveMsgData = useMessageStore((state:any)=> state.saveMsgData)
+    const changeBg = useMessageStore((state:any)=> state.changeBg)
+    const listId = useMessageStore((state:any)=> state.listId)
+
+
+    //监听聊天消息列表，列表数据量变化，让最后一项出现在视口，保持滚动到最新消息
+    useEffect(()=>{
+
+        const el = document.getElementsByClassName('msg-li').item(msgData[listId].length -1)
+
+        el?.scrollIntoView({behavior:'smooth'})
+
+        return ()=>{
+            console.log('有新消息')
+        }
+
+    },[count])
+
 
     const changeBgColor =(status:0|1,direction:boolean,index:number)=>{
 
         let data = []
-        data = JSON.parse(JSON.stringify(msgData))
+        data = JSON.parse(JSON.stringify(msgData[listId]))
+
         data.map((item:any,i:number)=>{
-            if(direction && i === index){
+            if(Object.keys(item).length){
 
-               status === 1 ? item.bgColor = 'var(--gray-color)' : item.bgColor = 'var(--white-color)'
+                if(direction && i === index){
+
+                    status === 1 ? item.bgColor = 'var(--gray-color)' : item.bgColor = 'var(--white-color)'
+                }
+                else if((!direction) && i === index){
+
+                    status === 0 ? item.bgColor = 'var(--success-font-color)' : item.bgColor = 'var(--deep-green-color)'
+
+                }
             }
-            else if((!direction) && i === index){
+            return true
 
-               status === 0 ? item.bgColor = 'var(--success-font-color)' : item.bgColor = 'var(--deep-green-color)'
-
-            }
-            return null
         })
-        setMsgData(data)
+        changeBg(data[index],index,listId)
 
     }
 
     const changeMsg = (e:any)=>{
-        setMsg(e.target.value)
+        let msg = e.target.value
+        setMsg(msg)
     }
 
     const sendMsg = (msg:string)=>{
+
+        setMsg('')
+
         if(msg.length){
-            let data = []
-            data = JSON.parse(JSON.stringify(msgData))
-            data.push({
+            saveMsgData({
                 avatar:'https://img0.baidu.com/it/u=2977473448,4146980684&fm=253&fmt=auto&app=138&f=JPEG?w=190&h=190',
                 isLeft:false,
                 bgColor:'var(--success-font-color)',
                 msg
-            })
-            setMsgData(data)
-
-            setMsg('')
+            },listId)
+            let c = count
+            c++
+            setCount( c)
         }
 
     }
 
+    const setEmptyDiv = ()=>{
+        sendMsg('')
+    }
+
     return <Layout className={'content-con'}>
         <Header className={'user-box'}>
-            <span className={'receiver-title'}>{props.recieverInfo.user}</span>
+            <span className={'receiver-title'}>{friendInfo.user}</span>
         </Header>
         <Content className={'msg-content'}>
-            <MessageContent msgData = {msgData} changeBgColor={changeBgColor}></MessageContent>
+            <MessageContent changeBgColor={changeBgColor} setEmptyDiv={setEmptyDiv}></MessageContent>
         </Content>
         <Divider className={'chat-divider'} />
         <Footer className={'sender-operations'}>

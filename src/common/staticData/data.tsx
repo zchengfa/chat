@@ -88,30 +88,30 @@ export interface MsgDataType {
   hasBeenRead:boolean,
   isGroupChat:boolean
 }
-export const messageData:MsgDataType[] = [
-  {
-    id:3156987,
-    user:'用户1号',
-    type:'text',
-    msg:'这是一条用于测试的聊天消息',
-    avatar:'',
-    time:'刚刚',
-    isMute:false,
-    hasBeenRead:false,
-    isGroupChat:false
-  },
-  {
-    id:5678453,
-    user:'沙雕1号',
-    type:'text',
-    msg:'你好',
-    avatar:'',
-    time:'08/10',
-    isMute:true,
-    hasBeenRead:false,
-    isGroupChat: false
-  }
-]
+// export const messageData:MsgDataType[] = [
+//   {
+//     id:3156987,
+//     user:'用户1号',
+//     type:'text',
+//     msg:'这是一条用于测试的聊天消息',
+//     avatar:'',
+//     time:'刚刚',
+//     isMute:false,
+//     hasBeenRead:false,
+//     isGroupChat:false
+//   },
+//   {
+//     id:5678453,
+//     user:'沙雕1号',
+//     type:'text',
+//     msg:'你好',
+//     avatar:'',
+//     time:'08/10',
+//     isMute:true,
+//     hasBeenRead:false,
+//     isGroupChat: false
+//   }
+// ]
 
 export interface IconMenu {
   title:string

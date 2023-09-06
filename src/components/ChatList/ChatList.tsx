@@ -2,16 +2,46 @@ import './chatList.sass'
 import { Avatar,Badge,Space } from "antd";
 import { UserOutlined } from '@ant-design/icons'
 import { BellIconComponent } from '../../common/svg/svg'
-import { messageData,MsgDataType } from '../../common/staticData/data'
+import { MsgDataType } from '../../common/staticData/data'
+import {useMessageStore} from "../../zustand/store";
+
+
 
 export default function ChatList (props:any){
-  const chatWithSender = (item:MsgDataType)=>{
-    props.chatWithSender(item)
+  const chatList = useMessageStore((state:any)=> state.chatList)
+  const activedId = useMessageStore((state:any)=> state.listId )
+  //const changeChatList  = useMessageStore((state:any)=> state.changeChatList)
+  // console.log(activedIndex)
+  // changeChatList(
+  //   {
+  //     userId:5678453,
+  //     user:'沙雕1号',
+  //     type:'text',
+  //     msg:'你好',
+  //     avatar:'',
+  //     time:'08/10',
+  //     isMute:true,
+  //     hasBeenRead:false,
+  //     isGroupChat: false
+  //   }
+  // )
+
+  // const saveMsgData  = useMessageStore((state:any)=> state.saveMsgData)
+  // saveMsgData( {
+  //       userId:5678453,
+  //       avatar:'https://img0.baidu.com/it/u=2977473448,4146980684&fm=253&fmt=auto&app=138&f=JPEG?w=190&h=190',
+  //       isLeft:false,
+  //       bgColor:'var(--success-font-color)',
+  //       msg:'哦啊无法范围'
+  //     },5678453)
+  const chatWithSender = (item:MsgDataType,id:number)=>{
+    props.chatWithSender(item,id)
   }
+
   const chatListElement = ()=>{
-    return messageData.map((item:any,index:number)=>{
+    return chatList.map((item:any,index:number)=>{
       return <li key={index}>
-        <div className={'message-box'} onClick={()=> chatWithSender(item)}>
+        <div className={activedId === item.userId ? 'message-box actived' : 'message-box'} onClick={()=> chatWithSender(item,item.userId)}>
           <Space className={'msg-left'}>
             <Badge dot={!item.hasBeenRead}>
               <Avatar shape={'square'} icon={<UserOutlined />}></Avatar>
@@ -33,6 +63,6 @@ export default function ChatList (props:any){
   }
 
   return <ul className={'list-container'}>
-    {chatListElement()}
+    {chatList?.length ? chatListElement() : null}
   </ul>
 }

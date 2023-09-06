@@ -9,6 +9,7 @@
     --middle-font-size: 14px;
     --success-font-color: #06e852;
     --deep-green-color: #0aa23d;
+    --children-app: 90vh;
 }
 
 .App{
@@ -24,7 +25,7 @@
 }
 .App-container{
     width: 90%;
-    height: 90%;
+    height: var(--children-app);
     background-color: var(--white-color);
     border-radius: .5rem;
 

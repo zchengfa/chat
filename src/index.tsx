@@ -8,10 +8,15 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <Suspense>
-        <App />
-    </Suspense>
-  </React.StrictMode>
+  <Suspense>
+    <App />
+  </Suspense>
 );
-
+/**
+ * React.StrictMode高阶组件会导致useEffect执行两次
+ * <React.StrictMode>
+ *     <Suspense>
+ *         <App />
+ *     </Suspense>
+ *   </React.StrictMode>
+ */

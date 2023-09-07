@@ -101,7 +101,7 @@ export interface MsgDataType {
 //     isGroupChat:false
 //   },
 //   {
-//     id:5678453,
+//     userId:5678453,
 //     user:'沙雕1号',
 //     type:'text',
 //     msg:'你好',

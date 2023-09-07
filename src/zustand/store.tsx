@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import {MsgDataType} from "../common/staticData/data";
+import chatList from "../components/ChatList/ChatList";
 
 function getLocalStorageData(propertyName:string,returnData:any,isString:boolean = true){
   let data = localStorage.getItem(propertyName)
@@ -67,10 +68,24 @@ export const useMessageStore = create((set)=>{
         listId:getLocalStorageData('listId',undefined,false),
         changeListId:(id:number)=>{
 
-           set(()=>{
-             setLocalStorageData('listId',id)
-                return {
+           set((state:any)=>{
+               state.changeReadStatus(id)
+               setLocalStorageData('listId',id)
+               return {
                     listId:id
+                }
+            })
+        },
+        changeReadStatus:(id:number,status:boolean = true)=>{
+            set((state:any)=>{
+                let data = state.chatList
+
+                data.map((item:any)=>{
+                   return item.userId === id ? item.hasBeenRead = status : null
+                })
+                setLocalStorageData('chatList',data)
+                return {
+                    chatList:data
                 }
             })
         },
@@ -87,6 +102,7 @@ export const useMessageStore = create((set)=>{
                 if(it.userId === replyId){
                   index = i
                 }
+
               })
 
               data[index].msg = item.msg
@@ -94,8 +110,6 @@ export const useMessageStore = create((set)=>{
             else{
               data.unshift(item)
             }
-
-
 
             setLocalStorageData('chatList',data)
 

@@ -60,7 +60,7 @@ export default function ChatContent (props:any){
     }
 
     const changeMsg = (e:any)=>{
-        let msg = e.target.value
+        let msg = e.target.value.trim()
         setMsg(msg)
     }
 
@@ -83,7 +83,11 @@ export default function ChatContent (props:any){
 
     }
     const keyboardSendMsg = (e:any)=>{
-        console.log(e)
+
+        if(e.keyCode === 13 && msg.length ){
+            sendMsg(msg)
+
+        }
     }
 
     const setEmptyDiv = ()=>{

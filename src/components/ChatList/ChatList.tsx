@@ -3,37 +3,13 @@ import { Avatar,Badge,Space } from "antd";
 import { UserOutlined } from '@ant-design/icons'
 import { BellIconComponent } from '../../common/svg/svg'
 import { MsgDataType } from '../../common/staticData/data'
-import {useMessageStore} from "../../zustand/store";
 
+import withHook from "../../hook/withHook";
 
+function ChatList (props:any){
 
-export default function ChatList (props:any){
-  const chatList = useMessageStore((state:any)=> state.chatList)
-  const activedId = useMessageStore((state:any)=> state.listId )
-  //const changeChatList  = useMessageStore((state:any)=> state.changeChatList)
-  // console.log(activedIndex)
-  // changeChatList(
-  //   {
-  //     userId:5678453,
-  //     user:'沙雕1号',
-  //     type:'text',
-  //     msg:'你好',
-  //     avatar:'',
-  //     time:'08/10',
-  //     isMute:true,
-  //     hasBeenRead:false,
-  //     isGroupChat: false
-  //   }
-  // )
+  const { chatList,listId } = props.Zustand
 
-  // const saveMsgData  = useMessageStore((state:any)=> state.saveMsgData)
-  // saveMsgData( {
-  //       userId:5678453,
-  //       avatar:'https://img0.baidu.com/it/u=2977473448,4146980684&fm=253&fmt=auto&app=138&f=JPEG?w=190&h=190',
-  //       isLeft:false,
-  //       bgColor:'var(--success-font-color)',
-  //       msg:'哦啊无法范围'
-  //     },5678453)
   const chatWithSender = (item:MsgDataType,id:number)=>{
     props.chatWithSender(item,id)
   }
@@ -41,7 +17,7 @@ export default function ChatList (props:any){
   const chatListElement = ()=>{
     return chatList.map((item:any,index:number)=>{
       return <li key={index}>
-        <div className={activedId === item.userId ? 'message-box actived' : 'message-box'} onClick={()=> chatWithSender(item,item.userId)}>
+        <div className={listId === item.userId ? 'message-box actived' : 'message-box'} onClick={()=> chatWithSender(item,item.userId)}>
           <Space className={'msg-left'}>
             <Badge dot={!item.hasBeenRead}>
               <Avatar shape={'square'} icon={<UserOutlined />}></Avatar>
@@ -58,11 +34,15 @@ export default function ChatList (props:any){
             </div>
           </Space>
         </div>
+
       </li>
     })
   }
 
   return <ul className={'list-container'}>
+
     {chatList?.length ? chatListElement() : null}
   </ul>
 }
+
+export default withHook(ChatList)

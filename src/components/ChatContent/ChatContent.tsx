@@ -14,7 +14,8 @@ export default function ChatContent (props:any){
     const [count,setCount] = useState(0)
 
     const friendInfo = useMessageStore((state:any)=> state.friendInfo)
-    const saveMsgData = useMessageStore((state:any)=> state.saveMsgData)
+    const userId = useMessageStore((state:any)=> state.customer.userId)
+    const changeChatList = useMessageStore((state:any)=> state.changeChatList)
     const changeBg = useMessageStore((state:any)=> state.changeBg)
     const listId = useMessageStore((state:any)=> state.listId)
 
@@ -68,7 +69,8 @@ export default function ChatContent (props:any){
         setMsg('')
 
         if(msg.length){
-            saveMsgData({
+            changeChatList({
+                userId,
                 avatar:'https://img0.baidu.com/it/u=2977473448,4146980684&fm=253&fmt=auto&app=138&f=JPEG?w=190&h=190',
                 isLeft:false,
                 bgColor:'var(--success-font-color)',

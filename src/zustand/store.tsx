@@ -1,8 +1,8 @@
 import { create } from "zustand";
 import {MsgDataType} from "../common/staticData/data";
 
-function getSessionStorageData(propertyName:string,returnData:any,isString:boolean = true){
-  let data = sessionStorage.getItem(propertyName)
+function getLocalStorageData(propertyName:string,returnData:any,isString:boolean = true){
+  let data = localStorage.getItem(propertyName)
   if(isString){
     return data ? JSON.parse(data as string) : returnData
   }
@@ -11,18 +11,33 @@ function getSessionStorageData(propertyName:string,returnData:any,isString:boole
   }
 }
 
+function setLocalStorageData(propertyName:string,data:any){
+  localStorage.setItem(propertyName,JSON.stringify(data))
+}
+
 export const useMessageStore = create((set)=>{
     return {
+        customer:{
+          userId:123456
+        },
       //聊天记录
-        msgData:getSessionStorageData('msgData',{}),
-        saveMsgData:(item:any,id:number)=>{
+        msgData:getLocalStorageData('msgData',{}),
+        saveMsgData:(item:any,id:number | undefined)=>{
+
           set((state:any)=>{
             let data = state.msgData
-            if(!data[id]){
-              data[id] = []
+            if(!id){
+              if(!data[item.userId]){
+                data[item.userId] = []
+                data[item.userId].push(item)
+              }
             }
-            data[id].push(item)
-            sessionStorage.setItem('msgData',JSON.stringify(data))
+            else{
+              data[id].push(item)
+            }
+
+
+            setLocalStorageData('msgData',data)
             return {
               msgData:data
             }
@@ -49,34 +64,65 @@ export const useMessageStore = create((set)=>{
           })
         },
       //消息列表激活的索引
-        listId:getSessionStorageData('listId',undefined,false),
+        listId:getLocalStorageData('listId',undefined,false),
         changeListId:(id:number)=>{
 
            set(()=>{
-             sessionStorage.setItem('listId',id.toString())
+             setLocalStorageData('listId',id)
                 return {
                     listId:id
                 }
             })
         },
       //通讯过的用户列表
-        chatList:getSessionStorageData('chatList',[]),
-        changeChatList:(item:MsgDataType)=>{
+        chatList:getLocalStorageData('chatList',[]),
+        changeChatList:(item:MsgDataType,replyId:number | undefined = undefined)=>{
 
           set((state:any)=>{
             let data = state.chatList
-            data.push(item)
-            sessionStorage.setItem('chatList',JSON.stringify(data))
+            if(replyId){
+              let index:any = undefined
+              data.map((it:any,i:number)=>{
+
+                if(it.userId === replyId){
+                  index = i
+                }
+              })
+
+              data[index].msg = item.msg
+            }
+            else{
+              data.unshift(item)
+            }
+
+
+
+            setLocalStorageData('chatList',data)
+
+            let bgColor = replyId ? 'var(--success-font-color)' : 'var(--white-color)'
+            let isLeft = !replyId
+            let id = replyId ? replyId : undefined
+
+            state.saveMsgData({
+              userId:item.userId,
+              avatar:item.avatar,
+              msg:item.msg,
+              bgColor,
+              isLeft
+
+            },id)
+
             return {
               chatList:data
             }
           })
         },
       //最新沟通过的好友信息
-        friendInfo:getSessionStorageData('friendInfo',{}),
+        friendInfo:getLocalStorageData('friendInfo',{}),
         saveFriendInfo:(item:MsgDataType)=>{
           set(()=>{
-            sessionStorage.setItem('friendInfo',JSON.stringify(item))
+
+            setLocalStorageData('friendInfo',item)
             return {
               friendInfo:item
             }

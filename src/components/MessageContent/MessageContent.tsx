@@ -20,7 +20,7 @@ class MessageContent extends Component<any,any> {
                 <div className={'angle'} style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div>
             </div>
             <div className={item.img ? 'msg-img-box' : 'msg-box'} onMouseEnter={()=> this.msgMouseEnter(direction,index)} onMouseLeave={()=> this.msgMouseleave(direction,index)} style={direction ? {backgroundColor: item.bgColor} : {backgroundColor: item.bgColor}}>
-                    {item.img ? <img className={'msg-image'} src={item.img} alt="msg_image"/> : <span className={'msg'}>{item.msg}</span>}
+                {item.img ? <img className={'msg-image'} src={item.img} alt="msg_image"/> : <span className={'msg'}>{item.msg}</span>}
             </div>
         </div>
     }

@@ -78,7 +78,7 @@ export const correctIconComponent = [
 ]
 
 export interface MsgDataType {
-  id:number,
+  userId:number,
   user:string,
   type:string,
   msg:string,

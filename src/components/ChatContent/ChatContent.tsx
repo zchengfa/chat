@@ -82,6 +82,9 @@ export default function ChatContent (props:any){
         }
 
     }
+    const keyboardSendMsg = (e:any)=>{
+        console.log(e)
+    }
 
     const setEmptyDiv = ()=>{
         sendMsg('')
@@ -117,7 +120,7 @@ export default function ChatContent (props:any){
                 </div>
             </div>
             <div className={'text-area-box'}>
-                <TextArea style={{height:'100%',resize:'none'}} bordered={false} value={msg} onChange={changeMsg}></TextArea>
+                <TextArea style={{height:'100%',resize:'none'}} bordered={false} value={msg} onKeyDown={keyboardSendMsg} onChange={changeMsg}></TextArea>
             </div>
             <div className={'send-btn-box'}>
                 <Button className={'send-button'} size={'small'} onClick={()=> sendMsg(msg)}>发送(S)</Button>

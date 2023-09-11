@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import {MsgDataType} from "../common/staticData/data";
-import chatList from "../components/ChatList/ChatList";
 
 function getLocalStorageData(propertyName:string,returnData:any,isString:boolean = true){
   let data = localStorage.getItem(propertyName)
@@ -18,8 +17,11 @@ function setLocalStorageData(propertyName:string,data:any){
 
 export const useMessageStore = create((set)=>{
     return {
+        token:getLocalStorageData('token',undefined),
         customer:{
-          userId:123456
+            userId:123456,
+            username:'随风',
+            avatar:'https://img1.baidu.com/it/u=1846140859,3572495292&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
         },
       //聊天记录
         msgData:getLocalStorageData('msgData',{}),

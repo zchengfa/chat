@@ -1,0 +1,81 @@
+.drop-container
+  width: inherit
+  height: inherit
+.drop
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  position: relative
+  transition: .5s
+  box-shadow: inset 20px 20px 20px rgba(0,0,0,.05),20px 20px 20px rgba(0,0,0,.05),20px 20px 20px rgba(0,0,0,.05),inset -20px -20px 25px rgba(255,255,255,.9)
+  border-radius: 46% 54% 29% 71% / 25% 34% 66% 75%
+  cursor: pointer
+  .form-title
+    position: absolute
+    top: 15%
+    font-family: "Book Antiqua", serif
+    font-weight: bolder
+    font-size: 40px
+    letter-spacing: 4px
+    z-index: 10
+.drop:hover
+  border-radius: 50% !important
+.drop::before
+  position: absolute
+  top: 16%
+  left: 14%
+  content: ''
+  width: 35px
+  height: 35px
+  border-radius: 50%
+  background-color: var(--white-color)
+.drop::after
+  position: absolute
+  top: 26%
+  left: 19%
+  content: ''
+  width: 15px
+  height: 15px
+  border-radius: 50%
+  background-color: var(--white-color)
+.form
+  position: relative
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  padding-top: 20px
+  .form-input
+    padding: 6px 20px
+    box-shadow: inset 2px 5px 10px rgba(0,0,0,.1),inset -2px -5px 10px rgba(255,255,255,1),15px 15px 10px rgba(0,0,0,.05),15px 10px 15px rgba(0,0,0,.025)
+    border-radius: 25px
+    outline: none
+  .form-input::placeholder
+    font-weight: bolder
+  .form-input-span,.form-btn::before
+    position: absolute
+    left: 50%
+    top: 4px
+    display: block
+    content: ''
+    width: 65%
+    height: 5px
+    transform: translateX(-50%)
+    border-radius: 3px
+    z-index: 10
+  .form-input-span
+    background-color: var(--white-color)
+  .form-btn::before
+    background-color: rgba(255,255,255,.6)
+  .form-btn
+    width: 100px
+    height: 35px
+    border-radius: 25px
+    background-color: red
+    color: var(--white-color)
+    letter-spacing: 4px
+    box-shadow: inset 2px 5px 10px rgba(0,0,0,.1),inset -2px -5px 10px rgba(255,255,255,1),15px 15px 10px rgba(0,0,0,.05)
+    transition: .5s
+  .form-btn:hover
+    width: 200px

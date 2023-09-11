@@ -1,6 +1,7 @@
 import { useNavigate,useLocation,useParams } from "react-router-dom";
 import { useMessageStore } from "../zustand/store";
 import { useRef } from "react";
+import { socket } from "../socket/socket";
 
 function WithHook(WrapperComponent:any){
     function ComponentProps(props:any){
@@ -17,7 +18,7 @@ function WithHook(WrapperComponent:any){
         const Zustand = useMessageStore()
 
         return <WrapperComponent {...props} router={router} location={location} params={params}
-           Zustand = { Zustand } Refs={ Ref }
+           Zustand = { Zustand } Refs={ Ref } socket = { socket }
         ></WrapperComponent>
     }
 

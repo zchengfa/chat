@@ -8,6 +8,7 @@ import {menu, MenuType, otherMenu, correctIconComponent, MsgDataType} from "../.
 import './index.sass'
 import { SearchOutlined,CloseCircleOutlined } from '@ant-design/icons'
 
+
 class Home extends Component<any, any>{
 
     constructor(props:any) {
@@ -29,14 +30,14 @@ class Home extends Component<any, any>{
             }
         }
     }
-    showListContent = ()=>{
-        switch (this.state.currentMenu) {
-            case '聊天':
-                return <ChatContent></ChatContent>
-            default:
-                return true
-        }
-    }
+    // showListContent = ()=>{
+    //     switch (this.state.currentMenu) {
+    //         case '聊天':
+    //             return <ChatContent></ChatContent>
+    //         default:
+    //             return true
+    //     }
+    // }
     /**
      * 接受SiderMenu子组件发出的点击事件
      * @param childIndex { number } 点击的项在列表中的索引
@@ -165,6 +166,12 @@ class Home extends Component<any, any>{
                 </Content>
             </Layout>
         </Fragment>
+    }
+
+    componentDidMount() {
+
+        this.props.socket.emit('online',this.props.Zustand.customer.username)
+
     }
 
 

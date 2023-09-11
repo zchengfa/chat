@@ -1,7 +1,7 @@
 @import "./reset.css";
 
 :root{
-    --white-color:#fff;
+    --white-color: #fff;
     --gray-color: #eae5e5;
     --deep-gray-color: #c7c3c3;
     --mini-font-size: 12px;

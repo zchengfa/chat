@@ -46,6 +46,8 @@
   justify-content: center
   align-items: center
   padding-top: 20px
+  .form-item
+    position: relative
   .form-input
     padding: 6px 20px
     box-shadow: inset 2px 5px 10px rgba(0,0,0,.1),inset -2px -5px 10px rgba(255,255,255,1),15px 15px 10px rgba(0,0,0,.05),15px 10px 15px rgba(0,0,0,.025)
@@ -53,21 +55,21 @@
     outline: none
   .form-input::placeholder
     font-weight: bolder
-  .form-input-span,.form-btn::before
+  .form-item::before
     position: absolute
     left: 50%
     top: 4px
     display: block
     content: ''
     width: 65%
-    height: 5px
+    height: 4px
     transform: translateX(-50%)
     border-radius: 3px
-    z-index: 10
-  .form-input-span
     background-color: var(--white-color)
-  .form-btn::before
-    background-color: rgba(255,255,255,.6)
+    z-index: 10
+  .form-item:last-child::before
+    background-color: rgba(255, 255, 255, 0.6)
+
   .form-btn
     width: 100px
     height: 35px
@@ -79,3 +81,13 @@
     transition: .5s
   .form-btn:hover
     width: 200px
+.drop-before
+  position: absolute
+  top: 16%
+  left: 14%
+  content: ''
+  width: 35px
+  height: 35px
+  border-radius: 50%
+  z-index: 10
+

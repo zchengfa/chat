@@ -3,14 +3,14 @@ import { Navigate } from "react-router-dom";
 
 
 
-const baseURL = 'http://loocahost:3000'
+const baseURL = 'http://localhost:3000'
 const timeout = 5000
 export function Get(config:any){
     const instance = axios.create({
         baseURL,timeout
     })
 
-    axiosInterceptors(config)
+    axiosInterceptors(instance)
 
     return instance(config)
 }
@@ -20,7 +20,7 @@ export function Post(config:any){
         baseURL,timeout,method:'POST'
     })
 
-    axiosInterceptors(config)
+    axiosInterceptors(instance)
 
     return instance(config)
 }

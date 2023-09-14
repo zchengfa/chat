@@ -1,3 +1,6 @@
+.ant-popover
+  left: 7vw !important
+  top: 13vh !important
 .side
   display: flex
   flex-direction: column
@@ -21,3 +24,31 @@
     width: 3rem
     height: 3rem
     border-radius: 50%
+.popover-box
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  padding: .5rem
+  .box-top
+    display: flex
+    justify-content: space-between
+    align-items: center
+    .user-info
+      display: flex
+      flex-direction: column
+      justify-content: flex-start
+      align-items: flex-start
+    .username
+      font-weight: bold
+    .ID
+      font-size: var(--middle-font-size)
+      color: var(--deep-gray-color)
+  .avatar
+    width: 4rem
+    height: 4rem
+    border-radius: .5rem
+  .btn
+    padding: 0 2rem
+    background-color: var(--success-font-color)
+    color: var(--white-color)

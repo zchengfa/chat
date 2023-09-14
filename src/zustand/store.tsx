@@ -26,10 +26,14 @@ export const useMessageStore = create((set)=>{
             }
           })
         },
-        customer:{
-            userId:123456,
-            username:'随风',
-            avatar:'https://img1.baidu.com/it/u=1846140859,3572495292&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
+        customer:getStorageData('userInfo',null,true,false),
+        setUserInfo:(info:any)=>{
+          set(()=>{
+            sessionStorage.setItem('userInfo',JSON.stringify(info))
+            return {
+              customer:info
+            }
+          })
         },
       //聊天记录
         msgData:getStorageData('msgData',{}),

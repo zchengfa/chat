@@ -13,12 +13,13 @@ function Login(){
     const [messageApi, contextHolder] = message.useMessage()
     const navigate = useNavigate()
     const setToken = useMessageStore((state:any)=> state.setToken)
+    const setUserInfo = useMessageStore((state:any)=> state.setUserInfo)
     const login = (data:{username:string,password:string},status:boolean)=>{
         data.password = encrypt(data.password)
         loginRegisterAxios(data,status).then(res=>{
             /**
              * 1.登录成功
-             *  1.1将token交给Zustand管理
+             *  1.1将token以及用户信息交给Zustand管理
              *  1.2将信息反馈给用户
              *  1.3跳转到首页
              * 2.出现错误
@@ -26,6 +27,7 @@ function Login(){
              */
             if(res.data.success){
                 setToken(res.data.token)
+                setUserInfo(res.data.userInfo)
                 messageApi.open({
                     type:'success',
                     content:res.data.success

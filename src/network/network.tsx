@@ -1,8 +1,6 @@
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 
-
-
 const baseURL = 'http://localhost:3000'
 const timeout = 5000
 export function Get(config:any){
@@ -40,12 +38,7 @@ function axiosInterceptors(instance:any){
     //axios响应拦截器
     instance.interceptors.response.use((response:any) =>{
         if (response.data.err === 401){
-            Navigate({
-                to:'/login',
-                state:{
-                    na:'zcf'
-                }
-            })
+            Navigate({to:'/login'})
         }
 
         return response

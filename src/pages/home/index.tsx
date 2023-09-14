@@ -143,13 +143,13 @@ class Home extends Component<any, any>{
     render(){
         const { Sider,Content } = Layout
         const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder } = this.state
-        const { listId } = this.props.Zustand
+        const { listId,customer } = this.props.Zustand
 
         return <Fragment>
             <Layout>
                 {/*侧边栏*/}
                 <Sider width={'70px'}>
-                    <SiderMenu menu = {menu} otherMenu= {otherMenu} changeMenuContent={this.changeMenu}></SiderMenu>
+                    <SiderMenu menu = {menu} otherMenu= {otherMenu} userInfo={customer} changeMenuContent={this.changeMenu}></SiderMenu>
                 </Sider>
                 {/*中部搜索框及各个菜单项详情列表*/}
                 <div className={'middle-com'}>

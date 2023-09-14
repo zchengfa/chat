@@ -1,16 +1,10 @@
 import { Component } from "react";
 import './siderMenu.sass'
-import {Avatar} from "antd";
+import {Avatar,Image} from "antd";
 import { UserOutlined } from '@ant-design/icons'
 import { MenuType} from "../../common/staticData/data";
 
 export default class SiderMenu extends Component<any, any>{
-    constructor(props:any) {
-        super(props);
-        this.state = {
-
-        }
-    }
     changeMenuContent = (index:number,menuName:string)=>{
         this.props.changeMenuContent(index,menuName)
     }
@@ -33,7 +27,7 @@ export default class SiderMenu extends Component<any, any>{
     render(){
 
       return <div className={'side'}>
-        <Avatar className={'avatar'} size={64} icon={<UserOutlined />}></Avatar>
+        {this.props.userInfo ? <Image className={'avatar'} src={this.props.userInfo.avatar} preview={false}></Image>  : <Avatar className={'avatar'} size={64} icon={<UserOutlined />}></Avatar>}
         <div className={'side-top'}>{this.correctMenuHtml(this.props.menu,'menu')}</div>
         <div className={'side-bottom'}>{this.correctMenuHtml(this.props.otherMenu,'otherMenu')}</div>
       </div>

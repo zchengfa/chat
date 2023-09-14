@@ -1,30 +1,38 @@
 import { create } from "zustand";
 import {MsgDataType} from "../common/staticData/data";
 
-function getLocalStorageData(propertyName:string,returnData:any,isString:boolean = true){
-  let data = localStorage.getItem(propertyName)
-  if(isString){
+function getStorageData(propertyName:string,returnData:any,needParse:boolean = true,isLocalStorage:boolean = true){
+  let data = isLocalStorage ? localStorage.getItem(propertyName) : sessionStorage.getItem(propertyName)
+  if(needParse){
     return data ? JSON.parse(data as string) : returnData
   }
   else{
-    return data ? Number(data) : returnData
+    return data ? data : returnData
   }
 }
 
-function setLocalStorageData(propertyName:string,data:any){
+function setStorageData(propertyName:string,data:any){
   localStorage.setItem(propertyName,JSON.stringify(data))
 }
 
 export const useMessageStore = create((set)=>{
     return {
-        token:getLocalStorageData('token',undefined),
+        token:getStorageData('token',undefined,false,false),
+        setToken:(token:string)=>{
+          set(()=>{
+            sessionStorage.setItem('token',token)
+            return {
+              token
+            }
+          })
+        },
         customer:{
             userId:123456,
             username:'随风',
             avatar:'https://img1.baidu.com/it/u=1846140859,3572495292&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
         },
       //聊天记录
-        msgData:getLocalStorageData('msgData',{}),
+        msgData:getStorageData('msgData',{}),
         saveMsgData:(item:any,id:number | undefined)=>{
 
           set((state:any)=>{
@@ -40,7 +48,7 @@ export const useMessageStore = create((set)=>{
             }
 
 
-            setLocalStorageData('msgData',data)
+            setStorageData('msgData',data)
             return {
               msgData:data
             }
@@ -67,12 +75,12 @@ export const useMessageStore = create((set)=>{
           })
         },
       //消息列表激活的索引
-        listId:getLocalStorageData('listId',undefined,false),
+        listId:getStorageData('listId',undefined,false),
         changeListId:(id:number)=>{
 
            set((state:any)=>{
                state.changeReadStatus(id)
-               setLocalStorageData('listId',id)
+               setStorageData('listId',id)
                return {
                     listId:id
                 }
@@ -85,14 +93,14 @@ export const useMessageStore = create((set)=>{
                 data.map((item:any)=>{
                    return item.userId === id ? item.hasBeenRead = status : null
                 })
-                setLocalStorageData('chatList',data)
+                setStorageData('chatList',data)
                 return {
                     chatList:data
                 }
             })
         },
       //通讯过的用户列表
-        chatList:getLocalStorageData('chatList',[]),
+        chatList:getStorageData('chatList',[]),
         changeChatList:(item:MsgDataType,replyId:number | undefined = undefined)=>{
 
           set((state:any)=>{
@@ -113,7 +121,7 @@ export const useMessageStore = create((set)=>{
               data.unshift(item)
             }
 
-            setLocalStorageData('chatList',data)
+            setStorageData('chatList',data)
 
             let bgColor = replyId ? 'var(--success-font-color)' : 'var(--white-color)'
             let isLeft = !replyId
@@ -134,11 +142,11 @@ export const useMessageStore = create((set)=>{
           })
         },
       //最新沟通过的好友信息
-        friendInfo:getLocalStorageData('friendInfo',{}),
+        friendInfo:getStorageData('friendInfo',{}),
         saveFriendInfo:(item:MsgDataType)=>{
           set(()=>{
 
-            setLocalStorageData('friendInfo',item)
+            setStorageData('friendInfo',item)
             return {
               friendInfo:item
             }

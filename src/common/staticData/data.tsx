@@ -1,6 +1,14 @@
 
 import {PlusOutlined, UserAddOutlined} from '@ant-design/icons'
-import { EmojiIconComponent,FileIconComponent,ScissorsIconComponent,MessageIconComponent,TelephoneIconComponent,CameraIconComponent } from '../svg/svg'
+import {
+  EmojiIconComponent,
+  FileIconComponent,
+  ScissorsIconComponent,
+  MessageIconComponent,
+  TelephoneIconComponent,
+  CameraIconComponent,
+  NewFriendIconComponent, CommonIconComponent
+} from '../svg/svg'
 export interface MenuType {
   title:string,
   image:string,
@@ -144,6 +152,16 @@ export const operationsData = {
     {
       title:'视频聊天',
       component:()=> <CameraIconComponent />
+    }
+  ],
+  list:[
+    {
+      title:'新的朋友',
+      component:()=> <NewFriendIconComponent></NewFriendIconComponent>
+    },
+    {
+      title:'公众号',
+      component:()=> <CommonIconComponent></CommonIconComponent>
     }
   ]
 }

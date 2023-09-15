@@ -1,4 +1,4 @@
 import { io } from 'socket.io-client'
 
 
-export const socket = io('ws://localhost:3000')
+export const socket = io('ws://192.168.10.2:3000')

@@ -32,3 +32,13 @@ export function debounce (func:Function,delay:number){
 
   }
 }
+
+/**
+ * 给函数对象的数组根据首字母进行排序
+ * @param arr { Array } 数组
+ * @param propertyName { string } 根据哪个属性
+ * @return 排序后的数组
+ */
+export function sortByLocaleWithObject(arr:any[],propertyName:string){
+ return arr.sort((a:any,b:any)=> a[propertyName].localeCompare(b[propertyName],'zh-CN-u-kf-upper'))
+}

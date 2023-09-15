@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import {MsgDataType} from "../common/staticData/data";
+import {MsgDataType,operationsData} from "../common/staticData/data";
 
 function getStorageData(propertyName:string,returnData:any,needParse:boolean = true,isLocalStorage:boolean = true){
   let data = isLocalStorage ? localStorage.getItem(propertyName) : sessionStorage.getItem(propertyName)
@@ -156,5 +156,24 @@ export const useMessageStore = create((set)=>{
             }
           })
         },
+        friendList:[
+            {
+                type:'btn',
+                avatar:'',
+                username:'通讯录管理'
+            },
+            {
+                type:'new',
+                title:'新的朋友',
+                avatar:operationsData.list[0].component(),
+                username:'新的朋友'
+            },
+            {
+                type:'common',
+                title:'公众号',
+                avatar:operationsData.list[1].component(),
+                username:'公众号'
+            }
+        ]
     }
 })

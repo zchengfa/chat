@@ -3,14 +3,13 @@ import {Component,Fragment} from "react";
 import SiderMenu from "../../components/SiderMenu/SiderMenu";
 import ChatList from "../../components/ChatList/ChatList";
 import ChatContent from "../../components/ChatContent/ChatContent";
+import FriendList from "../../components/FriendList/FriendList";
 import {Layout,Space,Input,Button} from "antd";
 import {menu, MenuType, otherMenu, correctIconComponent, MsgDataType} from "../../common/staticData/data";
 import './index.sass'
 import { SearchOutlined,CloseCircleOutlined } from '@ant-design/icons'
 
-
 class Home extends Component<any, any>{
-
     constructor(props:any) {
         super(props);
         this.state = {
@@ -23,7 +22,8 @@ class Home extends Component<any, any>{
             placeholder:'搜索',
             currentMenu:'聊天',
             menuList:{
-                '聊天':<ChatList chatWithSender={this.chatWithSender}></ChatList>
+                '聊天':<ChatList chatWithSender={this.chatWithSender}></ChatList>,
+                "通讯录":<FriendList list={props.Zustand.friendList}></FriendList>
             },
             listContent:{
                 '聊天':<ChatContent></ChatContent>

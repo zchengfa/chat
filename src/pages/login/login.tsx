@@ -26,13 +26,19 @@ function Login(){
              *  2.1将错误信息反馈给用户
              */
             if(res.data.success){
-                setToken(res.data.token)
-                setUserInfo(res.data.userInfo)
+
+                if(status){
+                    setToken(res.data.token)
+                    setUserInfo(res.data.userInfo)
+                    let timer = setTimeout(()=>{
+                        navigate('/home')
+                        clearTimeout(timer)
+                    },500)
+                }
                 messageApi.open({
                     type:'success',
                     content:res.data.success
-                })
-                navigate('/home')
+                }).then()
             }
             else if(res.data.errMsg){
                 messageApi.open({

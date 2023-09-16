@@ -77,13 +77,14 @@ export const otherMenu:MenuType[] = [
 export const correctIconComponent = [
   {
     title:'聊天',
-    component:()=> <PlusOutlined />
+    component:(click?:any)=> <PlusOutlined onClick={click} />
   },
   {
     title:'通讯录',
-    component:()=> <UserAddOutlined />
+    component:(click?:any)=> <UserAddOutlined onClick={click} />
   }
 ]
+
 
 export interface MsgDataType {
   userId:number,

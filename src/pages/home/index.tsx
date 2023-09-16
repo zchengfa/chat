@@ -7,7 +7,7 @@ import FriendList from "../../components/FriendList/FriendList";
 import {Layout,Space,Input,Button} from "antd";
 import {menu, MenuType, otherMenu, correctIconComponent, MsgDataType} from "../../common/staticData/data";
 import './index.sass'
-import { SearchOutlined,CloseCircleOutlined } from '@ant-design/icons'
+import { SearchOutlined,CloseCircleOutlined,UserSwitchOutlined } from '@ant-design/icons'
 
 class Home extends Component<any, any>{
     constructor(props:any) {
@@ -16,11 +16,12 @@ class Home extends Component<any, any>{
             menu,
             otherMenu,
             nameArr:[],
-            searchRightComponent:correctIconComponent[0].component(),
+            searchRightComponent:correctIconComponent[0].component(this.chatGroup),
             inputProp:undefined,
             inputRef:this.props.Refs,
             placeholder:'搜索',
             currentMenu:'聊天',
+            isShowAddFriendBtn: undefined,
             menuList:{
                 '聊天':<ChatList chatWithSender={this.chatWithSender}></ChatList>,
                 "通讯录":<FriendList list={props.Zustand.friendList}></FriendList>
@@ -81,12 +82,28 @@ class Home extends Component<any, any>{
 
         try {
            if(menuName === 'menu'){
+               let setClickFunc = childIndex ? this.addFriend : this.chatGroup
                this.setState({
-                   searchRightComponent:correctIconComponent[childIndex].component()
+                   searchRightComponent:correctIconComponent[childIndex].component(setClickFunc)
                })
            }
         }catch (e){}
 
+    }
+    addFriend = ()=>{
+        this.setState({
+            placeholder:'chat_ID/手机号',
+            isShowFriendBtn:true
+        })
+    }
+    chatGroup = ()=>{
+        console.log('发起群聊')
+    }
+    closeAddFriendBtn = ()=>{
+        this.setState({
+            placeholder:'搜索',
+            isShowFriendBtn:false
+        })
     }
     /**
      * 获取用户点击的具体项的菜单项名称
@@ -140,9 +157,10 @@ class Home extends Component<any, any>{
         changeListId(id)
         saveFriendInfo(data)
     }
+
     render(){
         const { Sider,Content } = Layout
-        const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder } = this.state
+        const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder,isShowFriendBtn } = this.state
         const { listId,customer } = this.props.Zustand
 
         return <Fragment>
@@ -154,8 +172,9 @@ class Home extends Component<any, any>{
                 {/*中部搜索框及各个菜单项详情列表*/}
                 <div className={'middle-com'}>
                     <Space direction={'horizontal'} style={{width:'100%'}} className={'space-self'}>
-                        <Input ref={inputRef}  style={{backgroundColor:'var(--gray-color)'}} onBlur={this.inputBlur} suffix={inputProp} onFocus={this.inputFocus} prefix={<SearchOutlined />} placeholder={placeholder}></Input>
-                        <Button style={{backgroundColor:'var(--gray-color)'}} icon={searchRightComponent}></Button>
+                        <Input ref={inputRef}  style={{backgroundColor:'var(--gray-color)'}} onBlur={this.inputBlur} suffix={inputProp} onFocus={this.inputFocus} prefix={isShowFriendBtn ? <UserSwitchOutlined /> : <SearchOutlined />} placeholder={placeholder}></Input>
+
+                        {isShowFriendBtn ? <Button className={'cancel-btn'} onClick={this.closeAddFriendBtn}>取消</Button> : <Button style={{backgroundColor:'var(--gray-color)'}} icon={searchRightComponent}></Button>}
                     </Space>
                     <div className={'middle-list'}>
                         {this.state.menuList[this.state.currentMenu]}

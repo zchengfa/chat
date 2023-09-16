@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 
-const baseURL = 'http://192.168.10.2:3000'
+const baseURL = 'http://localhost:3000'
 const timeout = 5000
 export function Get(config:any){
     const instance = axios.create({

@@ -7,7 +7,7 @@
     --mini-font-size: 12px;
     --normal-text-color: #000;
     --middle-font-size: 14px;
-    --success-font-color: #06e852;
+    --success-font-color: #22dc60;
     --deep-green-color: #0aa23d;
     --children-app: 90vh;
     --orange-color: #e7ab3e;
@@ -31,4 +31,7 @@
     background-color: var(--white-color);
     border-radius: .5rem;
 
+}
+.ant-input-affix-wrapper:focus,.ant-input-affix-wrapper:hover{
+    border: none;
 }

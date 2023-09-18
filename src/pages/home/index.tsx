@@ -4,10 +4,10 @@ import SiderMenu from "../../components/SiderMenu/SiderMenu";
 import ChatList from "../../components/ChatList/ChatList";
 import ChatContent from "../../components/ChatContent/ChatContent";
 import FriendList from "../../components/FriendList/FriendList";
-import {Layout,Space,Input,Button} from "antd";
+import {Layout, Space, Input, Button, Divider} from "antd";
 import {menu, MenuType, otherMenu, correctIconComponent, MsgDataType} from "../../common/staticData/data";
 import './index.sass'
-import { SearchOutlined,CloseCircleOutlined,UserSwitchOutlined } from '@ant-design/icons'
+import { SearchOutlined,CloseCircleOutlined,UserSwitchOutlined,RightOutlined } from '@ant-design/icons'
 
 class Home extends Component<any, any>{
     constructor(props:any) {
@@ -22,6 +22,7 @@ class Home extends Component<any, any>{
             placeholder:'搜索',
             currentMenu:'聊天',
             isShowAddFriendBtn: undefined,
+            inputValue:undefined,
             menuList:{
                 '聊天':<ChatList chatWithSender={this.chatWithSender}></ChatList>,
                 "通讯录":<FriendList list={props.Zustand.friendList}></FriendList>
@@ -77,7 +78,11 @@ class Home extends Component<any, any>{
         })
 
         this.setState({
-            nameArr:this.state.nameArr
+            nameArr:this.state.nameArr,
+            isShowFriendBtn:undefined,
+            inputProp:null,
+            inputValue:undefined,
+            placeholder:'搜索'
         })
 
         try {
@@ -102,7 +107,9 @@ class Home extends Component<any, any>{
     closeAddFriendBtn = ()=>{
         this.setState({
             placeholder:'搜索',
-            isShowFriendBtn:false
+            isShowFriendBtn:false,
+            inputValue:undefined,
+            inputProp:null
         })
     }
     /**
@@ -124,7 +131,7 @@ class Home extends Component<any, any>{
 
        this.setState({
            placeholder:'',
-           inputProp:<CloseCircleOutlined onClick={(event)=> this.closeInputStatus(event,this.state.inputRef)}/>
+           inputProp:<CloseCircleOutlined className={'close-icon'} onClick={(event)=> this.closeInputStatus(event,this.state.inputRef)}/>
        })
     }
     /**
@@ -134,20 +141,33 @@ class Home extends Component<any, any>{
      * 3.隐藏搜索结果组件
      */
     closeInputStatus = (e:any,ref:any)=>{
+
         //阻止事件冒泡
         e.stopPropagation()
         ref.current.blur()
-
+        this.setState({
+            inputValue:undefined,
+            inputProp:null
+        })
+    }
+    inputChange = (e:any)=>{
+        this.setState({
+            inputValue:e.target.value
+        })
     }
     /**
      * 失去焦点后触发
      */
     inputBlur = ()=>{
 
-        this.setState({
-            placeholder:'搜索',
-            inputProp:null
-        })
+        if(!this.state.isShowFriendBtn){
+
+            this.setState({
+                placeholder:'搜索',
+                inputProp:null,
+                inputValue:undefined,
+            })
+        }
     }
     chatWithSender = (data:MsgDataType,id:number)=>{
         const { changeListId,saveFriendInfo } = this.props.Zustand
@@ -160,7 +180,7 @@ class Home extends Component<any, any>{
 
     render(){
         const { Sider,Content } = Layout
-        const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder,isShowFriendBtn } = this.state
+        const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder,isShowFriendBtn,inputValue } = this.state
         const { listId,customer } = this.props.Zustand
 
         return <Fragment>
@@ -172,12 +192,32 @@ class Home extends Component<any, any>{
                 {/*中部搜索框及各个菜单项详情列表*/}
                 <div className={'middle-com'}>
                     <Space direction={'horizontal'} style={{width:'100%'}} className={'space-self'}>
-                        <Input ref={inputRef}  style={{backgroundColor:'var(--gray-color)'}} onBlur={this.inputBlur} suffix={inputProp} onFocus={this.inputFocus} prefix={isShowFriendBtn ? <UserSwitchOutlined /> : <SearchOutlined />} placeholder={placeholder}></Input>
+                        <Input ref={inputRef} value={inputValue} style={{backgroundColor:'var(--gray-color)'}} onBlur={this.inputBlur} onChange={this.inputChange} suffix={inputProp} onFocus={this.inputFocus} prefix={isShowFriendBtn ? <UserSwitchOutlined /> : <SearchOutlined />} placeholder={placeholder}></Input>
 
                         {isShowFriendBtn ? <Button className={'cancel-btn'} onClick={this.closeAddFriendBtn}>取消</Button> : <Button style={{backgroundColor:'var(--gray-color)'}} icon={searchRightComponent}></Button>}
                     </Space>
                     <div className={'middle-list'}>
                         {this.state.menuList[this.state.currentMenu]}
+                        {
+                            // 搜索添加朋友页
+                            isShowFriendBtn ? <div className={'friend-search-result'}>
+                                <Divider style={{margin: '0'}}></Divider>
+                                {
+                                    inputValue ? <div className={'search-item'}>
+                                        <div className={'avatar-box'}>
+                                            <SearchOutlined style={{display:'flex',justifyContent:'center',alignItems:'center',width:"25px",height:'25px',lineHeight:'25px',color:'var(--white-color)',fontSize:'20px'}} />
+                                        </div>
+                                        <div className={'item-search'}>
+                                            <div className={'value-box'}>
+                                                <span style={{width:'42px'}}>搜索：</span>
+                                                <span className={'search-value'}>{inputValue}</span>
+                                            </div>
+                                            <RightOutlined style={{color:'var(--deep-gray-color)'}} />
+                                        </div>
+                                    </div> : null
+                                }
+                            </div> : null
+                        }
                     </div>
                 </div>
                 <Content className={'index-content'}>

@@ -1,3 +1,6 @@
+.close-icon
+  position: absolute
+  right: .5rem
 .middle-com
   width: 260px
   min-width: 260px
@@ -28,8 +31,49 @@
       background-color: var(--gray-color)
       color: var(--normal-text-color)
   .middle-list
+    position: relative
     width: 100%
     height: calc(90vh - 4rem)
+    .friend-search-result
+      position: absolute
+      top: 0
+      width: 100%
+      height: 100%
+      background-color: var(--gray-color)
+      z-index: 10
+      .search-item:hover
+        background-color: var(--gray-color)
+      .search-item
+        display: flex
+        justify-content: flex-start
+        align-items: center
+        padding: 1rem
+        background-color: var(--white-color)
+        .avatar-box
+          display: flex
+          justify-content: center
+          align-items: center
+          width: 2.5rem
+          height: 2.5rem
+          border-radius: .2rem
+          background-color: var(--success-font-color)
+        .item-search
+          display: flex
+          justify-content: space-between
+          align-items: center
+          margin-left: 1rem
+          .value-box
+            display: flex
+            justify-content: flex-start
+            align-items: center
+          .search-value
+            width: 110px
+            text-align: left
+            color: var(--success-font-color)
+            white-space: nowrap
+            text-overflow: ellipsis
+            overflow: hidden
 .index-content
   min-width: 380px
+
 

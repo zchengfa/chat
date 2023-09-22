@@ -23,7 +23,7 @@ export default function ChatContent (props:any){
     //监听聊天消息列表，列表数据量变化，让最后一项出现在视口，保持滚动到最新消息
     useEffect(()=>{
 
-        const el = document.getElementsByClassName('msg-li').item(msgData[listId].length -1)
+        const el = document.getElementsByClassName('msg-li').item(msgData[listId]?.length -1)
 
         el?.scrollIntoView({behavior:'smooth'})
 

@@ -11,7 +11,8 @@ function ChatList (props:any){
   const { chatList,listId } = props.Zustand
 
   const chatWithSender = (item:MsgDataType,id:number)=>{
-    props.chatWithSender(item,Number(id))
+
+    props.chatWithSender(item,id)
   }
 
   const chatListElement = ()=>{

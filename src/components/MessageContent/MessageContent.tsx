@@ -32,7 +32,7 @@ class MessageContent extends Component<any,any> {
         return <div className={'message-content'}>
             <ul className={'msg-ul'}>
                 {
-                    currentMsgData.map((item:any,index:number)=>{
+                    currentMsgData?.map((item:any,index:number)=>{
 
                         return item.msg.length ? <li className={'msg-li'} key={index}>
                             {item.timeout ? <div className={'timeout'}><span className={'timeout-span'}>{item.timeout}</span></div> : null}

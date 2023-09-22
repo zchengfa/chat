@@ -13,8 +13,12 @@
     margin-left: .6rem
     margin-right: .6rem
     .avatar
+      display: flex
+      justify-content: center
+      align-items: center
       width: 2.5rem
       height: 2.5rem
+      border-radius: .2rem
   .msg-right
     display: flex
     justify-content: space-between
@@ -27,6 +31,7 @@
         text-align: left
       .chat-msg
         max-width: 10rem
+        min-height: 12px
         white-space: nowrap
         text-overflow: ellipsis
         font-size: var(--mini-font-size)

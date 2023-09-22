@@ -7,7 +7,12 @@ import {
   MessageIconComponent,
   TelephoneIconComponent,
   CameraIconComponent,
-  NewFriendIconComponent, CommonIconComponent
+  NewFriendIconComponent,
+  CommonIconComponent,
+  CircleFriendIconComponent,
+  LockIconComponent,
+  ChatIconComponent,
+  CorrectIconComponent, EyeIconComponent
 } from '../svg/svg'
 export interface MenuType {
   title:string,
@@ -165,4 +170,12 @@ export const operationsData = {
       component:()=> <CommonIconComponent></CommonIconComponent>
     }
   ]
+}
+
+export const friendApplication = {
+  circleFriend:<CircleFriendIconComponent />,
+  lock:<LockIconComponent className={'lock-icon'} />,
+  chat:<ChatIconComponent />,
+  correct:<CorrectIconComponent className={'correct-icon'}/>,
+  eye:<EyeIconComponent className={'eye-icon'}/>
 }

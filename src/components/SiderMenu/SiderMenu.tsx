@@ -1,9 +1,10 @@
 import { Component } from "react";
 import './siderMenu.sass'
-import {Avatar,Image,Popover,Divider,Button} from "antd";
+import {Avatar,Image} from "antd";
 import { UserOutlined } from '@ant-design/icons'
 import { MenuType} from "../../common/staticData/data";
 import withHook from "../../hook/withHook";
+import PopoverCommon from "../Common/PopoverCommon/PopoverCommon";
 
 class SiderMenu extends Component<any, any>{
     changeMenuContent = (index:number,menuName:string)=>{
@@ -28,24 +29,9 @@ class SiderMenu extends Component<any, any>{
     render(){
 
       const {customer} = this.props.Zustand
-      const content = (
-          <div className={'popover-box'}>
-              <div className={'box-top'}>
-                  <Image className={'avatar'} src={customer.avatar} preview={false}></Image>
-                  <div className={'user-info'}>
-                      <span className={'username'}>{customer.username}</span>
-                      <span className={'ID'}>ID：{customer.user_id}</span>
-                  </div>
-              </div>
-              <Divider></Divider>
-              <div className={'box-bottom'}>
-                  <Button className={'btn'}>发消息</Button>
-              </div>
-          </div>
-      )
 
       return <div className={'side'}>
-        {this.props.userInfo ? <Popover arrow={false} content={content} trigger={'click'}><Image className={'avatar'} src={this.props.userInfo.avatar} preview={false}></Image></Popover>  : <Avatar className={'avatar'} size={64} icon={<UserOutlined />}></Avatar>}
+        {this.props.userInfo ? <PopoverCommon btnTitle={'发消息'} placement={'rightBottom'} children={<Image className={'avatar'} src={customer.avatar} preview={false}></Image>} customer={customer}></PopoverCommon>  : <Avatar className={'avatar'} size={64} icon={<UserOutlined />}></Avatar>}
         <div className={'side-top'}>{this.correctMenuHtml(this.props.menu,'menu')}</div>
         <div className={'side-bottom'}>{this.correctMenuHtml(this.props.otherMenu,'otherMenu')}</div>
       </div>

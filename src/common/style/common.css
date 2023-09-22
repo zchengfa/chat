@@ -35,3 +35,28 @@
 .ant-input-affix-wrapper:focus,.ant-input-affix-wrapper:hover{
     border: none;
 }
+.avatar{
+    color: var(--white-color);
+}
+div::-webkit-scrollbar{
+    width: .4rem;
+    display: block;
+    scroll-behavior: smooth;
+}
+div:hover::-webkit-scrollbar-thumb{
+    border-radius: 5px;
+    background-color: var(--deep-gray-color);
+}
+.switch{
+    background-color: var(--gray-color);
+}
+button:hover{
+    border: none;
+}
+input:hover{
+    border: none;
+}
+input:focus{
+    border: none;
+    box-shadow: none !important;
+}

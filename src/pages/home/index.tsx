@@ -1,13 +1,17 @@
 import WithHook from "../../hook/withHook";
-import {Component,Fragment} from "react";
+import {Component, Fragment} from "react";
 import SiderMenu from "../../components/SiderMenu/SiderMenu";
 import ChatList from "../../components/ChatList/ChatList";
 import ChatContent from "../../components/ChatContent/ChatContent";
 import FriendList from "../../components/FriendList/FriendList";
-import {Layout, Space, Input, Button, Divider} from "antd";
-import {menu, MenuType, otherMenu, correctIconComponent, MsgDataType} from "../../common/staticData/data";
+import {Button, Divider, Input, Layout, Space} from "antd";
+import {correctIconComponent, menu, MenuType, MsgDataType, otherMenu} from "../../common/staticData/data";
 import './index.sass'
-import { SearchOutlined,CloseCircleOutlined,UserSwitchOutlined,RightOutlined } from '@ant-design/icons'
+import {CloseCircleOutlined, RightOutlined, SearchOutlined, UserSwitchOutlined} from '@ant-design/icons'
+import {timeFormatting} from "../../util/util";
+import {searchUserInfo} from "../../network/request";
+import PopoverCommon from "../../components/Common/PopoverCommon/PopoverCommon";
+import FriendApplication from "../../components/FriendApplication/FriendApplication";
 
 class Home extends Component<any, any>{
     constructor(props:any) {
@@ -28,18 +32,17 @@ class Home extends Component<any, any>{
                 "通讯录":<FriendList list={props.Zustand.friendList}></FriendList>
             },
             listContent:{
-                '聊天':<ChatContent></ChatContent>
-            }
+                '聊天':<ChatContent socketMsg={this.socketMsg}></ChatContent>
+            },
+            searchUserData:{},
+            showFriendCom:false,
+            isSelf:undefined,
+            isShowPop:undefined
         }
     }
-    // showListContent = ()=>{
-    //     switch (this.state.currentMenu) {
-    //         case '聊天':
-    //             return <ChatContent></ChatContent>
-    //         default:
-    //             return true
-    //     }
-    // }
+    socketMsg = (data:any)=>{
+        this.props.socket.emit('sendMsg',data)
+    }
     /**
      * 接受SiderMenu子组件发出的点击事件
      * @param childIndex { number } 点击的项在列表中的索引
@@ -178,13 +181,94 @@ class Home extends Component<any, any>{
         saveFriendInfo(data)
     }
 
+    /**
+     * 点击按钮、搜索用户信息
+     * 先用自己的信息跟搜索词进行比对，如果搜索的是自己的账号，直接赋值自己的信息
+     * 若能搜索扫信息怎以气泡卡片形式展示用户信息
+     * 若没有搜索到则关闭搜索页，展示网络搜索页并告诉用户无法找到该用户
+     */
+    searchUsers = ()=>{
+        const {customer} = this.props.Zustand
+        const { inputValue } = this.state
+
+        if(customer.account === inputValue || customer.username === inputValue){
+
+            this.setState({
+                searchUserData:customer,
+                isSelf:true
+            })
+
+
+        }
+        else{
+            searchUserInfo(this.state.inputValue,Number(customer.user_id)).then((res:any)=>{
+                if(!res.data.errMsg){
+                    this.setState({
+                        searchUserData:res.data,
+                        isSelf:false,
+                        isShowPop:true
+                    })
+                }
+                else{
+                    console.log(res.data.errMsg)
+                }
+            })
+        }
+    }
+    /**
+     * 点击Layout盒子将搜索用户的结果数据清零，道道关闭气泡卡片的效果(需使用事件捕获)
+     */
+    blurPop =()=>{
+        this.setState({
+            isShowPop:false
+        })
+        console.log('blur')
+    }
+    /**
+     * 需判断是否是自己，若是自己则是发消息操作，反之则是显示好友申请组件
+     */
+    showFriendApplication = ()=>{
+       if(this.state.isSelf){
+           //给自己发消息
+           console.log('需要完善给自己发消息操作')
+       }
+       else{
+           this.setState({
+               showFriendCom:true
+           })
+       }
+    }
+    cancelFriendApp =()=>{
+        this.setState({
+            showFriendCom:false
+        })
+    }
+
+    /**
+     * 接收FriendApplication组件发出的确认添加好友的申请事件
+     */
+    confirmSendRequest =(formData:any)=>{
+        const {user_id,username,account} = this.props.Zustand.customer
+        const data = this.state.searchUserData
+
+        this.props.socket.emit('sendFriendRequest',{
+            formData,
+            sender:{ SUN:user_id, SUA:username, SA:account },
+            reciever:{RUN:data.user_id,RUA:data.username,RA:data.account}
+        })
+        this.setState({
+            showFriendCom:false
+        })
+    }
     render(){
         const { Sider,Content } = Layout
-        const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder,isShowFriendBtn,inputValue } = this.state
-        const { listId,customer } = this.props.Zustand
+        const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder,isShowFriendBtn,inputValue,searchUserData,showFriendCom,isSelf,isShowPop } = this.state
+        const { listId,customer} = this.props.Zustand
+        const { contextHolder } = this.props.Message
 
         return <Fragment>
-            <Layout>
+            <Layout onClickCapture={this.blurPop}>
+                {contextHolder}
                 {/*侧边栏*/}
                 <Sider width={'70px'}>
                     <SiderMenu menu = {menu} otherMenu= {otherMenu} userInfo={customer} changeMenuContent={this.changeMenu}></SiderMenu>
@@ -193,9 +277,10 @@ class Home extends Component<any, any>{
                 <div className={'middle-com'}>
                     <Space direction={'horizontal'} style={{width:'100%'}} className={'space-self'}>
                         <Input ref={inputRef} value={inputValue} style={{backgroundColor:'var(--gray-color)'}} onBlur={this.inputBlur} onChange={this.inputChange} suffix={inputProp} onFocus={this.inputFocus} prefix={isShowFriendBtn ? <UserSwitchOutlined /> : <SearchOutlined />} placeholder={placeholder}></Input>
-
                         {isShowFriendBtn ? <Button className={'cancel-btn'} onClick={this.closeAddFriendBtn}>取消</Button> : <Button style={{backgroundColor:'var(--gray-color)'}} icon={searchRightComponent}></Button>}
                     </Space>
+                    { isShowPop ? <PopoverCommon showFriendApplication={this.showFriendApplication} customer={searchUserData} arrow={false} open={!!searchUserData} btnTitle={isSelf ? '发消息' : '添加到通讯录'}></PopoverCommon>:null}
+
                     <div className={'middle-list'}>
                         {this.state.menuList[this.state.currentMenu]}
                         {
@@ -207,7 +292,7 @@ class Home extends Component<any, any>{
                                         <div className={'avatar-box'}>
                                             <SearchOutlined style={{display:'flex',justifyContent:'center',alignItems:'center',width:"25px",height:'25px',lineHeight:'25px',color:'var(--white-color)',fontSize:'20px'}} />
                                         </div>
-                                        <div className={'item-search'}>
+                                        <div className={'item-search'} onClick={this.searchUsers}>
                                             <div className={'value-box'}>
                                                 <span style={{width:'42px'}}>搜索：</span>
                                                 <span className={'search-value'}>{inputValue}</span>
@@ -223,6 +308,7 @@ class Home extends Component<any, any>{
                 <Content className={'index-content'}>
                     {listId !== undefined ? this.state.listContent[this.state.currentMenu] : null}
                 </Content>
+                {showFriendCom ? <FriendApplication confirm={this.confirmSendRequest} cancel={this.cancelFriendApp}></FriendApplication> : null}
             </Layout>
         </Fragment>
     }
@@ -230,6 +316,34 @@ class Home extends Component<any, any>{
     componentDidMount() {
 
         this.props.socket.emit('online',this.props.Zustand.customer.username)
+        this.props.socket.on('reciever',(msg:any)=>{
+            console.log(msg)
+        })
+
+        this.props.socket.on('sendRequestSuccess',()=>{
+            console.log('sendOk')
+            this.props.Message.messageApi.open({
+                type: 'success',
+                content: '好友请求已发送',
+            })
+        })
+
+        this.props.socket.on('receiveFriendRequest',()=>{
+            console.log('收到好友请求')
+        })
+
+        if(!this.props.Zustand.chatList.length){
+            this.props.Zustand.changeChatList({
+                userId: this.props.Zustand.customer.user_id,
+                type: 'self',
+                msg: '',
+                user: '文件传输助手',
+                time: timeFormatting('hh:mm', new Date()),
+                hasBeenRead: true,
+                isGroupChat: false,
+                avatar:'',
+            } as unknown as MsgDataType)
+        }
 
     }
 

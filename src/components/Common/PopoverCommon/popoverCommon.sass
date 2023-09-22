@@ -1,0 +1,57 @@
+.popover-box
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  padding: .5rem
+  .box-top
+    display: flex
+    justify-content: flex-start
+    align-items: flex-start
+    width: 100%
+    .user-info
+      display: flex
+      flex-direction: column
+      justify-content: flex-start
+      align-items: flex-start
+      margin-left: .5rem
+    .username
+      font-weight: bold
+    .ID
+      font-size: var(--middle-font-size)
+      color: var(--deep-gray-color)
+  .avatar
+    width: 4rem
+    height: 4rem
+    border-radius: .5rem
+  .btn
+    padding: 0 2rem
+    background-color: var(--success-font-color)
+    color: var(--white-color)
+  .box-bottom
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    width: 100%
+    .user-other
+      width: 100%
+      .label
+        color: var(--deep-gray-color)
+      .btn-list
+        display: flex
+        justify-content: space-between
+        align-items: center
+        .list-item
+          display: flex
+          flex-direction: column
+          justify-content: center
+          align-items: center
+          padding: .5rem 1rem
+          font-size: 25px
+          color: var(--blue-color)
+          .btn-span
+            font-size: var(--mini-font-size)
+            transform: scale(.8)
+        .list-item:hover
+          background-color: var(--gray-color)

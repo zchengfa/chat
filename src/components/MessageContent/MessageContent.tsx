@@ -34,13 +34,13 @@ class MessageContent extends Component<any,any> {
                 {
                     currentMsgData.map((item:any,index:number)=>{
 
-                        return <li className={'msg-li'} key={index}>
+                        return item.msg.length ? <li className={'msg-li'} key={index}>
                             {item.timeout ? <div className={'timeout'}><span className={'timeout-span'}>{item.timeout}</span></div> : null}
                             {
                                 Object.keys(item).length ? (item.isLeft ? this.msgBox(true,item,index) : this.msgBox(false,item,index)) : null
                             }
 
-                        </li>
+                        </li> : null
                     })
                 }
             </ul>

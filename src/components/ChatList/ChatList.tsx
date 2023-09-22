@@ -1,7 +1,7 @@
 import './chatList.sass'
 import { Avatar,Badge,Space } from "antd";
 import { UserOutlined } from '@ant-design/icons'
-import { BellIconComponent } from '../../common/svg/svg'
+import {BellIconComponent, FileTransIconComponent} from '../../common/svg/svg'
 import { MsgDataType } from '../../common/staticData/data'
 
 import withHook from "../../hook/withHook";
@@ -11,7 +11,7 @@ function ChatList (props:any){
   const { chatList,listId } = props.Zustand
 
   const chatWithSender = (item:MsgDataType,id:number)=>{
-    props.chatWithSender(item,id)
+    props.chatWithSender(item,Number(id))
   }
 
   const chatListElement = ()=>{
@@ -20,7 +20,7 @@ function ChatList (props:any){
         <div className={listId === item.userId ? 'message-box actived' : 'message-box'} onClick={()=> chatWithSender(item,item.userId)}>
           <Space className={'msg-left'}>
             <Badge dot={!item.hasBeenRead}>
-              { item.avatar.length ? <img className={'avatar'} src={item.avatar} alt=""/> : <Avatar shape={'square'} icon={<UserOutlined />}></Avatar> }
+              { item.avatar.length ? <img className={'avatar'} src={item.avatar} alt=""/> : item.type === 'text' ? <Avatar shape={'square'} icon={<UserOutlined />}></Avatar> : <div className={'avatar'} style={{backgroundColor:'var(--success-font-color)'}}><FileTransIconComponent /></div> }
             </Badge>
           </Space>
           <Space className={'msg-right'}>

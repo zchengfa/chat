@@ -9,3 +9,13 @@ export function loginRegisterAxios(data:{username:string,password:string},status
     }
   })
 }
+
+export function searchUserInfo(value:string | number,user_id:number){
+  return Post({
+    url:'/searchUserInfo',
+    data:{
+      value,
+      user_id
+    }
+  })
+}

@@ -1,0 +1,70 @@
+.friend-app-container
+  position: absolute
+  left: 50%
+  top: 50%
+  width: 20rem
+  background-color: var(--gray-color)
+  transform: translateX(-50%) translateY(-50%)
+  border-radius: .1rem
+  box-shadow: 0 0 4px var(--deep-gray-color)
+  z-index: 999
+  .title
+    display: inline-block
+    padding-top: 1rem
+    padding-bottom: 1rem
+    width: 100%
+    text-align: center
+    border-bottom: 1px solid var(--deep-gray-color)
+  .form-box
+    padding: .5rem .6rem 0 1rem
+    max-height: 60vh
+    border-bottom: 1px solid var(--deep-gray-color)
+    overflow-y: scroll
+  label
+    color: var(--deep-gray-color) !important
+  .item-box
+    display: flex
+    justify-content: flex-start
+    align-items: center
+    background-color: var(--white-color)
+    .authorization-box
+      display: flex
+      justify-content: space-between
+      align-items: center
+      flex: 1
+      padding-right: .5rem
+      .correct-icon
+        font-size: 24px
+      .authorization-text
+        padding: .5rem 0
+    .icon-box
+      position: relative
+      padding: .5rem
+      color: var(--blue-color)
+      font-size: 20px
+      .lock-icon,.eye-icon
+        position: absolute
+        right: .5rem
+        bottom: 1rem
+        font-size: var(--mini-font-size)
+        color: var(--deep-gray-color)
+        transform: translateY(25%)
+    .circle-lock,.circle-eye
+      color: var(--gray-color)
+  .radius-top
+    border-top-left-radius: .2rem
+    border-top-right-radius: .2rem
+  .radius-bottom
+    border-bottom-left-radius: .2rem
+    border-bottom-right-radius: .2rem
+  .btn-box
+    padding-top: 1.5rem
+    padding-bottom: 1.5rem
+    text-align: center
+
+    .form-btn
+      width: 30%
+    .form-btn:first-child
+      margin-right: 1rem
+    .form-btn:last-child
+      color: var(--success-font-color)

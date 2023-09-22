@@ -109,14 +109,15 @@ export const useMessageStore = create((set)=>{
 
           set((state:any)=>{
             let data = state.chatList
+
             if(replyId){
               let index:any = undefined
               data.map((it:any,i:number)=>{
 
-                if(it.userId === replyId){
+                if(Number(it.userId) === Number( replyId)){
                   index = i
                 }
-
+                console.log(item)
               })
 
               data[index].msg = item.msg
@@ -131,14 +132,14 @@ export const useMessageStore = create((set)=>{
             let isLeft = !replyId
             let id = replyId ? replyId : undefined
 
-            state.saveMsgData({
-              userId:item.userId,
-              avatar:item.avatar,
-              msg:item.msg,
-              bgColor,
-              isLeft
+              state.saveMsgData({
+                  userId:item.userId,
+                  avatar:item.avatar,
+                  msg:item.msg,
+                  bgColor,
+                  isLeft
 
-            },id)
+              },id)
 
             return {
               chatList:data

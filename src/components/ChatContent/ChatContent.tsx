@@ -14,7 +14,7 @@ export default function ChatContent (props:any){
     const [count,setCount] = useState(0)
 
     const friendInfo = useMessageStore((state:any)=> state.friendInfo)
-    const userId = useMessageStore((state:any)=> state.customer.userId)
+    const customer = useMessageStore((state:any)=> state.customer)
     const changeChatList = useMessageStore((state:any)=> state.changeChatList)
     const changeBg = useMessageStore((state:any)=> state.changeBg)
     const listId = useMessageStore((state:any)=> state.listId)
@@ -28,7 +28,7 @@ export default function ChatContent (props:any){
         el?.scrollIntoView({behavior:'smooth'})
 
         return ()=>{
-            console.log('有新消息')
+
         }
 
     },[count])
@@ -70,8 +70,8 @@ export default function ChatContent (props:any){
 
         if(msg.length){
             changeChatList({
-                userId,
-                avatar:'https://img0.baidu.com/it/u=2977473448,4146980684&fm=253&fmt=auto&app=138&f=JPEG?w=190&h=190',
+                userId:customer.user_id,
+                avatar:customer.avatar,
                 isLeft:false,
                 bgColor:'var(--success-font-color)',
                 msg
@@ -79,6 +79,14 @@ export default function ChatContent (props:any){
             let c = count
             c++
             setCount( c)
+
+            //向父组件发送事件，将消息发动给后端的socket
+            props.socketMsg({
+                sender:customer.username,
+                reciever:friendInfo.user,
+                sendTime:new Date().getTime(),
+                msg
+            })
         }
 
     }

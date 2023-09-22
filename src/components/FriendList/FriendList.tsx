@@ -1,4 +1,4 @@
-import {List, Avatar, Button} from "antd";
+import {List, Avatar, Button, Badge} from "antd";
 import { UsergroupDeleteOutlined } from '@ant-design/icons'
 import './friendList.sass'
 
@@ -13,7 +13,9 @@ export default function FriendList (props:any){
                return <List.Item className={'list-item'}>
                     <h6 className={'item-title'}>{item.title}</h6>
                     <div className={'avatar-username'}>
-                        {item.type && item.type!=='btn' ? <div style={item.type === 'new' ?{backgroundColor:'var(--orange-color)'} :{backgroundColor:'var(--blue-color)'}} className={'avatar type-avatar'}>{item.avatar}</div> : <Avatar className={'avatar'} src={item.avatar}></Avatar>
+                        {item.type && item.type!=='btn' ? <Badge count={9} overflowCount={99} size={'small'}>
+                            <div style={item.type === 'new' ?{backgroundColor:'var(--orange-color)'} :{backgroundColor:'var(--blue-color)'}} className={'avatar type-avatar'}>{item.avatar}</div>
+                        </Badge>: <Avatar className={'avatar'} src={item.avatar}></Avatar>
                         }
                         <span className={'username'}>{item.username}</span>
                     </div>

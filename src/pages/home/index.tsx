@@ -150,7 +150,8 @@ class Home extends Component<any, any>{
         ref.current.blur()
         this.setState({
             inputValue:undefined,
-            inputProp:null
+            inputProp:null,
+            placeholder:'搜索'
         })
     }
     inputChange = (e:any)=>{
@@ -188,6 +189,7 @@ class Home extends Component<any, any>{
      * 若没有搜索到则关闭搜索页，展示网络搜索页并告诉用户无法找到该用户
      */
     searchUsers = ()=>{
+
         const {customer} = this.props.Zustand
         const { inputValue } = this.state
 
@@ -219,6 +221,7 @@ class Home extends Component<any, any>{
      * 点击Layout盒子将搜索用户的结果数据清零，道道关闭气泡卡片的效果(需使用事件捕获)
      */
     blurPop =()=>{
+
         this.setState({
             isShowPop:false
         })

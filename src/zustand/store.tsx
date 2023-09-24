@@ -1,6 +1,13 @@
 import { create } from "zustand";
 import {MsgDataType,operationsData} from "../common/staticData/data";
 
+/**
+ * 获取localStorage/sessionStorage中数据的函数
+ * @param propertyName { string } 保存名称
+ * @param returnData { any } 当没有获取到数据时，返回的数据
+ * @param needParse { boolean } 是否需要将JSON数据进行转换
+ * @param isLocalStorage { boolean } 是否默认从localStorage获取数据
+ */
 function getStorageData(propertyName:string,returnData:any,needParse:boolean = true,isLocalStorage:boolean = true){
   let data = isLocalStorage ? localStorage.getItem(propertyName) : sessionStorage.getItem(propertyName)
   if(needParse){
@@ -157,6 +164,7 @@ export const useMessageStore = create((set)=>{
             }
           })
         },
+        //通讯录列表
         friendList:[
             {
                 type:'btn',
@@ -175,6 +183,33 @@ export const useMessageStore = create((set)=>{
                 avatar:operationsData.list[1].component(),
                 username:'公众号'
             }
-        ]
+        ],
+        //收到的好友请求
+        friendRequest:getStorageData('friendRequest',[]),
+        /**
+         * 修改好友申请列表数据
+         * @param request 好友申请相关数据
+         * @param operations { string } 操作类型
+         * @param operations.push { string } 增加数据
+         * @param operations.shift { string } 删除数据
+         */
+        changeFriendRequest: (request:any,operations: string = 'push')=>{
+
+            set((state:any)=>{
+                let data = state.friendRequest
+
+                if(operations === 'push'){
+
+                    data.push(request)
+                }
+                else if(operations === 'shift'){
+                    console.log(data,'shift')
+                }
+
+                return {
+                    friendRequest:data
+                }
+            })
+        }
     }
 })

@@ -225,7 +225,7 @@ class Home extends Component<any, any>{
         this.setState({
             isShowPop:false
         })
-        console.log('blur')
+        //console.log('blur')
     }
     /**
      * 需判断是否是自己，若是自己则是发消息操作，反之则是显示好友申请组件
@@ -263,6 +263,7 @@ class Home extends Component<any, any>{
             showFriendCom:false
         })
     }
+
     render(){
         const { Sider,Content } = Layout
         const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder,isShowFriendBtn,inputValue,searchUserData,showFriendCom,isSelf,isShowPop } = this.state
@@ -331,8 +332,10 @@ class Home extends Component<any, any>{
             })
         })
 
-        this.props.socket.on('receiveFriendRequest',()=>{
-            console.log('收到好友请求')
+
+        this.props.socket.on('receiveFriendRequest',(data:any)=>{
+            this.props.Zustand.changeFriendRequest(data)
+           // console.log('收到好友请求',data)
         })
 
         if(!this.props.Zustand.chatList.length){

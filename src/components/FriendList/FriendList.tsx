@@ -1,8 +1,11 @@
 import {List, Avatar, Button, Badge} from "antd";
 import { UsergroupDeleteOutlined } from '@ant-design/icons'
 import './friendList.sass'
+import {useMessageStore} from "../../zustand/store";
 
-export default function FriendList (props:any){
+function FriendList (props:any){
+    const friendRequestCount = useMessageStore((state:any)=> state.friendRequest.length)
+
     return <List className={'friend-list'} itemLayout={'vertical'}
         dataSource={props.list}
         renderItem={(item:any)=>{
@@ -13,7 +16,7 @@ export default function FriendList (props:any){
                return <List.Item className={'list-item'}>
                     <h6 className={'item-title'}>{item.title}</h6>
                     <div className={'avatar-username'}>
-                        {item.type && item.type!=='btn' ? <Badge count={9} overflowCount={99} size={'small'}>
+                        {item.type && item.type!=='btn' ? <Badge count={friendRequestCount} overflowCount={99} size={'small'}>
                             <div style={item.type === 'new' ?{backgroundColor:'var(--orange-color)'} :{backgroundColor:'var(--blue-color)'}} className={'avatar type-avatar'}>{item.avatar}</div>
                         </Badge>: <Avatar className={'avatar'} src={item.avatar}></Avatar>
                         }
@@ -26,3 +29,5 @@ export default function FriendList (props:any){
     >
     </List>
 }
+
+export default FriendList

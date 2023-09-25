@@ -81,12 +81,12 @@ export const useMessageStore = create((set)=>{
         getCurrentMsgData:()=>{
           set((state:any)=>{
             return {
-              currentFriend:state.msgData[state.listId]
+              currentFriendMsg:state.msgData[state.listId]
             }
           })
         },
       //消息列表激活的索引
-        listId:getStorageData('listId',undefined,false),
+        listId:getStorageData('listId',undefined),
         changeListId:(id:number)=>{
 
            set((state:any)=>{
@@ -201,6 +201,8 @@ export const useMessageStore = create((set)=>{
                 if(operations === 'push'){
 
                     data.push(request)
+
+                    setStorageData('friendRequest',data)
                 }
                 else if(operations === 'shift'){
                     console.log(data,'shift')
@@ -208,6 +210,18 @@ export const useMessageStore = create((set)=>{
 
                 return {
                     friendRequest:data
+                }
+            })
+        },
+        friendListInfo:getStorageData('friendListInfo',null),
+        changeIndexInfo(type:string,title:string,index:number){
+
+            set(()=>{
+                setStorageData('friendListInfo',{type,title,index,hasBeenRead:true})
+                return {
+                    friendListInfo:{
+                        type,title,index,hasBeenRead:true
+                    }
                 }
             })
         }

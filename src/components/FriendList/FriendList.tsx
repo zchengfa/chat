@@ -5,18 +5,23 @@ import {useMessageStore} from "../../zustand/store";
 
 function FriendList (props:any){
     const friendRequestCount = useMessageStore((state:any)=> state.friendRequest.length)
+    const friendListInfo = useMessageStore((state:any)=> state.friendListInfo)
+
+    const showListContent = (type:string,title:string,index:number)=>{
+        props.showListContent(type,title,index)
+    }
 
     return <List className={'friend-list'} itemLayout={'vertical'}
         dataSource={props.list}
-        renderItem={(item:any)=>{
+        renderItem={(item:any,index:number)=>{
             if(item.type === 'btn'){
                 return <List.Item className={'list-item list-btn-item'}><Button icon={<UsergroupDeleteOutlined />} className={'friend-manage'} size={'large'}>{item.username}</Button></List.Item>
             }
             else{
                return <List.Item className={'list-item'}>
                     <h6 className={'item-title'}>{item.title}</h6>
-                    <div className={'avatar-username'}>
-                        {item.type && item.type!=='btn' ? <Badge count={friendRequestCount} overflowCount={99} size={'small'}>
+                    <div className={ index === friendListInfo?.index ? 'avatar-username actived' : 'avatar-username'} onClick={()=> showListContent(item.type,item.title,index)}>
+                        {item.type && item.type!=='btn' ? <Badge count={item.type === 'new' && !friendListInfo.hasBeenRead ?friendRequestCount : 0} overflowCount={99} size={'small'}>
                             <div style={item.type === 'new' ?{backgroundColor:'var(--orange-color)'} :{backgroundColor:'var(--blue-color)'}} className={'avatar type-avatar'}>{item.avatar}</div>
                         </Badge>: <Avatar className={'avatar'} src={item.avatar}></Avatar>
                         }

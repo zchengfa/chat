@@ -12,6 +12,7 @@ import {timeFormatting} from "../../util/util";
 import {searchUserInfo} from "../../network/request";
 import PopoverCommon from "../../components/Common/PopoverCommon/PopoverCommon";
 import FriendApplication from "../../components/FriendApplication/FriendApplication";
+import FriendListContent from "../../components/FriendListContent/FriendListContent";
 
 class Home extends Component<any, any>{
     constructor(props:any) {
@@ -29,15 +30,17 @@ class Home extends Component<any, any>{
             inputValue:undefined,
             menuList:{
                 '聊天':<ChatList chatWithSender={this.chatWithSender}></ChatList>,
-                "通讯录":<FriendList list={props.Zustand.friendList}></FriendList>
+                "通讯录":<FriendList list={props.Zustand.friendList} showListContent={this.showListContent}></FriendList>
             },
             listContent:{
-                '聊天':<ChatContent socketMsg={this.socketMsg}></ChatContent>
+                '聊天':<ChatContent socketMsg={this.socketMsg}></ChatContent>,
+                '通讯录':<FriendListContent ></FriendListContent>
             },
             searchUserData:{},
             showFriendCom:false,
             isSelf:undefined,
-            isShowPop:undefined
+            isShowPop:undefined,
+
         }
     }
     socketMsg = (data:any)=>{
@@ -251,23 +254,33 @@ class Home extends Component<any, any>{
      * 接收FriendApplication组件发出的确认添加好友的申请事件
      */
     confirmSendRequest =(formData:any)=>{
-        const {user_id,username,account} = this.props.Zustand.customer
+        const {user_id,username,account,avatar} = this.props.Zustand.customer
         const data = this.state.searchUserData
 
         this.props.socket.emit('sendFriendRequest',{
             formData,
-            sender:{ SUN:user_id, SUA:username, SA:account },
+            sender:{ SUN:user_id, SUA:username, SA:account,SAV:avatar },
             reciever:{RUN:data.user_id,RUA:data.username,RA:data.account}
         })
         this.setState({
             showFriendCom:false
         })
     }
+    /**
+     * 接收FriendList组件发出的事件
+     * @param type
+     * @param title
+     * @param index
+     */
+    showListContent=(type:string,title:string,index:number)=>{
+        //修改激活项索引
+        this.props.Zustand.changeIndexInfo(type,title,index)
+    }
 
     render(){
         const { Sider,Content } = Layout
         const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder,isShowFriendBtn,inputValue,searchUserData,showFriendCom,isSelf,isShowPop } = this.state
-        const { listId,customer} = this.props.Zustand
+        const { listId,customer,friendListInfo} = this.props.Zustand
         const { contextHolder } = this.props.Message
 
         return <Fragment>
@@ -310,7 +323,8 @@ class Home extends Component<any, any>{
                     </div>
                 </div>
                 <Content className={'index-content'}>
-                    {listId !== undefined ? this.state.listContent[this.state.currentMenu] : null}
+                    {listId !== undefined || friendListInfo?.index !== undefined  ? this.state.listContent[this.state.currentMenu] : null}
+                    {/*{friendListIndexAc !== undefined ? this.state.listContent[this.state.currentMenu] : null}*/}
                 </Content>
                 {showFriendCom ? <FriendApplication confirm={this.confirmSendRequest} cancel={this.cancelFriendApp}></FriendApplication> : null}
             </Layout>

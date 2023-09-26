@@ -6,6 +6,7 @@ import {useState} from "react";
 
 export default function FriendApplication(props:any){
     const user = useMessageStore((state:any)=> state.customer.username)
+    const isAcceptApply = useMessageStore((state:any)=> state.isAcceptApply)
     const [checkStatus,setCheck] = useState([1,0])
 
     // const [sender,setSender] = useState('我是'+user)
@@ -74,7 +75,7 @@ export default function FriendApplication(props:any){
     }
 
     return <div className={'friend-app-container'}>
-        <span className={'title'}>申请添加朋友</span>
+        <span className={'title'}>{ isAcceptApply ? '同意添加朋友' : '申请添加朋友' }</span>
         <div className={'form-box'}>
             <Form layout={'vertical'}>
                 <Form.Item label={'发送添加朋友申请'}>

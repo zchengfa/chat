@@ -34,13 +34,12 @@ class Home extends Component<any, any>{
             },
             listContent:{
                 '聊天':<ChatContent socketMsg={this.socketMsg}></ChatContent>,
-                '通讯录':<FriendListContent ></FriendListContent>
+                '通讯录':<FriendListContent acceptApply={this.acceptApply} applyStatus={props.Zustand.isAcceptApply}></FriendListContent>
             },
             searchUserData:{},
             showFriendCom:false,
             isSelf:undefined,
-            isShowPop:undefined,
-
+            isShowPop:undefined
         }
     }
     socketMsg = (data:any)=>{
@@ -208,8 +207,10 @@ class Home extends Component<any, any>{
         else{
             searchUserInfo(this.state.inputValue,Number(customer.user_id)).then((res:any)=>{
                 if(!res.data.errMsg){
+                    let data = res.data
+                    !isNaN(Number(this.state.inputValue)) ? data.source = '通过搜索昵称添加' : data.source = '通过搜索账号添加'
                     this.setState({
-                        searchUserData:res.data,
+                        searchUserData:data,
                         isSelf:false,
                         isShowPop:true
                     })
@@ -242,6 +243,7 @@ class Home extends Component<any, any>{
            this.setState({
                showFriendCom:true
            })
+           this.props.Zustand.changeAcceptApply(false)
        }
     }
     cancelFriendApp =()=>{
@@ -249,22 +251,39 @@ class Home extends Component<any, any>{
             showFriendCom:false
         })
     }
+    /**
+     * （接收FriendListContent组件发出的事件）点击接受按钮打开FriendApplication组件
+     */
+    acceptApply = ()=>{
+        this.setState({
+            showFriendCom:true
+        })
+        this.props.Zustand.changeAcceptApply(true)
+    }
 
     /**
      * 接收FriendApplication组件发出的确认添加好友的申请事件
      */
     confirmSendRequest =(formData:any)=>{
-        const {user_id,username,account,avatar} = this.props.Zustand.customer
-        const data = this.state.searchUserData
+        const {isAcceptApply} = this.props.Zustand
+        if(!isAcceptApply){
+            const {user_id,username,account,avatar} = this.props.Zustand.customer
+            const data = this.state.searchUserData
 
-        this.props.socket.emit('sendFriendRequest',{
-            formData,
-            sender:{ SUN:user_id, SUA:username, SA:account,SAV:avatar },
-            reciever:{RUN:data.user_id,RUA:data.username,RA:data.account}
-        })
-        this.setState({
-            showFriendCom:false
-        })
+            this.props.socket.emit('sendFriendRequest',{
+                formData,
+                sender:{ SUN:user_id, SUA:username, SA:account,SAV:avatar },
+                reciever:{RUN:data.user_id,RUA:data.username,RA:data.account},
+                applyTime:new Date().getTime(),
+                source:data.source
+            })
+            this.setState({
+                showFriendCom:false
+            })
+        }
+        else{
+            console.log('同意添加')
+        }
     }
     /**
      * 接收FriendList组件发出的事件

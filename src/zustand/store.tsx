@@ -22,6 +22,25 @@ function setStorageData(propertyName:string,data:any){
   localStorage.setItem(propertyName,JSON.stringify(data))
 }
 
+function verifyTime(arr:any[]){
+    let time:number = new Date().getTime()
+    //3天后过期
+    let expired = 1000*60*60*24*3
+
+    arr.map((item:any)=>{
+
+        if(time - item.applyTime > expired){
+            item.isExpired = true
+        }
+        else{
+            item.isExpired = false
+        }
+
+    })
+
+    return arr
+}
+
 export const useMessageStore = create((set)=>{
     return {
         token:getStorageData('token',undefined,false,false),
@@ -185,7 +204,7 @@ export const useMessageStore = create((set)=>{
             }
         ],
         //收到的好友请求
-        friendRequest:getStorageData('friendRequest',[]),
+        friendRequest:getStorageData('friendRequest',[]).length ? verifyTime(getStorageData('friendRequest',[])):[],
         /**
          * 修改好友申请列表数据
          * @param request 好友申请相关数据
@@ -201,7 +220,7 @@ export const useMessageStore = create((set)=>{
                 if(operations === 'push'){
 
                     data.push(request)
-
+                    data = verifyTime(data)
                     setStorageData('friendRequest',data)
                 }
                 else if(operations === 'shift'){
@@ -222,6 +241,14 @@ export const useMessageStore = create((set)=>{
                     friendListInfo:{
                         type,title,index,hasBeenRead:true
                     }
+                }
+            })
+        },
+        isAcceptApply:undefined,
+        changeAcceptApply(status:boolean){
+            set(()=>{
+                return {
+                    isAcceptApply:status
                 }
             })
         }

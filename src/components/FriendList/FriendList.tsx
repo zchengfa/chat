@@ -21,7 +21,7 @@ function FriendList (props:any){
                return <List.Item className={'list-item'}>
                     <h6 className={'item-title'}>{item.title}</h6>
                     <div className={ index === friendListInfo?.index ? 'avatar-username actived' : 'avatar-username'} onClick={()=> showListContent(item.type,item.title,index)}>
-                        {item.type && item.type!=='btn' ? <Badge count={item.type === 'new' && !friendListInfo.hasBeenRead ?friendRequestCount : 0} overflowCount={99} size={'small'}>
+                        {item.type && item.type!=='btn' ? <Badge count={item.type === 'new' && !friendListInfo?.hasBeenRead ?friendRequestCount : 0} overflowCount={99} size={'small'}>
                             <div style={item.type === 'new' ?{backgroundColor:'var(--orange-color)'} :{backgroundColor:'var(--blue-color)'}} className={'avatar type-avatar'}>{item.avatar}</div>
                         </Badge>: <Avatar className={'avatar'} src={item.avatar}></Avatar>
                         }

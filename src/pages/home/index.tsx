@@ -39,7 +39,8 @@ class Home extends Component<any, any>{
             searchUserData:{},
             showFriendCom:false,
             isSelf:undefined,
-            isShowPop:undefined
+            isShowPop:undefined,
+            acceptApplyData:null
         }
     }
     socketMsg = (data:any)=>{
@@ -254,9 +255,10 @@ class Home extends Component<any, any>{
     /**
      * （接收FriendListContent组件发出的事件）点击接受按钮打开FriendApplication组件
      */
-    acceptApply = ()=>{
+    acceptApply = (item:any)=>{
         this.setState({
-            showFriendCom:true
+            showFriendCom:true,
+            acceptApplyData:item
         })
         this.props.Zustand.changeAcceptApply(true)
     }
@@ -273,17 +275,20 @@ class Home extends Component<any, any>{
             this.props.socket.emit('sendFriendRequest',{
                 formData,
                 sender:{ SUN:user_id, SUA:username, SA:account,SAV:avatar },
-                reciever:{RUN:data.user_id,RUA:data.username,RA:data.account},
+                receiver:{RUN:data.user_id,RUA:data.username,RA:data.account},
                 applyTime:new Date().getTime(),
                 source:data.source
             })
-            this.setState({
-                showFriendCom:false
-            })
+
         }
         else{
-            console.log('同意添加')
+            let data = this.state.acceptApplyData
+            data.sender.formData = formData
+            this.props.socket.emit('acceptApply',data)
         }
+        this.setState({
+            showFriendCom:false
+        })
     }
     /**
      * 接收FriendList组件发出的事件
@@ -357,18 +362,40 @@ class Home extends Component<any, any>{
             console.log(msg)
         })
 
+        /**
+         * 好友请求已发送给对方
+         */
         this.props.socket.on('sendRequestSuccess',()=>{
-            console.log('sendOk')
+
             this.props.Message.messageApi.open({
                 type: 'success',
                 content: '好友请求已发送',
             })
         })
 
-
+        /**
+         * 收到好友请求
+         */
         this.props.socket.on('receiveFriendRequest',(data:any)=>{
             this.props.Zustand.changeFriendRequest(data)
-           // console.log('收到好友请求',data)
+
+        })
+
+        /**
+         * 已同意对方的好友申请，将对方的信息添加到你的好友列表中，并删除对应的申请列表项
+         */
+        this.props.socket.on('hadAcceptApply',()=>{
+            this.props.Message.messageApi.open({
+                type: 'success',
+                content: '接受该好友申请成功',
+            })
+        })
+
+        /**
+         * 好友已经同意您的申请，将好友的信息添加到你的好友列表中
+         */
+        this.props.socket.on('friendHadAcceptApply',()=>{
+            console.log('好友已同意您的申请')
         })
 
         if(!this.props.Zustand.chatList.length){

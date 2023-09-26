@@ -6,8 +6,23 @@ export default function FriendListContent(props:any){
     const {title} = useMessageStore((state:any)=> state.friendListInfo)
     const friendRequest = useMessageStore((state:any)=> state.friendRequest)
 
-    const acceptApply = ()=>{
-        props.acceptApply()
+    const acceptApply = (item:any)=>{
+
+        const data = {
+            receiver:{
+                formData:item.formData,
+                info:{
+                    username:item.sender.SUA,
+                    user_id:item.sender.SUN
+                }
+            },
+            source:item.source,
+            sender:{
+                info:item.receiver
+            }
+        }
+
+        props.acceptApply(data)
     }
 
     return <Layout className={'content-con'}>
@@ -25,7 +40,7 @@ export default function FriendListContent(props:any){
                                 <span>{item.sender.SUA}</span>
                                 <span className={'msg'}>{item.formData.sender}</span>
                             </div>
-                            { item.isExpired ? <Button size={'small'} disabled={true}>已过期</Button> : <Button size={'small'} onClick={acceptApply} className={'accept-btn'}>接受</Button> }
+                            { item.isExpired ? <Button size={'small'} disabled={true}>已过期</Button> : <Button size={'small'} onClick={()=> acceptApply(item)} className={'accept-btn'}>接受</Button> }
                         </div>
                     </List.Item>
                 }}

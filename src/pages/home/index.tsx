@@ -208,6 +208,7 @@ class Home extends Component<any, any>{
         else{
             searchUserInfo(this.state.inputValue,Number(customer.user_id)).then((res:any)=>{
                 if(!res.data.errMsg){
+
                     let data = res.data
                     !isNaN(Number(this.state.inputValue)) ? data.source = '通过搜索昵称添加' : data.source = '通过搜索账号添加'
                     this.setState({
@@ -384,18 +385,19 @@ class Home extends Component<any, any>{
         /**
          * 已同意对方的好友申请，将对方的信息添加到你的好友列表中，并删除对应的申请列表项
          */
-        this.props.socket.on('hadAcceptApply',()=>{
+        this.props.socket.on('hadAcceptApply',(info:any)=>{
             this.props.Message.messageApi.open({
                 type: 'success',
                 content: '接受该好友申请成功',
             })
+            this.props.Zustand.changeFriendRequest(info,'shift')
         })
 
         /**
          * 好友已经同意您的申请，将好友的信息添加到你的好友列表中
          */
-        this.props.socket.on('friendHadAcceptApply',()=>{
-            console.log('好友已同意您的申请')
+        this.props.socket.on('friendHadAcceptApply',(info:any)=>{
+            this.props.Zustand.changeFriendRequest(info,'shift')
         })
 
         if(!this.props.Zustand.chatList.length){

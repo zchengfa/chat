@@ -1,5 +1,40 @@
 import { create } from "zustand";
 import {MsgDataType,operationsData} from "../common/staticData/data";
+import {sortByLocaleWithObject} from "../util/util";
+
+const defaultFriendList = [
+    {
+        type:'btn',
+        avatar:'',
+        username:'通讯录管理'
+    },
+    {
+        type:'new',
+        title:'新的朋友',
+        avatar:operationsData.list[0].component(),
+        username:'新的朋友'
+    },
+    {
+        type:'common',
+        title:'公众号',
+        avatar:operationsData.list[1].component(),
+        username:'公众号'
+    }
+]
+
+function getFriendList (){
+    let data = getStorageData('friendList',[],)
+
+    if(data.length){
+        data.map((item:any)=>{
+            defaultFriendList.push(item)
+            return true
+        })
+
+    }
+    return defaultFriendList
+
+}
 
 /**
  * 获取localStorage/sessionStorage中数据的函数
@@ -184,25 +219,21 @@ export const useMessageStore = create((set)=>{
           })
         },
         //通讯录列表
-        friendList:[
-            {
-                type:'btn',
-                avatar:'',
-                username:'通讯录管理'
-            },
-            {
-                type:'new',
-                title:'新的朋友',
-                avatar:operationsData.list[0].component(),
-                username:'新的朋友'
-            },
-            {
-                type:'common',
-                title:'公众号',
-                avatar:operationsData.list[1].component(),
-                username:'公众号'
-            }
-        ],
+        friendList:getFriendList(),
+        changeFriendList(data:any){
+           set((state:any)=>{
+               let list = state.friendList
+
+               list.push(data)
+
+               setStorageData('friendList',sortByLocaleWithObject(list.splice(3,list.length),'username'))
+               return {
+                   friendList:list
+               }
+           })
+
+
+        },
         //收到的好友请求
         friendRequest:getStorageData('friendRequest',[]).length ? verifyTime(getStorageData('friendRequest',[])):[],
         /**
@@ -218,14 +249,20 @@ export const useMessageStore = create((set)=>{
                 let data = state.friendRequest
 
                 if(operations === 'push'){
-
                     data.push(request)
                     data = verifyTime(data)
-                    setStorageData('friendRequest',data)
                 }
                 else if(operations === 'shift'){
-                    console.log(data,'shift')
+                    data.map((item:any,index:number)=>{
+                        if(item.receiver.RUN === request.user_id){
+                            //删除当前好友申请
+                            data.splice(index,1)
+                        }
+                    })
+                    //好友信息加入好友列表
+                    state.changeFriendList(request)
                 }
+                setStorageData('friendRequest',data)
 
                 return {
                     friendRequest:data

@@ -1,7 +1,8 @@
 import {Layout,List,Avatar,Button} from "antd";
 import {useMessageStore} from "../../zustand/store";
 import './friendListContent.sass'
-export default function FriendListContent(props:any){
+import withHook from "../../hook/withHook";
+function FriendListContent(props:any){
     const { Header,Content } = Layout
     const {title} = useMessageStore((state:any)=> state.friendListInfo)
     const friendRequest = useMessageStore((state:any)=> state.friendRequest)
@@ -24,6 +25,7 @@ export default function FriendListContent(props:any){
 
         props.acceptApply(data)
     }
+
 
     return <Layout className={'content-con'}>
         <Header className={'user-box'}>
@@ -48,3 +50,5 @@ export default function FriendListContent(props:any){
         </Content>
     </Layout>
 }
+
+export default withHook(FriendListContent)

@@ -1,18 +1,19 @@
 import {List, Avatar, Button, Badge} from "antd";
 import { UsergroupDeleteOutlined } from '@ant-design/icons'
 import './friendList.sass'
-import {useMessageStore} from "../../zustand/store";
+import withHook from "../../hook/withHook";
 
 function FriendList (props:any){
-    const friendRequestCount = useMessageStore((state:any)=> state.friendRequest.length)
-    const friendListInfo = useMessageStore((state:any)=> state.friendListInfo)
+    const friendRequestCount = props.Zustand.friendRequest.length
+    const friendListInfo = props.Zustand.friendListInfo
+    const list = props.Zustand.friendList
 
     const showListContent = (type:string,title:string,index:number)=>{
         props.showListContent(type,title,index)
     }
 
     return <List className={'friend-list'} itemLayout={'vertical'}
-        dataSource={props.list}
+        dataSource={list}
         renderItem={(item:any,index:number)=>{
             if(item.type === 'btn'){
                 return <List.Item className={'list-item list-btn-item'}><Button icon={<UsergroupDeleteOutlined />} className={'friend-manage'} size={'large'}>{item.username}</Button></List.Item>
@@ -35,4 +36,4 @@ function FriendList (props:any){
     </List>
 }
 
-export default FriendList
+export default withHook(FriendList)

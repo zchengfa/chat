@@ -220,13 +220,19 @@ export const useMessageStore = create((set)=>{
         },
         //通讯录列表
         friendList:getFriendList(),
-        changeFriendList(data:any){
+        changeFriendList(data:any,isOnline:boolean = false){
            set((state:any)=>{
-               let list = state.friendList
-
-               list.push(data)
-
-               setStorageData('friendList',sortByLocaleWithObject(list.splice(3,list.length),'username'))
+               let list = isOnline ? defaultFriendList : state.friendList
+                const prototype = Object.prototype.toString.call(data)
+               if( prototype === '[object Object]' ){
+                   list.push(data)
+               }
+               else if( prototype === '[object Array]' ){
+                   list = list.splice(0,3)
+                   list.push(...data)
+               }
+               let listCopy = JSON.parse(JSON.stringify(list))
+               setStorageData('friendList',sortByLocaleWithObject(listCopy.splice(3,list.length),'username'))
                return {
                    friendList:list
                }
@@ -253,8 +259,10 @@ export const useMessageStore = create((set)=>{
                     data = verifyTime(data)
                 }
                 else if(operations === 'shift'){
+
                     data.map((item:any,index:number)=>{
-                        if(item.receiver.RUN === request.user_id){
+                        if(Number(item.sender.SUN) === request.user_id){
+
                             //删除当前好友申请
                             data.splice(index,1)
                         }
@@ -262,6 +270,7 @@ export const useMessageStore = create((set)=>{
                     //好友信息加入好友列表
                     state.changeFriendList(request)
                 }
+                console.log(data)
                 setStorageData('friendRequest',data)
 
                 return {

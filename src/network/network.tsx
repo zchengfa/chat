@@ -1,5 +1,6 @@
-import axios from "axios";
+import axios, {AxiosError} from "axios";
 import { Navigate } from "react-router-dom";
+
 
 const baseURL = 'http://localhost:4000'
 const timeout = 5000
@@ -25,13 +26,14 @@ export function Post(config:any){
 
 
 function axiosInterceptors(instance:any){
+
     //axios请求拦截器
     instance.interceptors.request.use(function (config:any){
         if (sessionStorage.getItem('token')){
             config.headers.authorization= sessionStorage.getItem('token')
         }
         return config
-    }, (err:any) =>{
+    }, (err:AxiosError) =>{
         return Promise.reject(err)
     })
 
@@ -42,7 +44,8 @@ function axiosInterceptors(instance:any){
         }
 
         return response
-    }, (err:any) => {
+    }, (err:AxiosError) => {
         return Promise.reject(err)
     })
 }
+

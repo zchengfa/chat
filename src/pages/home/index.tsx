@@ -30,7 +30,7 @@ class Home extends Component<any, any>{
             inputValue:undefined,
             menuList:{
                 '聊天':<ChatList chatWithSender={this.chatWithSender}></ChatList>,
-                "通讯录":<FriendList list={props.Zustand.friendList} showListContent={this.showListContent}></FriendList>
+                "通讯录":<FriendList showListContent={this.showListContent}></FriendList>
             },
             listContent:{
                 '聊天':<ChatContent socketMsg={this.socketMsg}></ChatContent>,
@@ -188,12 +188,13 @@ class Home extends Component<any, any>{
     /**
      * 点击按钮、搜索用户信息
      * 先用自己的信息跟搜索词进行比对，如果搜索的是自己的账号，直接赋值自己的信息
-     * 若能搜索扫信息怎以气泡卡片形式展示用户信息
+     * 若搜索的人是自己的好友，则展示好友信息，不向后台发起请求
+     * 若能搜索到信息则以气泡卡片形式展示用户信息
      * 若没有搜索到则关闭搜索页，展示网络搜索页并告诉用户无法找到该用户
      */
     searchUsers = ()=>{
 
-        const {customer} = this.props.Zustand
+        const {customer,friendList} = this.props.Zustand
         const { inputValue } = this.state
 
         if(customer.account === inputValue || customer.username === inputValue){
@@ -203,6 +204,9 @@ class Home extends Component<any, any>{
                 isSelf:true
             })
 
+
+        }
+        else if(searchUserFromList(inputValue)){
 
         }
         else{
@@ -221,6 +225,17 @@ class Home extends Component<any, any>{
                     console.log(res.data.errMsg)
                 }
             })
+        }
+
+        function searchUserFromList(value:string | number){
+            let count = 0
+            friendList.map((item:any)=>{
+                if(item.username === value || item.account === value){
+                    count ++
+                }
+                return count
+            })
+            return Boolean(count)
         }
     }
     /**
@@ -357,10 +372,15 @@ class Home extends Component<any, any>{
     }
 
     componentDidMount() {
-
-        this.props.socket.emit('online',this.props.Zustand.customer.username)
-        this.props.socket.on('reciever',(msg:any)=>{
-            console.log(msg)
+        const user = this.props.Zustand.customer
+        this.props.socket.emit('online',{
+            name:user.username,
+            account:user.account,
+            user_id:user.user_id
+        })
+        this.props.socket.on('reciever',(data:any)=>{
+            const {friendList} = data
+            this.props.Zustand.changeFriendList(friendList,true)
         })
 
         /**
@@ -390,6 +410,7 @@ class Home extends Component<any, any>{
                 type: 'success',
                 content: '接受该好友申请成功',
             })
+            console.log(info)
             this.props.Zustand.changeFriendRequest(info,'shift')
         })
 
@@ -397,6 +418,7 @@ class Home extends Component<any, any>{
          * 好友已经同意您的申请，将好友的信息添加到你的好友列表中
          */
         this.props.socket.on('friendHadAcceptApply',(info:any)=>{
+            console.log(info)
             this.props.Zustand.changeFriendRequest(info,'shift')
         })
 

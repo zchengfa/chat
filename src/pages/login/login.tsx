@@ -46,6 +46,13 @@ function Login(){
                     content:res.data.errMsg
                 })
             }
+        }).catch((err:any)=>{
+           if(err.code === 'ERR_NETWORK'){
+               messageApi.open({
+                   type:'error',
+                   content:'网络出现错误，请检查网络或服务端是否出现问题！'
+               })
+           }
         })
     }
     const register = ()=>{

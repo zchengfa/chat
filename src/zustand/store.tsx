@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import {MsgDataType,operationsData} from "../common/staticData/data";
-import {sortByLocaleWithObject} from "../util/util";
+import {sortByLocaleWithObject,getFirstPinYin} from "../util/util";
 
 const defaultFriendList = [
     {
@@ -74,6 +74,20 @@ function verifyTime(arr:any[]){
     })
 
     return arr
+}
+
+function addFirstPinYin(data:any,PO:string,PT:string){
+    const prototype = Object.prototype.toString.call(data)
+    if( prototype === '[object Object]' ){
+        data[PO] = getFirstPinYin(data[PT])
+    }
+    else if( prototype === '[object Array]' ){
+       data.map((item:any)=>{
+          return item[PO] = getFirstPinYin(item[PT])
+       })
+    }
+
+    return data
 }
 
 export const useMessageStore = create((set)=>{
@@ -223,7 +237,9 @@ export const useMessageStore = create((set)=>{
         changeFriendList(data:any,isOnline:boolean = false){
            set((state:any)=>{
                let list = isOnline ? defaultFriendList : state.friendList
-                const prototype = Object.prototype.toString.call(data)
+               const prototype = Object.prototype.toString.call(data)
+
+               data = addFirstPinYin(data,'title','username')
                if( prototype === '[object Object]' ){
                    list.push(data)
                }

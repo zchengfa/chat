@@ -1,5 +1,6 @@
 // @ts-ignore
 import cryptoJs from 'crypto-js/crypto-js'
+import pinyin from "pinyin";
 
 const key = cryptoJs.enc.Utf8.parse("1234123412PackMyBoxWithFiveDozenLiquorJugs");  //十六位十六进制数作为密钥
 const iv = cryptoJs.enc.Utf8.parse('PackMyBoxWithFiveDozenLiquorJugs1234123412');   //十六位十六进制数作为密钥偏移量
@@ -81,5 +82,14 @@ export function timeFormatting (fm:string,time:any){
     // @ts-ignore
     return new Date().format(fm)
   }
+
+}
+
+export function getFirstPinYin(str:string){
+  let data = pinyin(str.substring(0,1)),p = undefined
+  data.map((item:any)=>{
+    return p = item[0].substring(0,1).toUpperCase()
+  })
+  return p
 
 }

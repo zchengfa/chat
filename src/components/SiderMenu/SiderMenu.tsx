@@ -26,12 +26,16 @@ class SiderMenu extends Component<any, any>{
       })
     }
 
+    btnClick =()=>{
+        console.log('给自己发消息')
+    }
+
     render(){
 
       const {customer} = this.props.Zustand
 
       return <div className={'side'}>
-        {this.props.userInfo ? <PopoverCommon btnTitle={'发消息'} placement={'rightBottom'} children={<Image className={'avatar'} src={customer.avatar} preview={false}></Image>} customer={customer}></PopoverCommon>  : <Avatar className={'avatar'} size={64} icon={<UserOutlined />}></Avatar>}
+        {this.props.userInfo ? <PopoverCommon btnClick={this.btnClick} btnTitle={'发消息'} placement={'rightBottom'} children={<Image className={'avatar'} src={customer.avatar} preview={false}></Image>} customer={customer}></PopoverCommon>  : <Avatar className={'avatar'} size={64} icon={<UserOutlined />}></Avatar>}
         <div className={'side-top'}>{this.correctMenuHtml(this.props.menu,'menu')}</div>
         <div className={'side-bottom'}>{this.correctMenuHtml(this.props.otherMenu,'otherMenu')}</div>
       </div>

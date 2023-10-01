@@ -19,8 +19,8 @@ export default function PopoverCommon(props:any){
         }
     ]
 
-    const showFriendApplication = ()=>{
-        props.showFriendApplication()
+    const btnClick = ()=>{
+        props.btnClick()
     }
 
     const content = (
@@ -56,7 +56,7 @@ export default function PopoverCommon(props:any){
                                 })
                             }
                         </div>
-                    </div> : <Button className={'btn'} onClickCapture={showFriendApplication}>{props.btnTitle}</Button>
+                    </div> : <Button className={'btn'} onClickCapture={btnClick}>{props.btnTitle}</Button>
                 }
             </div>
         </div>

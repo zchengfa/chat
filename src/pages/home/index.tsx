@@ -192,50 +192,58 @@ class Home extends Component<any, any>{
      * 若能搜索到信息则以气泡卡片形式展示用户信息
      * 若没有搜索到则关闭搜索页，展示网络搜索页并告诉用户无法找到该用户
      */
-    searchUsers = ()=>{
+     searchUsers = async ()=>{
 
         const {customer,friendList} = this.props.Zustand
         const { inputValue } = this.state
+        let info:any = {},isSelf = true,isEmpty = false
 
         if(customer.account === inputValue || customer.username === inputValue){
-
-            this.setState({
-                searchUserData:customer,
-                isSelf:true
-            })
-
-
+            info = customer
         }
-        else if(searchUserFromList(inputValue)){
-
+        else if(Object.keys(searchUserFromList(inputValue)).length){
+            info = searchUserFromList(inputValue)
+            info.isFriend = true
+            isSelf = false
         }
         else{
-            searchUserInfo(this.state.inputValue,Number(customer.user_id)).then((res:any)=>{
+          await searchUserInfo(this.state.inputValue,Number(customer.user_id)).then((res:any)=>{
                 if(!res.data.errMsg){
 
                     let data = res.data
                     !isNaN(Number(this.state.inputValue)) ? data.source = '通过搜索昵称添加' : data.source = '通过搜索账号添加'
-                    this.setState({
-                        searchUserData:data,
-                        isSelf:false,
-                        isShowPop:true
-                    })
+                    isSelf = false
+                    info = data
                 }
                 else{
+                    isEmpty = true
                     console.log(res.data.errMsg)
                 }
             })
         }
 
         function searchUserFromList(value:string | number){
-            let count = 0
+            let user = {}
             friendList.map((item:any)=>{
-                if(item.username === value || item.account === value){
-                    count ++
+                if(Array.isArray(item.content)){
+                     item.content.map((obj:any)=>{
+                        if(obj.username === value || obj.account === value){
+                            user = obj
+                        }
+                        return user
+                    })
                 }
-                return count
+                return user
             })
-            return Boolean(count)
+            return user
+        }
+
+        if(!isEmpty){
+            this.setState({
+                searchUserData:info,
+                isSelf,
+                isShowPop:true
+            })
         }
     }
     /**
@@ -311,10 +319,11 @@ class Home extends Component<any, any>{
      * @param type
      * @param title
      * @param index
+     * @param id
      */
-    showListContent=(type:string,title:string,index:number)=>{
+    showListContent=(type:string,title:string,index:number,id:number)=>{
         //修改激活项索引
-        this.props.Zustand.changeIndexInfo(type,title,index)
+        this.props.Zustand.changeIndexInfo(type,title,index,id)
     }
 
     render(){
@@ -336,7 +345,7 @@ class Home extends Component<any, any>{
                         <Input ref={inputRef} value={inputValue} style={{backgroundColor:'var(--gray-color)'}} onBlur={this.inputBlur} onChange={this.inputChange} suffix={inputProp} onFocus={this.inputFocus} prefix={isShowFriendBtn ? <UserSwitchOutlined /> : <SearchOutlined />} placeholder={placeholder}></Input>
                         {isShowFriendBtn ? <Button className={'cancel-btn'} onClick={this.closeAddFriendBtn}>取消</Button> : <Button style={{backgroundColor:'var(--gray-color)'}} icon={searchRightComponent}></Button>}
                     </Space>
-                    { isShowPop ? <PopoverCommon showFriendApplication={this.showFriendApplication} customer={searchUserData} arrow={false} open={!!searchUserData} btnTitle={isSelf ? '发消息' : '添加到通讯录'}></PopoverCommon>:null}
+                    { isShowPop ? <PopoverCommon btnClick={this.showFriendApplication} customer={searchUserData} arrow={false} open={!!searchUserData} btnTitle={isSelf ? '发消息' : '添加到通讯录'}></PopoverCommon>:null}
 
                     <div className={'middle-list'}>
                         {this.state.menuList[this.state.currentMenu]}

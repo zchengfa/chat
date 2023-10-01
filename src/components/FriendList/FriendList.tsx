@@ -8,8 +8,18 @@ function FriendList (props:any){
     const friendListInfo = props.Zustand.friendListInfo
     const list = props.Zustand.friendList
 
-    const showListContent = (type:string,title:string,index:number)=>{
-        props.showListContent(type,title,index)
+    const showListContent = (type:string,title:string,index:number,id:number)=>{
+        props.showListContent(type,title,index,id)
+    }
+
+    const itemElement = (item:any,index:number)=>{
+        return <div key={index} className={ index === friendListInfo?.index && item.user_id === friendListInfo?.user_id ? 'avatar-username actived' : 'avatar-username'} onClick={()=> showListContent(item.type,item.username,index,item.user_id)}>
+            {item.type && item.type!=='btn' ? <Badge count={item.type === 'new' && !friendListInfo?.hasBeenRead ?friendRequestCount : 0} overflowCount={99} size={'small'}>
+                <div style={item.type === 'new' ?{backgroundColor:'var(--orange-color)'} :{backgroundColor:'var(--blue-color)'}} className={'avatar type-avatar'}>{item.avatar}</div>
+            </Badge>: <Avatar className={'avatar'} src={item.avatar}></Avatar>
+            }
+            <span className={'username'}>{item.username}</span>
+        </div>
     }
 
     return <List className={'friend-list'} itemLayout={'vertical'}
@@ -21,13 +31,11 @@ function FriendList (props:any){
             else{
                return <List.Item className={'list-item'}>
                     <h6 className={'item-title'}>{item.title}</h6>
-                    <div className={ index === friendListInfo?.index ? 'avatar-username actived' : 'avatar-username'} onClick={()=> showListContent(item.type,item.title,index)}>
-                        {item.type && item.type!=='btn' ? <Badge count={item.type === 'new' && !friendListInfo?.hasBeenRead ?friendRequestCount : 0} overflowCount={99} size={'small'}>
-                            <div style={item.type === 'new' ?{backgroundColor:'var(--orange-color)'} :{backgroundColor:'var(--blue-color)'}} className={'avatar type-avatar'}>{item.avatar}</div>
-                        </Badge>: <Avatar className={'avatar'} src={item.avatar}></Avatar>
-                        }
-                        <span className={'username'}>{item.username}</span>
-                    </div>
+                   {
+                       item?.content ? item.content.map((i:any,itemIn:number)=>{
+                           return itemElement(i,itemIn)
+                       }) : itemElement(item,index)
+                   }
                 </List.Item>
             }
 

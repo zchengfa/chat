@@ -6,6 +6,7 @@ function FriendListContent(props:any){
     const { Header,Content } = Layout
     const {title} = useMessageStore((state:any)=> state.friendListInfo)
     const friendRequest = useMessageStore((state:any)=> state.friendRequest)
+    const {user_id} = props.Zustand.customer
 
     const acceptApply = (item:any)=>{
 
@@ -33,7 +34,7 @@ function FriendListContent(props:any){
         </Header>
         <Content>
             <List className={'friend-list-request'}
-                dataSource={friendRequest}
+                dataSource={friendRequest[user_id]}
                 renderItem={(item:any)=>{
                    return <List.Item>
                         <div className={'list-item'}>

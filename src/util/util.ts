@@ -93,3 +93,27 @@ export function getFirstPinYin(str:string){
   return p
 
 }
+
+/**
+ * 用于查验好友申请是否过期
+ * @param arr { any[] } 数组
+ */
+export function verifyTime(arr:any[]){
+
+  let time:number = new Date().getTime()
+  //3天后过期
+  let expired = 1000*60*60*24*3
+
+  arr.map((item:any)=>{
+
+    if(time - item.applyTime > expired){
+      item.isExpired = true
+    }
+    else{
+      item.isExpired = false
+    }
+
+  })
+
+  return arr
+}

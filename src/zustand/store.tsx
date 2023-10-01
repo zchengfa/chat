@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import {MsgDataType,operationsData} from "../common/staticData/data";
-import {sortByLocaleWithObject,getFirstPinYin} from "../util/util";
+import {sortByLocaleWithObject,getFirstPinYin,verifyTime} from "../util/util";
 
 const defaultFriendList = [
     {
@@ -32,6 +32,7 @@ function getFriendList (){
         })
 
     }
+
     return defaultFriendList
 
 }
@@ -57,37 +58,37 @@ function setStorageData(propertyName:string,data:any){
   localStorage.setItem(propertyName,JSON.stringify(data))
 }
 
-function verifyTime(arr:any[]){
-    let time:number = new Date().getTime()
-    //3天后过期
-    let expired = 1000*60*60*24*3
-
-    arr.map((item:any)=>{
-
-        if(time - item.applyTime > expired){
-            item.isExpired = true
-        }
-        else{
-            item.isExpired = false
-        }
-
-    })
-
-    return arr
-}
-
 function addFirstPinYin(data:any,PO:string,PT:string){
     const prototype = Object.prototype.toString.call(data)
+    let newData:any[] = []
     if( prototype === '[object Object]' ){
         data[PO] = getFirstPinYin(data[PT])
     }
     else if( prototype === '[object Array]' ){
+        let letterArr:string[] = []
+        data.map((item:any)=>{
+            item[PO] = getFirstPinYin(item[PT])
+            return  letterArr.push(item[PO])
+       })
+       // @ts-ignore
+       let uniqueLetterArr:string[] = [...new Set(letterArr)]
+
+       uniqueLetterArr.map((letter:any)=> newData.push({
+           title:undefined,
+           content:[]
+       }))
        data.map((item:any)=>{
-          return item[PO] = getFirstPinYin(item[PT])
+          return uniqueLetterArr.map((letter:any,index:number)=>{
+               if(item[PO] === letter){
+                   newData[index][PO] = letter
+                   newData[index]['content'].push(item)
+               }
+               return true
+           })
        })
     }
 
-    return data
+    return sortByLocaleWithObject(newData,'title')
 }
 
 export const useMessageStore = create((set)=>{
@@ -244,11 +245,13 @@ export const useMessageStore = create((set)=>{
                    list.push(data)
                }
                else if( prototype === '[object Array]' ){
+
                    list = list.splice(0,3)
                    list.push(...data)
+
                }
                let listCopy = JSON.parse(JSON.stringify(list))
-               setStorageData('friendList',sortByLocaleWithObject(listCopy.splice(3,list.length),'username'))
+               setStorageData('friendList',sortByLocaleWithObject(listCopy.splice(3,list.length),'title'))
                return {
                    friendList:list
                }
@@ -257,7 +260,7 @@ export const useMessageStore = create((set)=>{
 
         },
         //收到的好友请求
-        friendRequest:getStorageData('friendRequest',[]).length ? verifyTime(getStorageData('friendRequest',[])):[],
+        friendRequest:getStorageData('friendRequest',{}),
         /**
          * 修改好友申请列表数据
          * @param request 好友申请相关数据
@@ -268,25 +271,30 @@ export const useMessageStore = create((set)=>{
         changeFriendRequest: (request:any,operations: string = 'push')=>{
 
             set((state:any)=>{
-                let data = state.friendRequest
+                let data = state.friendRequest,user_id = request.receiver.RUN
+                if(!data.hasOwnProperty(user_id)){
+                    data[user_id] = []
+                }
 
                 if(operations === 'push'){
-                    data.push(request)
-                    data = verifyTime(data)
+                    data[user_id].push(request)
+                    data[user_id] = verifyTime(data[user_id])
+
                 }
                 else if(operations === 'shift'){
 
-                    data.map((item:any,index:number)=>{
+                    data[request.user_id].map((item:any,index:number)=>{
                         if(Number(item.sender.SUN) === request.user_id){
 
                             //删除当前好友申请
                             data.splice(index,1)
+
                         }
                     })
                     //好友信息加入好友列表
                     state.changeFriendList(request)
                 }
-                console.log(data)
+
                 setStorageData('friendRequest',data)
 
                 return {
@@ -295,13 +303,13 @@ export const useMessageStore = create((set)=>{
             })
         },
         friendListInfo:getStorageData('friendListInfo',null),
-        changeIndexInfo(type:string,title:string,index:number){
+        changeIndexInfo(type:string,title:string,index:number,id:number){
 
             set(()=>{
-                setStorageData('friendListInfo',{type,title,index,hasBeenRead:true})
+                setStorageData('friendListInfo',{type,title,index,hasBeenRead:true,user_id:id})
                 return {
                     friendListInfo:{
-                        type,title,index,hasBeenRead:true
+                        type,title,index,hasBeenRead:true,user_id:id
                     }
                 }
             })

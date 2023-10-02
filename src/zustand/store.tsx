@@ -58,11 +58,31 @@ function setStorageData(propertyName:string,data:any){
   localStorage.setItem(propertyName,JSON.stringify(data))
 }
 
-function addFirstPinYin(data:any,PO:string,PT:string){
+function addFirstPinYin(data:any | any[],PO:string,PT:string,list:any[]){
     const prototype = Object.prototype.toString.call(data)
+
     let newData:any[] = []
     if( prototype === '[object Object]' ){
         data[PO] = getFirstPinYin(data[PT])
+        list.map((item:any,index:number)=>{
+           if(item.title === data[PO]){
+               item.content.push(data)
+               newData = list.slice(3,list.length-1)
+           }
+           else if(index === list.length -1){
+               for (let i = 0; i < 1; i++) {
+                   newData.push({
+                       title:undefined,
+                       content:[]
+                   })
+                   newData[i].title = data[PO]
+                   newData[i].content.push(data)
+               }
+           }
+           return null
+        })
+
+        console.log(newData,data)
     }
     else if( prototype === '[object Array]' ){
         let letterArr:string[] = []
@@ -73,7 +93,7 @@ function addFirstPinYin(data:any,PO:string,PT:string){
        // @ts-ignore
        let uniqueLetterArr:string[] = [...new Set(letterArr)]
 
-       uniqueLetterArr.map((letter:any)=> newData.push({
+       uniqueLetterArr.map(()=> newData.push({
            title:undefined,
            content:[]
        }))
@@ -240,16 +260,12 @@ export const useMessageStore = create((set)=>{
                let list = isOnline ? defaultFriendList : state.friendList
                const prototype = Object.prototype.toString.call(data)
 
-               data = addFirstPinYin(data,'title','username')
-               if( prototype === '[object Object]' ){
-                   list.push(data)
-               }
-               else if( prototype === '[object Array]' ){
+               data = addFirstPinYin(data,'title','username',list)
 
+               if( prototype === '[object Array]' ){
                    list = list.splice(0,3)
-                   list.push(...data)
-
                }
+               list.push(...data)
                let listCopy = JSON.parse(JSON.stringify(list))
                setStorageData('friendList',sortByLocaleWithObject(listCopy.splice(3,list.length),'title'))
                return {
@@ -271,7 +287,8 @@ export const useMessageStore = create((set)=>{
         changeFriendRequest: (request:any,operations: string = 'push')=>{
 
             set((state:any)=>{
-                let data = state.friendRequest,user_id = request.receiver.RUN
+
+                let data = state.friendRequest,user_id = state.customer.user_id
                 if(!data.hasOwnProperty(user_id)){
                     data[user_id] = []
                 }
@@ -283,11 +300,12 @@ export const useMessageStore = create((set)=>{
                 }
                 else if(operations === 'shift'){
 
-                    data[request.user_id].map((item:any,index:number)=>{
-                        if(Number(item.sender.SUN) === request.user_id){
+                    data[user_id].map((item:any,index:number)=>{
+
+                        if(Number(item.receiver.RUN) === Number(user_id)){
 
                             //删除当前好友申请
-                            data.splice(index,1)
+                            data[user_id].splice(index,1)
 
                         }
                     })

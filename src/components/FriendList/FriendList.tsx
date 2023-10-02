@@ -32,7 +32,7 @@ function FriendList (props:any){
                return <List.Item className={'list-item'}>
                     <h6 className={'item-title'}>{item.title}</h6>
                    {
-                       item?.content ? item.content.map((i:any,itemIn:number)=>{
+                       item.content ? item.content.map((i:any,itemIn:number)=>{
                            return itemElement(i,itemIn)
                        }) : itemElement(item,index)
                    }

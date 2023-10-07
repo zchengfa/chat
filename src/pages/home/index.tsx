@@ -52,6 +52,7 @@ class Home extends Component<any, any>{
      * @param menuName { string } 列表名
      */
     changeMenu = (childIndex:number,menuName:string)=>{
+
         const m:MenuType[] = this.state[menuName]
 
         this.getMenuTitle(menuName,childIndex)
@@ -211,7 +212,7 @@ class Home extends Component<any, any>{
                 if(!res.data.errMsg){
 
                     let data = res.data
-                    !isNaN(Number(this.state.inputValue)) ? data.source = '通过搜索昵称添加' : data.source = '通过搜索账号添加'
+                    isNaN(Number(this.state.inputValue)) ? data.source = '通过搜索昵称添加' : data.source = '通过搜索账号添加'
                     isSelf = false
                     info = data
                 }
@@ -392,6 +393,20 @@ class Home extends Component<any, any>{
             this.props.Zustand.changeFriendList(friendList,true)
         })
 
+        this.props.socket.on('receiveMessage',(data:any)=>{
+
+            this.props.Zustand.changeChatList({
+                userId:data.userId,
+                user:data.sender,
+                type:'msg',
+                msg:data.msg,
+                avatar:data.avatar,
+                time:data.sendTime,
+                isMute:true,
+                hasBeenRead:false,
+                isGroupChat:false
+            },data.userId,true)
+        })
         /**
          * 好友请求已发送给对方
          */
@@ -444,6 +459,38 @@ class Home extends Component<any, any>{
             } as unknown as MsgDataType)
         }
 
+        document.addEventListener('sendMsg',(event:any)=>{
+            //点击发消息，1.选择聊天菜单项、2.查看聊天列表中是否有与该该好友的通讯记录，有就直接激活与该好友的聊天状态，没有就添加一个聊天记录项
+            this.changeMenu(0,'menu')
+            const list = this.props.Zustand.chatList
+            const {user_id,username,avatar} = event.detail.data
+            let isInclude = false
+            let data = {
+                userId:user_id,
+                msg: '',
+                user: username,
+                time: timeFormatting('hh:mm', new Date()),
+                hasBeenRead: true,
+                isGroupChat: false,
+                avatar,
+            } as unknown as MsgDataType
+
+            list.map((item:any)=>{
+               if(item.userId === user_id){
+                   isInclude = true
+               }
+            })
+            if(!isInclude){
+                this.props.Zustand.changeChatList(data)
+            }
+
+            this.chatWithSender(data,user_id)
+        })
+
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('sendMsg',()=>{})
     }
 
 

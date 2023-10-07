@@ -12,7 +12,8 @@ const defaultFriendList = [
         type:'new',
         title:'新的朋友',
         avatar:operationsData.list[0].component(),
-        username:'新的朋友'
+        username:'新的朋友',
+        count:0
     },
     {
         type:'common',
@@ -137,6 +138,7 @@ export const useMessageStore = create((set)=>{
 
           set((state:any)=>{
             let data = state.msgData
+
             if(!id){
               if(!data[item.userId]){
                 data[item.userId] = []
@@ -144,7 +146,10 @@ export const useMessageStore = create((set)=>{
               }
             }
             else{
-              data[id].push(item)
+              if(!data[id]){
+                  data[id] = []
+              }
+                data[id].push(item)
             }
 
 
@@ -177,7 +182,6 @@ export const useMessageStore = create((set)=>{
       //消息列表激活的索引
         listId:getStorageData('listId',undefined),
         changeListId:(id:number)=>{
-
            set((state:any)=>{
                state.changeReadStatus(id)
                setStorageData('listId',id)
@@ -201,31 +205,40 @@ export const useMessageStore = create((set)=>{
         },
       //通讯过的用户列表
         chatList:getStorageData('chatList',[]),
-        changeChatList:(item:MsgDataType,replyId:number | undefined = undefined)=>{
-
+        changeChatList:(item:MsgDataType,replyId:number | undefined = undefined,isReceive:boolean = false)=>{
           set((state:any)=>{
             let data = state.chatList
 
-            if(replyId){
+            if(replyId && !isReceive){
               let index:any = undefined
               data.map((it:any,i:number)=>{
 
                 if(Number(it.userId) === Number( replyId)){
                   index = i
                 }
-                console.log(item)
+
               })
 
               data[index].msg = item.msg
+            }
+            else if(replyId && isReceive){
+                let index:any = undefined
+                data.map((it:any,i:number)=>{
+                   if(Number(it.userId) === Number(item.userId)){
+                       index = i
+                   }
+                })
+                index !== undefined ? data[index].msg = item.msg : data.unshift(item)
             }
             else{
               data.unshift(item)
             }
 
+
             setStorageData('chatList',data)
 
-            let bgColor = replyId ? 'var(--success-font-color)' : 'var(--white-color)'
-            let isLeft = !replyId
+            let bgColor = replyId && !isReceive ? 'var(--success-font-color)' : 'var(--white-color)'
+            let isLeft = replyId && isReceive
             let id = replyId ? replyId : undefined
 
               state.saveMsgData({
@@ -235,7 +248,7 @@ export const useMessageStore = create((set)=>{
                   bgColor,
                   isLeft
 
-              },id)
+              },Number(id))
 
             return {
               chatList:data
@@ -256,6 +269,7 @@ export const useMessageStore = create((set)=>{
         //通讯录列表
         friendList:getFriendList(),
         changeFriendList(data:any,isOnline:boolean = false){
+
            set((state:any)=>{
                let list = isOnline ? defaultFriendList : state.friendList
                const prototype = Object.prototype.toString.call(data)
@@ -263,6 +277,11 @@ export const useMessageStore = create((set)=>{
                data = addFirstPinYin(data,'title','username',list)
 
                if( prototype === '[object Array]' ){
+                   //没有好友的情况需删除某些数据
+                   if(!data.length){
+                       //清空之前查看过的好友信息
+                       state.changeFriendData({})
+                   }
                    list = list.splice(0,3)
                }
                list.push(...data)
@@ -274,6 +293,19 @@ export const useMessageStore = create((set)=>{
            })
 
 
+        },
+        changeBadgeCount(count:number = 1){
+            set((state:any)=>{
+                let list = state.friendList
+                list.map((item:any)=>{
+                    if(item.type === 'new'){
+                        count ? item.count ++ : item.count = 0
+                    }
+                })
+                return {
+                    friendList:list
+                }
+            })
         },
         //收到的好友请求
         friendRequest:getStorageData('friendRequest',{}),
@@ -297,6 +329,8 @@ export const useMessageStore = create((set)=>{
                     data[user_id].push(request)
                     data[user_id] = verifyTime(data[user_id])
 
+                    //有好友申请，每有一条申请，朋友列表中的新的朋友徽标数加1
+                    state.changeBadgeCount()
                 }
                 else if(operations === 'shift'){
 
@@ -321,14 +355,24 @@ export const useMessageStore = create((set)=>{
             })
         },
         friendListInfo:getStorageData('friendListInfo',null),
+        friendData:getStorageData('friendData',null),
         changeIndexInfo(type:string,title:string,index:number,id:number){
 
             set(()=>{
+
                 setStorageData('friendListInfo',{type,title,index,hasBeenRead:true,user_id:id})
                 return {
                     friendListInfo:{
                         type,title,index,hasBeenRead:true,user_id:id
                     }
+                }
+            })
+        },
+        changeFriendData(data:any){
+            set(()=>{
+                setStorageData('friendData',data)
+                return {
+                    friendData:data
                 }
             })
         },

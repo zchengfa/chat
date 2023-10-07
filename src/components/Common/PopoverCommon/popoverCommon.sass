@@ -1,3 +1,5 @@
+.box-none
+  display: none
 .popover-box
   display: flex
   flex-direction: column
@@ -14,10 +16,11 @@
       flex-direction: column
       justify-content: flex-start
       align-items: flex-start
-      margin-left: .5rem
+      margin-left: 1rem
     .username
       font-weight: bold
     .ID
+      margin-top: .2rem
       font-size: var(--middle-font-size)
       color: var(--deep-gray-color)
   .avatar
@@ -37,10 +40,13 @@
     .user-other
       width: 100%
       .label
+        display: inline-block
+        width: 4rem
+        margin-right: 1rem
         color: var(--deep-gray-color)
       .btn-list
         display: flex
-        justify-content: space-between
+        justify-content: center
         align-items: center
         .list-item
           display: flex

@@ -7,7 +7,16 @@ export default function PopoverCommon(props:any){
     const btnList = [
         {
             title:'发消息',
-            component:operationsData['operations'][3].component()
+            component:operationsData['operations'][3].component(),
+            click:()=> {
+                document.dispatchEvent(new CustomEvent('sendMsg',{'detail':{
+                    data:{
+                        username:customer.username,
+                        avatar:customer.avatar,
+                        user_id:customer.user_id
+                    }
+                }}))
+            }
         },
         {
             title:'语音聊天',
@@ -23,8 +32,12 @@ export default function PopoverCommon(props:any){
         props.btnClick()
     }
 
+    const addNotes = ()=>{
+        alert('该功能待完善')
+    }
+
     const content = (
-        <div className={'popover-box'}>
+        <div className={Object.keys(customer).length ? 'popover-box' : 'box-none'}>
             <div className={'box-top'}>
                 <Image className={'avatar'} src={customer.avatar} preview={false}></Image>
                 <div className={'user-info'}>
@@ -38,7 +51,7 @@ export default function PopoverCommon(props:any){
                     customer.isFriend ? <div className={'user-other'}>
                         <div className={'notes-box item-box'}>
                             <label htmlFor="notes" className={'label'}>备注</label>
-                            <span id={'notes'}>{customer.notes}</span>
+                            {customer.notes !== 'null' ? <span id={'notes'}>{customer.notes}</span> : <span onClick={addNotes} style={{color:'var(--deep-gray-color)'}}>点击添加备注</span>}
                         </div>
                         <Divider></Divider>
                         <div className={'source-box item-box'}>
@@ -49,7 +62,7 @@ export default function PopoverCommon(props:any){
                         <div className={'btn-list item-box'}>
                             {
                                 btnList.map((item:any,index:number)=>{
-                                    return <div className={'list-item'} key={index}>
+                                    return <div className={'list-item'} key={index} onClick={item.click}>
                                         {item.component}
                                         <span className={'btn-span'}>{item.title}</span>
                                     </div>
@@ -62,7 +75,11 @@ export default function PopoverCommon(props:any){
         </div>
     )
 
-    return <Popover arrow={props.arrow} content={content} open={open} placement={placement} trigger={'click'}>
+    return props.isPopover ? <Popover arrow={props.arrow} content={content} open={open} placement={placement} trigger={'click'}>
         {children}
-    </Popover>
+    </Popover> : content
+}
+
+PopoverCommon.defaultProps={
+    isPopover:true
 }

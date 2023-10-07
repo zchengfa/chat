@@ -23,7 +23,7 @@ export default function ChatContent (props:any){
     //监听聊天消息列表，列表数据量变化，让最后一项出现在视口，保持滚动到最新消息
     useEffect(()=>{
 
-        const el = document.getElementsByClassName('msg-li').item(msgData[listId]?.length -1)
+        const el = document.getElementsByClassName('msg-li').item(msgData[listId]?.length -2)
 
         el?.scrollIntoView({behavior:'smooth'})
 
@@ -83,7 +83,9 @@ export default function ChatContent (props:any){
             //向父组件发送事件，将消息发动给后端的socket
             props.socketMsg({
                 sender:customer.username,
-                reciever:friendInfo.user,
+                userId:customer.user_id,
+                receiver:friendInfo.user,
+                avatar:friendInfo.avatar,
                 sendTime:new Date().getTime(),
                 msg
             })

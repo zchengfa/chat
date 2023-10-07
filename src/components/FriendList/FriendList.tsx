@@ -4,17 +4,27 @@ import './friendList.sass'
 import withHook from "../../hook/withHook";
 
 function FriendList (props:any){
-    const friendRequestCount = props.Zustand.friendRequest.length
+
     const friendListInfo = props.Zustand.friendListInfo
     const list = props.Zustand.friendList
+    const {changeFriendData,changeBadgeCount} = props.Zustand
 
-    const showListContent = (type:string,title:string,index:number,id:number)=>{
-        props.showListContent(type,title,index,id)
+    const showListContent = (item:any,index:number)=>{
+
+        props.showListContent(item.type,item.title,index,item.user_id)
+        if(!item.type){
+            item.isFriend = true
+            changeFriendData(item)
+        }
+        //若点击的时新的朋友，则需使徽标数归0
+        if(item.type === 'new'){
+            changeBadgeCount(0)
+        }
     }
 
     const itemElement = (item:any,index:number)=>{
-        return <div key={index} className={ index === friendListInfo?.index && item.user_id === friendListInfo?.user_id ? 'avatar-username actived' : 'avatar-username'} onClick={()=> showListContent(item.type,item.username,index,item.user_id)}>
-            {item.type && item.type!=='btn' ? <Badge count={item.type === 'new' && !friendListInfo?.hasBeenRead ?friendRequestCount : 0} overflowCount={99} size={'small'}>
+        return <div key={index} className={ index === friendListInfo?.index && item.user_id === friendListInfo?.user_id ? 'avatar-username actived' : 'avatar-username'} onClick={()=> showListContent(item,index)}>
+            {item.type && item.type!=='btn' ? <Badge count={item.count} overflowCount={99} size={'small'}>
                 <div style={item.type === 'new' ?{backgroundColor:'var(--orange-color)'} :{backgroundColor:'var(--blue-color)'}} className={'avatar type-avatar'}>{item.avatar}</div>
             </Badge>: <Avatar className={'avatar'} src={item.avatar}></Avatar>
             }

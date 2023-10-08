@@ -100,7 +100,8 @@ export interface MsgDataType {
   time:string,
   isMute:boolean,
   hasBeenRead:boolean,
-  isGroupChat:boolean
+  isGroupChat:boolean,
+  showTime?:string
 }
 
 

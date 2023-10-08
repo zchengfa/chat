@@ -30,7 +30,7 @@ function ChatList (props:any){
               <p className={'chat-msg'}>{item.msg}</p>
             </div>
             <div className={'time-mute'}>
-              <p className={'chat-time'}>{item.time}</p>
+              <p className={'chat-time'}>{item.showTime}</p>
               {item.isMute ? <BellIconComponent className={'chat-mute'} /> : null}
             </div>
           </Space>

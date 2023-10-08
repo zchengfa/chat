@@ -8,7 +8,6 @@ import {Button, Divider, Input, Layout, Space} from "antd";
 import {correctIconComponent, menu, MenuType, MsgDataType, otherMenu} from "../../common/staticData/data";
 import './index.sass'
 import {CloseCircleOutlined, RightOutlined, SearchOutlined, UserSwitchOutlined} from '@ant-design/icons'
-import {timeFormatting} from "../../util/util";
 import {searchUserInfo} from "../../network/request";
 import PopoverCommon from "../../components/Common/PopoverCommon/PopoverCommon";
 import FriendApplication from "../../components/FriendApplication/FriendApplication";
@@ -44,6 +43,7 @@ class Home extends Component<any, any>{
         }
     }
     socketMsg = (data:any)=>{
+
         this.props.socket.emit('sendMsg',data)
     }
     /**
@@ -382,6 +382,9 @@ class Home extends Component<any, any>{
     }
 
     componentDidMount() {
+        //处理聊天列表与聊天记录的时间（待完善）
+        this.props.Zustand.changeStorageTime()
+
         const user = this.props.Zustand.customer
         this.props.socket.emit('online',{
             name:user.username,
@@ -434,7 +437,7 @@ class Home extends Component<any, any>{
                 type: 'success',
                 content: '接受该好友申请成功',
             })
-            console.log(info)
+
             this.props.Zustand.changeFriendRequest(info,'shift')
         })
 
@@ -442,7 +445,7 @@ class Home extends Component<any, any>{
          * 好友已经同意您的申请，将好友的信息添加到你的好友列表中
          */
         this.props.socket.on('friendHadAcceptApply',(info:any)=>{
-            console.log(info)
+
             this.props.Zustand.changeFriendRequest(info,'shift')
         })
 
@@ -452,7 +455,7 @@ class Home extends Component<any, any>{
                 type: 'self',
                 msg: '',
                 user: '文件传输助手',
-                time: timeFormatting('hh:mm', new Date()),
+                time: new Date().getTime(),
                 hasBeenRead: true,
                 isGroupChat: false,
                 avatar:'',
@@ -469,7 +472,7 @@ class Home extends Component<any, any>{
                 userId:user_id,
                 msg: '',
                 user: username,
-                time: timeFormatting('hh:mm', new Date()),
+                time: new Date().getTime(),
                 hasBeenRead: true,
                 isGroupChat: false,
                 avatar,
@@ -492,8 +495,6 @@ class Home extends Component<any, any>{
     componentWillUnmount() {
         document.removeEventListener('sendMsg',()=>{})
     }
-
-
 }
 
 export default WithHook(Home)

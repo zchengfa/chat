@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import {MsgDataType,operationsData} from "../common/staticData/data";
-import {sortByLocaleWithObject,getFirstPinYin,verifyTime} from "../util/util";
+import {sortByLocaleWithObject, getFirstPinYin, verifyTime, dealMsgTime} from "../util/util";
+import {Console} from "inspector";
 
 const defaultFriendList = [
     {
@@ -144,12 +145,20 @@ export const useMessageStore = create((set)=>{
                 data[item.userId] = []
                 data[item.userId].push(item)
               }
+
             }
             else{
               if(!data[id]){
                   data[id] = []
               }
-                data[id].push(item)
+              if(new Date().getTime() - data[id][(data[id].length) -1]?.time >= 5*60*1000){
+                  let timeout = dealMsgTime(item.time)
+                  data[id].push({
+                      timeout,
+                      time:item.time
+                  })
+              }
+              data[id].push(item)
             }
 
 
@@ -220,6 +229,8 @@ export const useMessageStore = create((set)=>{
               })
 
               data[index].msg = item.msg
+              data[index].showTime = dealMsgTime(Number(item.time))
+              data[index].time = item.time
             }
             else if(replyId && isReceive){
                 let index:any = undefined
@@ -228,10 +239,21 @@ export const useMessageStore = create((set)=>{
                        index = i
                    }
                 })
-                index !== undefined ? data[index].msg = item.msg : data.unshift(item)
+                if(index !== undefined){
+                    data[index].msg = item.msg
+                    data[index].showTime = dealMsgTime(Number(item.time))
+                    data[index].time = item.time
+                }
+                else{
+                    item.showTime = dealMsgTime(Number(item.time))
+
+                    data.unshift(item)
+                }
+
             }
             else{
-              data.unshift(item)
+                item.showTime = dealMsgTime(Number(item.time))
+                data.unshift(item)
             }
 
 
@@ -246,8 +268,8 @@ export const useMessageStore = create((set)=>{
                   avatar:item.avatar,
                   msg:item.msg,
                   bgColor,
-                  isLeft
-
+                  isLeft,
+                  time:item.time
               },Number(id))
 
             return {
@@ -381,6 +403,28 @@ export const useMessageStore = create((set)=>{
             set(()=>{
                 return {
                     isAcceptApply:status
+                }
+            })
+        },
+        changeStorageTime(){
+            set((state:any)=>{
+                let {chatList,msgData} = state
+                //console.log(chatList,msgData)
+                chatList.map((item:any)=>{
+                    return item.showTime = dealMsgTime(item.time)
+                })
+
+                for (const i in msgData) {
+                    msgData[i].map((item:any)=>{
+                        if(item.timeout){
+                            item.timeout = dealMsgTime(item.time)
+                        }
+                    })
+                }
+
+                return {
+                    chatList,
+                    msgData
                 }
             })
         }

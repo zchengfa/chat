@@ -65,7 +65,7 @@ export default function ChatContent (props:any){
     }
 
     const sendMsg = (msg:string)=>{
-
+        let time = new Date().getTime()
         setMsg('')
 
         if(msg.length){
@@ -74,7 +74,8 @@ export default function ChatContent (props:any){
                 avatar:customer.avatar,
                 isLeft:false,
                 bgColor:'var(--success-font-color)',
-                msg
+                msg,
+                time
             },listId)
             let c = count
             c++
@@ -86,7 +87,7 @@ export default function ChatContent (props:any){
                 userId:customer.user_id,
                 receiver:friendInfo.user,
                 avatar:friendInfo.avatar,
-                sendTime:new Date().getTime(),
+                sendTime:time,
                 msg
             })
         }

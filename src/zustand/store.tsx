@@ -193,9 +193,9 @@ export const useMessageStore = create((set)=>{
         changeListId:(id:number)=>{
            set((state:any)=>{
                state.changeReadStatus(id)
-               setStorageData('listId',id)
+               setStorageData('listId',Number(id))
                return {
-                    listId:id
+                    listId:Number(id)
                 }
             })
         },
@@ -409,7 +409,7 @@ export const useMessageStore = create((set)=>{
         changeStorageTime(){
             set((state:any)=>{
                 let {chatList,msgData} = state
-                //console.log(chatList,msgData)
+
                 chatList.map((item:any)=>{
                     return item.showTime = dealMsgTime(item.time)
                 })

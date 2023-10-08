@@ -399,7 +399,7 @@ class Home extends Component<any, any>{
         this.props.socket.on('receiveMessage',(data:any)=>{
 
             this.props.Zustand.changeChatList({
-                userId:data.userId,
+                userId:Number(data.userId),
                 user:data.sender,
                 type:'msg',
                 msg:data.msg,

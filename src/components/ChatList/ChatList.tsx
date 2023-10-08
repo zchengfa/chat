@@ -18,7 +18,7 @@ function ChatList (props:any){
   const chatListElement = ()=>{
     return chatList.map((item:any,index:number)=>{
       return <li key={index}>
-        <div className={listId === item.userId ? 'message-box actived' : 'message-box'} onClick={()=> chatWithSender(item,item.userId)}>
+        <div className={Number(listId) === Number(item.userId) ? 'message-box actived' : 'message-box'} onClick={()=> chatWithSender(item,item.userId)}>
           <Space className={'msg-left'}>
             <Badge dot={!item.hasBeenRead}>
               { item.avatar.length ? <img className={'avatar'} src={item.avatar} alt=""/> : item.type === 'text' ? <Avatar shape={'square'} icon={<UserOutlined />}></Avatar> : <div className={'avatar'} style={{backgroundColor:'var(--success-font-color)'}}><FileTransIconComponent /></div> }

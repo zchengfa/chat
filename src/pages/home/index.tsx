@@ -12,6 +12,9 @@ import {searchUserInfo} from "../../network/request";
 import PopoverCommon from "../../components/Common/PopoverCommon/PopoverCommon";
 import FriendApplication from "../../components/FriendApplication/FriendApplication";
 import FriendListContent from "../../components/FriendListContent/FriendListContent";
+import {emojiCode, emojiToUtf16, utf16ToEmoji} from "../../util/util";
+import {toUnicode} from "punycode";
+
 
 class Home extends Component<any, any>{
     constructor(props:any) {
@@ -384,7 +387,7 @@ class Home extends Component<any, any>{
     componentDidMount() {
         //处理聊天列表与聊天记录的时间（待完善）
         this.props.Zustand.changeStorageTime()
-
+        emojiCode()
         const user = this.props.Zustand.customer
         this.props.socket.emit('online',{
             name:user.username,

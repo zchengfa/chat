@@ -1,6 +1,8 @@
 // @ts-ignore
 import cryptoJs from 'crypto-js/crypto-js'
 import pinyin from "pinyin";
+import {InputNumberProps} from "antd";
+
 
 const key = cryptoJs.enc.Utf8.parse("1234123412PackMyBoxWithFiveDozenLiquorJugs");  //十六位十六进制数作为密钥
 const iv = cryptoJs.enc.Utf8.parse('PackMyBoxWithFiveDozenLiquorJugs1234123412');   //十六位十六进制数作为密钥偏移量
@@ -217,4 +219,77 @@ export function dealMsgTime (time:number,separator:string | string[] | undefined
   }
 
   return showTime
+}
+
+/**
+ * 将表情符号转换为字符串
+ * @param str { string } 表情符号
+ */
+export function emojiToUtf16(str:string){
+  let pattern = /[\ud800-\udbff][\udc00-\udfff]/g
+
+  str = str.replace(pattern, (char: string) => {
+    let H,L,code;
+    return (char.length === 2) ? function (){
+      H = char.charCodeAt(0); // 取出高位
+
+      L = char.charCodeAt(1); // 取出低位
+
+      code = (H - 0xD800) * 0x400 + 0x10000 + L - 0xDC00; // 转换算法
+
+      return "&#" + code + ";"
+    }() : char
+  })
+
+  return str
+}
+
+/**
+ * 字符串转表情
+ * @param str { string } 字符串
+ */
+export function utf16ToEmoji(str:string){
+  const reg = /\&#.*?;/g;
+  return str.replace(reg, (char)=> {
+
+    let H, L, code;
+
+    return (char.length === 9) ? function (){
+      let match:any = char.match(/[0-9]+/g)
+      code = parseInt(match);
+
+      H = Math.floor((code - 0x10000) / 0x400) + 0xD800;
+
+      L = (code - 0x10000) % 0x400 + 0xDC00;
+
+      return unescape("%u" + H.toString(16) + "%u" + L.toString(16));
+    }() : char
+
+  });
+
+}
+
+export function emojiCode(){
+  let s = '🌹🍀🍎💰📱🌙🍁🍂🍃🌷💎🔪🔫🏀👄👍🔥😀😁😂😃😄😅😆😉😊😋😎😍😘😗😙😚😇😐😑😶😏😣😥😮😯😪😫😴😌😛😜😝😒😓😔😕😲😷😖😞😟😤😢😭😦😧😨😬😰😱😳😵😡😠😈👿👹👺💀👻👽👦👧👨👩👴👵👶👱👮👲👳👷👸💂🎅👰👼💆💇🙍🙎🙅🙆💁🙋🙇🙌🙏👤👥🚶🏃👯💃👫👬👭💏💑👪💪👈👉👆👇✋✊👊👋👏👐👣👀👂👃👅👄💋👓👔👕👖👗👘👙👚👛👜👝🎒💼👞👟👠👡👢👑👒🎩🎓💄💅💍🌂'
+  let codeArr:any[] =  s.split('')
+  let transformCode:any[] = [],data:any[] = []
+
+  let i = 0
+  codeArr.map((item:any)=>{
+    transformCode.push(codeArr[i]+codeArr[i+1])
+    i +=2
+  })
+
+
+  transformCode = transformCode.splice(0,transformCode.length/2)
+  transformCode.map((item:any)=>{
+    data.push({
+      emoji:item,
+      code:emojiToUtf16(item),
+      nameCode:'[玫瑰]',
+      title:'玫瑰'
+    })
+  })
+
+  console.log(data)
 }

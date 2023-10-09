@@ -651,481 +651,475 @@ export const emoji = [
   {
     "emoji": "👩",
     "code": "&#128105;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[靓女]",
+    "title": "靓女"
   },
   {
     "emoji": "👴",
     "code": "&#128116;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[老爷爷]",
+    "title": "老爷爷"
   },
   {
     "emoji": "👵",
     "code": "&#128117;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[老奶奶]",
+    "title": "老奶奶"
   },
   {
     "emoji": "👶",
     "code": "&#128118;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[小孩]",
+    "title": "小孩"
   },
   {
     "emoji": "👱",
     "code": "&#128113;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[老外]",
+    "title": "老外"
   },
   {
     "emoji": "👮",
     "code": "&#128110;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[快递员]",
+    "title": "快递员"
   },
   {
     "emoji": "👲",
     "code": "&#128114;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[骑行]",
+    "title": "骑行"
   },
   {
     "emoji": "👳",
     "code": "&#128115;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[老头]",
+    "title": "老头"
   },
   {
     "emoji": "👷",
     "code": "&#128119;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[工人]",
+    "title": "工人"
   },
   {
     "emoji": "👸",
     "code": "&#128120;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[狼人]",
+    "title": "老人"
   },
   {
     "emoji": "💂",
     "code": "&#128130;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[商人]",
+    "title": "商人"
   },
   {
     "emoji": "🎅",
     "code": "&#127877;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[圣诞老人]",
+    "title": "圣诞老人"
   },
   {
     "emoji": "👰",
     "code": "&#128112;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[baby]",
+    "title": "baby"
   },
   {
     "emoji": "👼",
     "code": "&#128124;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[婴儿]",
+    "title": "婴儿"
   },
   {
     "emoji": "💆",
     "code": "&#128134;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[女孩]",
+    "title": "女孩"
   },
   {
     "emoji": "💇",
     "code": "&#128135;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[男孩]",
+    "title": "男孩"
   },
   {
     "emoji": "🙍",
     "code": "&#128589;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[男的]",
+    "title": "男的"
   },
   {
     "emoji": "🙎",
     "code": "&#128590;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[男人]",
+    "title": "男人"
   },
   {
     "emoji": "🙅",
     "code": "&#128581;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[天使]",
+    "title": "天使"
   },
   {
     "emoji": "🙆",
     "code": "&#128582;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[比心]",
+    "title": "比心"
   },
   {
     "emoji": "💁",
     "code": "&#128129;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[托手]",
+    "title": "托手"
   },
   {
     "emoji": "🙋",
     "code": "&#128587;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[打招呼]",
+    "title": "打招呼"
   },
   {
     "emoji": "🙇",
     "code": "&#128583;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[伤心boy]",
+    "title": "伤心boy"
   },
   {
     "emoji": "🙌",
     "code": "&#128588;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[双手]",
+    "title": "双手"
   },
   {
     "emoji": "🙏",
     "code": "&#128591;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[祈祷]",
+    "title": "祈祷"
   },
   {
     "emoji": "👤",
     "code": "&#128100;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[用户]",
+    "title": "用户"
   },
   {
     "emoji": "👥",
     "code": "&#128101;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[双人]",
+    "title": "双人"
   },
   {
     "emoji": "🚶",
     "code": "&#128694;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[散步]",
+    "title": "散步"
   },
   {
     "emoji": "🏃",
     "code": "&#127939;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[跑步]",
+    "title": "跑步"
   },
   {
     "emoji": "👯",
     "code": "&#128111;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[体操]",
+    "title": "体操"
   },
   {
     "emoji": "💃",
     "code": "&#128131;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[跳舞]",
+    "title": "跳舞"
   },
   {
     "emoji": "👫",
     "code": "&#128107;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[一起]",
+    "title": "一起"
   },
   {
     "emoji": "👬",
     "code": "&#128108;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[牵手]",
+    "title": "牵手"
   },
   {
     "emoji": "👭",
     "code": "&#128109;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[伙伴]",
+    "title": "伙伴"
   },
   {
     "emoji": "💏",
     "code": "&#128143;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[情侣]",
+    "title": "情侣"
   },
   {
     "emoji": "💑",
     "code": "&#128145;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[情侣2]",
+    "title": "情侣2"
   },
   {
     "emoji": "👪",
     "code": "&#128106;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[一家人]",
+    "title": "一家人"
   },
   {
     "emoji": "💪",
     "code": "&#128170;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[强壮]",
+    "title": "强壮"
   },
   {
     "emoji": "👈",
     "code": "&#128072;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[击毙你]",
+    "title": "击毙你"
   },
   {
     "emoji": "👉",
     "code": "&#128073;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[鸡哔你]",
+    "title": "鸡哔你"
   },
   {
     "emoji": "👆",
     "code": "&#128070;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[向上]",
+    "title": "向上"
   },
   {
     "emoji": "👇",
     "code": "&#128071;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
-  },
-  {
-    "emoji": "✋✊",
-    "code": "✋✊",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[向下]",
+    "title": "向下"
   },
   {
     "emoji": "👊",
     "code": "&#128074;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[捶]",
+    "title": "捶"
   },
   {
     "emoji": "👋",
     "code": "&#128075;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[击掌]",
+    "title": "击掌"
   },
   {
     "emoji": "👏",
     "code": "&#128079;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[双手拍]",
+    "title": "双手拍"
   },
   {
     "emoji": "👐",
     "code": "&#128080;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[双手]",
+    "title": "双手"
   },
   {
     "emoji": "👣",
     "code": "&#128099;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[双脚]",
+    "title": "双脚"
   },
   {
     "emoji": "👀",
     "code": "&#128064;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[眼睛]",
+    "title": "眼睛"
   },
   {
     "emoji": "👂",
     "code": "&#128066;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[耳朵]",
+    "title": "耳朵"
   },
   {
     "emoji": "👃",
     "code": "&#128067;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[鼻子]",
+    "title": "鼻子"
   },
   {
     "emoji": "👅",
     "code": "&#128069;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[舌头]",
+    "title": "舌头"
   },
   {
     "emoji": "👄",
     "code": "&#128068;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[嘴巴]",
+    "title": "嘴巴"
   },
   {
     "emoji": "💋",
     "code": "&#128139;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[唇]",
+    "title": "唇"
   },
   {
     "emoji": "👓",
     "code": "&#128083;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[眼镜]",
+    "title": "眼镜"
   },
   {
     "emoji": "👔",
     "code": "&#128084;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[西装]",
+    "title": "西装"
   },
   {
     "emoji": "👕",
     "code": "&#128085;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[短袖]",
+    "title": "短袖"
   },
   {
     "emoji": "👖",
     "code": "&#128086;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[裤子]",
+    "title": "裤子"
   },
   {
     "emoji": "👗",
     "code": "&#128087;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[裙子]",
+    "title": "裙子"
   },
   {
     "emoji": "👘",
     "code": "&#128088;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[和服]",
+    "title": "和服"
   },
   {
     "emoji": "👙",
     "code": "&#128089;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[内衣]",
+    "title": "内衣"
   },
   {
     "emoji": "👚",
     "code": "&#128090;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[V领]",
+    "title": "V领"
   },
   {
     "emoji": "👛",
     "code": "&#128091;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[水果]",
+    "title": "水果"
   },
   {
     "emoji": "👜",
     "code": "&#128092;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[名牌包包]",
+    "title": "名牌包包"
   },
   {
     "emoji": "👝",
     "code": "&#128093;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[可爱包包]",
+    "title": "可爱包包"
   },
   {
     "emoji": "🎒",
     "code": "&#127890;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[书包]",
+    "title": "书包"
   },
   {
     "emoji": "💼",
     "code": "&#128188;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[公文包]",
+    "title": "公文包"
   },
   {
     "emoji": "👞",
     "code": "&#128094;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[皮鞋]",
+    "title": "皮鞋"
   },
   {
     "emoji": "👟",
     "code": "&#128095;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[休闲鞋]",
+    "title": "休闲鞋"
   },
   {
     "emoji": "👠",
     "code": "&#128096;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[高跟鞋]",
+    "title": "高跟鞋"
   },
   {
     "emoji": "👡",
     "code": "&#128097;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[拖鞋]",
+    "title": "拖鞋"
   },
   {
     "emoji": "👢",
     "code": "&#128098;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[靴子]",
+    "title": "靴子"
   },
   {
     "emoji": "👑",
     "code": "&#128081;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[皇冠]",
+    "title": "皇冠"
   },
   {
     "emoji": "👒",
     "code": "&#128082;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[帽子]",
+    "title": "帽子"
   },
   {
     "emoji": "🎩",
     "code": "&#127913;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[礼帽]",
+    "title": "礼帽"
   },
   {
     "emoji": "🎓",
     "code": "&#127891;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[学士帽]",
+    "title": "学士帽"
   },
   {
     "emoji": "💄",
     "code": "&#128132;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[口红]",
+    "title": "口红"
   },
   {
     "emoji": "💅",
     "code": "&#128133;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[美甲]",
+    "title": "美甲"
   },
   {
     "emoji": "💍",
     "code": "&#128141;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[钻戒]",
+    "title": "钻戒"
   },
   {
     "emoji": "🌂",
     "code": "&#127746;",
-    "nameCode": "[玫瑰]",
-    "title": "玫瑰"
+    "nameCode": "[雨伞]",
+    "title": "雨伞"
   }
 ]

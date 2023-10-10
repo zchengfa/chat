@@ -1,0 +1,28 @@
+.pop-container
+  width: 40vw
+  height: 50vh
+    cursor: context-menu
+  overflow-y: scroll
+.title-emoji
+  margin-left: 1.4rem
+  color: var(--deep-gray-color)
+.emoji-popover
+  padding: .5rem
+  display: flex
+  justify-content: flex-start
+  align-items: center
+  flex-wrap: wrap
+  font-size: 1.4rem
+  .emoji-tip
+    margin: .2rem auto
+    display: flex
+    justify-content: center
+    align-items: center
+    width: 2.2rem
+    height: 2.2rem
+    border-radius: .4rem
+  .emoji-tip:hover
+    background-color: var(--gray-color)
+  &::after
+    content: ''
+    width: calc(100% - 13.5rem)

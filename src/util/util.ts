@@ -1,7 +1,7 @@
 // @ts-ignore
 import cryptoJs from 'crypto-js/crypto-js'
 import pinyin from "pinyin";
-import {InputNumberProps} from "antd";
+import {emoji, EmojiType} from "../common/staticData/data";
 
 
 const key = cryptoJs.enc.Utf8.parse("1234123412PackMyBoxWithFiveDozenLiquorJugs");  //十六位十六进制数作为密钥
@@ -269,27 +269,86 @@ export function utf16ToEmoji(str:string){
 
 }
 
-export function emojiCode(){
-  let s = '🌹🍀🍎💰📱🌙🍁🍂🍃🌷💎🔪🔫🏀👄👍🔥😀😁😂😃😄😅😆😉😊😋😎😍😘😗😙😚😇😐😑😶😏😣😥😮😯😪😫😴😌😛😜😝😒😓😔😕😲😷😖😞😟😤😢😭😦😧😨😬😰😱😳😵😡😠😈👿👹👺💀👻👽👦👧👨👩👴👵👶👱👮👲👳👷👸💂🎅👰👼💆💇🙍🙎🙅🙆💁🙋🙇🙌🙏👤👥🚶🏃👯💃👫👬👭💏💑👪💪👈👉👆👇✋✊👊👋👏👐👣👀👂👃👅👄💋👓👔👕👖👗👘👙👚👛👜👝🎒💼👞👟👠👡👢👑👒🎩🎓💄💅💍🌂'
-  let codeArr:any[] =  s.split('')
-  let transformCode:any[] = [],data:any[] = []
+export function getNameCode(str:string,e:string,saveStr:string){
 
-  let i = 0
-  codeArr.map((item:any)=>{
-    transformCode.push(codeArr[i]+codeArr[i+1])
-    i +=2
+  let nameCode = ''
+  emoji.map((item:EmojiType)=>{
+    if(item.emoji === e){
+      nameCode = item.nameCode
+    }
+    return true
   })
 
+  if(saveStr.length){
+    //待完善有bug
+    console.log(str.substring(str.length - saveStr.length,str.length -4))
+    return saveStr + str.substring(str.length - saveStr.length,str.length -4) + nameCode
+  }
+  else{
+    return str.substring(0,str.length -2) + nameCode
+  }
 
-  transformCode = transformCode.splice(0,transformCode.length/2)
-  transformCode.map((item:any)=>{
-    data.push({
-      emoji:item,
-      code:emojiToUtf16(item),
-      nameCode:'[玫瑰]',
-      title:'玫瑰'
-    })
-  })
-
-  console.log(data)
 }
+
+
+function isEmojiCharacter(substring:string){
+  let ls;
+  for  (let i = 0; i < substring.length; i ++){
+    const hs = substring.charCodeAt(i);
+    if  (0xd800 <= hs && hs <= 0xdbff){
+      if  (substring.length> 1){
+        ls = substring.charCodeAt(i + 1);
+        const uc = ((hs - 0xd800) * 0x400) + (ls - 0xdc00) + 0x10000;
+        if  (0x1d000 <= uc && uc <= 0x1f77f){
+          return true ;
+        }
+      }
+    }
+    else if(substring.length> 1){
+      ls = substring.charCodeAt(i + 1);
+      if  (ls === 0x20e3){
+        return true ;
+      }
+    }  else  {
+      if(0x2100 <= hs && hs <= 0x27ff){
+        return true ;
+      }  else if  (0x2B05 <= hs && hs <= 0x2b07){
+        return true ;
+      }  else if  (0x2934 <= hs && hs <= 0x2935){
+        return true ;
+      }  else if  (0x3297 <= hs && hs <= 0x3299){
+        return true ;
+      }  else if  (hs === 0xa9 || hs === 0xae || hs === 0x303d || hs === 0x3030
+      || hs === 0x2b55 || hs === 0x2b1c || hs === 0x2b1b
+      || hs === 0x2b50){
+        return true ;
+      }
+    }
+  }
+}
+
+
+// export function emojiCode(){
+//   let s = '🌹🍀🍎💰📱🌙🍁🍂🍃🌷💎🔪🔫🏀👄👍🔥😀😁😂😃😄😅😆😉😊😋😎😍😘😗😙😚😇😐😑😶😏😣😥😮😯😪😫😴😌😛😜😝😒😓😔😕😲😷😖😞😟😤😢😭😦😧😨😬😰😱😳😵😡😠😈👿👹👺💀👻👽👦👧👨👩👴👵👶👱👮👲👳👷👸💂🎅👰👼💆💇🙍🙎🙅🙆💁🙋🙇🙌🙏👤👥🚶🏃👯💃👫👬👭💏💑👪💪👈👉👆👇✋✊👊👋👏👐👣👀👂👃👅👄💋👓👔👕👖👗👘👙👚👛👜👝🎒💼👞👟👠👡👢👑👒🎩🎓💄💅💍🌂'
+//   let codeArr:any[] =  s.split('')
+//   let transformCode:any[] = [],data:any[] = []
+//
+//   let i = 0
+//   codeArr.map((item:any)=>{
+//     transformCode.push(codeArr[i]+codeArr[i+1])
+//     i +=2
+//   })
+//
+//
+//   transformCode = transformCode.splice(0,transformCode.length/2)
+//   transformCode.map((item:any)=>{
+//     data.push({
+//       emoji:item,
+//       code:emojiToUtf16(item),
+//       nameCode:'[玫瑰]',
+//       title:'玫瑰'
+//     })
+//   })
+//
+//   console.log(data)
+// }

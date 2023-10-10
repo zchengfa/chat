@@ -228,7 +228,7 @@ export const useMessageStore = create((set)=>{
 
               })
 
-              data[index].msg = item.msg
+              data[index].msg = item.msgCode
               data[index].showTime = dealMsgTime(Number(item.time))
               data[index].time = item.time
             }
@@ -240,7 +240,7 @@ export const useMessageStore = create((set)=>{
                    }
                 })
                 if(index !== undefined){
-                    data[index].msg = item.msg
+                    data[index].msg = item.msgCode
                     data[index].showTime = dealMsgTime(Number(item.time))
                     data[index].time = item.time
                 }
@@ -427,6 +427,27 @@ export const useMessageStore = create((set)=>{
                     msgData
                 }
             })
-        }
+        },
+        emojiStatus:false,
+        changeEmojiStatus(){
+            set((state:any)=>{
+                return {
+                    emojiStatus:!state.emojiStatus
+                }
+            })
+        },
+        // emojiIndex:[],
+        // setEmojiIndex(index:number | undefined = undefined,clear:boolean = false){
+        //     set((state:any)=>{
+        //         let data = clear ? [] : state.emojiIndex
+        //         if(index !== undefined){
+        //             data.push(index)
+        //         }
+        //         return {
+        //             emojiIndex:data
+        //         }
+        //     })
+        // },
+
     }
 })

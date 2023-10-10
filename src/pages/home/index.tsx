@@ -12,8 +12,7 @@ import {searchUserInfo} from "../../network/request";
 import PopoverCommon from "../../components/Common/PopoverCommon/PopoverCommon";
 import FriendApplication from "../../components/FriendApplication/FriendApplication";
 import FriendListContent from "../../components/FriendListContent/FriendListContent";
-import {emojiCode, emojiToUtf16, utf16ToEmoji} from "../../util/util";
-import {toUnicode} from "punycode";
+
 
 
 class Home extends Component<any, any>{
@@ -330,6 +329,41 @@ class Home extends Component<any, any>{
         this.props.Zustand.changeIndexInfo(type,title,index,id)
     }
 
+    /**
+     * 自定义事件（发消息）
+     * @param event
+     * @constructor
+     */
+    CustomEventSendMsg = (event:any)=>{
+        //点击发消息，1.选择聊天菜单项、2.查看聊天列表中是否有与该该好友的通讯记录，有就直接激活与该好友的聊天状态，没有就添加一个聊天记录项
+        this.changeMenu(0,'menu')
+        const list = this.props.Zustand.chatList
+        const {user_id,username,avatar} = event.detail.data
+        let isInclude = false
+        let data = {
+            userId:user_id,
+            msg: '',
+            user: username,
+            time: new Date().getTime(),
+            hasBeenRead: true,
+            isGroupChat: false,
+            avatar,
+        } as unknown as MsgDataType
+
+        list.map((item:any)=>{
+            if(item.userId === user_id){
+                isInclude = true
+            }
+        })
+        if(!isInclude){
+            this.props.Zustand.changeChatList(data)
+        }
+
+        this.chatWithSender(data,user_id)
+    }
+
+
+
     render(){
         const { Sider,Content } = Layout
         const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder,isShowFriendBtn,inputValue,searchUserData,showFriendCom,isSelf,isShowPop } = this.state
@@ -387,7 +421,7 @@ class Home extends Component<any, any>{
     componentDidMount() {
         //处理聊天列表与聊天记录的时间（待完善）
         this.props.Zustand.changeStorageTime()
-        emojiCode()
+
         const user = this.props.Zustand.customer
         this.props.socket.emit('online',{
             name:user.username,
@@ -465,38 +499,13 @@ class Home extends Component<any, any>{
             } as unknown as MsgDataType)
         }
 
-        document.addEventListener('sendMsg',(event:any)=>{
-            //点击发消息，1.选择聊天菜单项、2.查看聊天列表中是否有与该该好友的通讯记录，有就直接激活与该好友的聊天状态，没有就添加一个聊天记录项
-            this.changeMenu(0,'menu')
-            const list = this.props.Zustand.chatList
-            const {user_id,username,avatar} = event.detail.data
-            let isInclude = false
-            let data = {
-                userId:user_id,
-                msg: '',
-                user: username,
-                time: new Date().getTime(),
-                hasBeenRead: true,
-                isGroupChat: false,
-                avatar,
-            } as unknown as MsgDataType
-
-            list.map((item:any)=>{
-               if(item.userId === user_id){
-                   isInclude = true
-               }
-            })
-            if(!isInclude){
-                this.props.Zustand.changeChatList(data)
-            }
-
-            this.chatWithSender(data,user_id)
-        })
+        document.addEventListener('sendMsg',this.CustomEventSendMsg)
 
     }
 
     componentWillUnmount() {
-        document.removeEventListener('sendMsg',()=>{})
+        document.removeEventListener('sendMsg',this.CustomEventSendMsg)
+
     }
 }
 

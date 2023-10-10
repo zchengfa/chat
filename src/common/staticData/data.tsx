@@ -14,6 +14,9 @@ import {
   ChatIconComponent,
   CorrectIconComponent, EyeIconComponent
 } from '../svg/svg'
+
+import Emoji from '../../components/Common/Emoji/Emoji'
+
 export interface MenuType {
   title:string,
   image:string,
@@ -101,6 +104,7 @@ export interface MsgDataType {
   isMute:boolean,
   hasBeenRead:boolean,
   isGroupChat:boolean,
+  msgCode?:string
   showTime?:string
 }
 
@@ -113,7 +117,7 @@ export const operationsData = {
   operations:[
     {
       title:'表情',
-      component:()=> <EmojiIconComponent />
+      component:()=> <Emoji children={<EmojiIconComponent />}></Emoji>
     },
     {
       title:'发送文件',
@@ -158,10 +162,17 @@ export const friendApplication = {
   eye:<EyeIconComponent className={'eye-icon'}/>
 }
 
+
+export interface EmojiType {
+  emoji:string,
+  code:string,
+  nameCode:string,
+  title:string
+}
 /**
  * 表情json
  */
-export const emoji = [
+export const emoji:EmojiType[] = [
   {
     "emoji": "🌹",
     "code": "&#127801;",
@@ -268,19 +279,19 @@ export const emoji = [
     "emoji": "😀",
     "code": "&#128512;",
     "nameCode": "[笑]",
-    "title": "玫瑰"
+    "title": "笑"
   },
   {
     "emoji": "😁",
     "code": "&#128513;",
     "nameCode": "[大笑]",
-    "title": "玫瑰"
+    "title": "大笑"
   },
   {
     "emoji": "😂",
     "code": "&#128514;",
-    "nameCode": "[哭]",
-    "title": "哭"
+    "nameCode": "[笑哭]",
+    "title": "笑哭"
   },
   {
     "emoji": "😃",
@@ -633,26 +644,26 @@ export const emoji = [
   {
     "emoji": "👦",
     "code": "&#128102;",
-    "nameCode": "[小伙]",
-    "title": "小伙"
+    "nameCode": "[男孩]",
+    "title": "男孩"
   },
   {
     "emoji": "👧",
     "code": "&#128103;",
-    "nameCode": "[靓仔]",
-    "title": "靓仔"
+    "nameCode": "[女孩]",
+    "title": "女孩"
   },
   {
     "emoji": "👨",
     "code": "&#128104;",
-    "nameCode": "[叼毛]",
-    "title": "叼毛"
+    "nameCode": "[男人]",
+    "title": "男人"
   },
   {
     "emoji": "👩",
     "code": "&#128105;",
-    "nameCode": "[靓女]",
-    "title": "靓女"
+    "nameCode": "[女人]",
+    "title": "女人"
   },
   {
     "emoji": "👴",
@@ -675,26 +686,26 @@ export const emoji = [
   {
     "emoji": "👱",
     "code": "&#128113;",
-    "nameCode": "[老外]",
-    "title": "老外"
+    "nameCode": "[小伙]",
+    "title": "小伙"
   },
   {
     "emoji": "👮",
     "code": "&#128110;",
-    "nameCode": "[快递员]",
-    "title": "快递员"
+    "nameCode": "[警察]",
+    "title": "警察"
   },
   {
     "emoji": "👲",
     "code": "&#128114;",
-    "nameCode": "[骑行]",
-    "title": "骑行"
+    "nameCode": "[地主]",
+    "title": "地主"
   },
   {
     "emoji": "👳",
     "code": "&#128115;",
-    "nameCode": "[老头]",
-    "title": "老头"
+    "nameCode": "[老外]",
+    "title": "老外"
   },
   {
     "emoji": "👷",
@@ -705,14 +716,14 @@ export const emoji = [
   {
     "emoji": "👸",
     "code": "&#128120;",
-    "nameCode": "[狼人]",
-    "title": "老人"
+    "nameCode": "[国王]",
+    "title": "国王"
   },
   {
     "emoji": "💂",
     "code": "&#128130;",
-    "nameCode": "[商人]",
-    "title": "商人"
+    "nameCode": "[士兵]",
+    "title": "士兵"
   },
   {
     "emoji": "🎅",
@@ -723,8 +734,8 @@ export const emoji = [
   {
     "emoji": "👰",
     "code": "&#128112;",
-    "nameCode": "[baby]",
-    "title": "baby"
+    "nameCode": "[婚纱]",
+    "title": "婚纱"
   },
   {
     "emoji": "👼",
@@ -735,14 +746,14 @@ export const emoji = [
   {
     "emoji": "💆",
     "code": "&#128134;",
-    "nameCode": "[女孩]",
-    "title": "女孩"
+    "nameCode": "[洗头]",
+    "title": "洗头"
   },
   {
     "emoji": "💇",
     "code": "&#128135;",
-    "nameCode": "[男孩]",
-    "title": "男孩"
+    "nameCode": "[剪头发]",
+    "title": "剪头发"
   },
   {
     "emoji": "🙍",
@@ -753,14 +764,14 @@ export const emoji = [
   {
     "emoji": "🙎",
     "code": "&#128590;",
-    "nameCode": "[男人]",
-    "title": "男人"
+    "nameCode": "[靓仔]",
+    "title": "靓仔"
   },
   {
     "emoji": "🙅",
     "code": "&#128581;",
-    "nameCode": "[天使]",
-    "title": "天使"
+    "nameCode": "[双手交叉]",
+    "title": "双手交叉"
   },
   {
     "emoji": "🙆",

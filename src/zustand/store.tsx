@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import {MsgDataType,operationsData} from "../common/staticData/data";
 import {sortByLocaleWithObject, getFirstPinYin, verifyTime, dealMsgTime} from "../util/util";
-import {Console} from "inspector";
 
 const defaultFriendList = [
     {
@@ -436,18 +435,5 @@ export const useMessageStore = create((set)=>{
                 }
             })
         },
-        // emojiIndex:[],
-        // setEmojiIndex(index:number | undefined = undefined,clear:boolean = false){
-        //     set((state:any)=>{
-        //         let data = clear ? [] : state.emojiIndex
-        //         if(index !== undefined){
-        //             data.push(index)
-        //         }
-        //         return {
-        //             emojiIndex:data
-        //         }
-        //     })
-        // },
-
     }
 })

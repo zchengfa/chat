@@ -440,6 +440,7 @@ class Home extends Component<any, any>{
                 user:data.sender,
                 type:'msg',
                 msg:data.msg,
+                msgCode:data.msgCode,
                 avatar:data.avatar,
                 time:data.sendTime,
                 isMute:true,

@@ -1,8 +1,6 @@
 // @ts-ignore
 import cryptoJs from 'crypto-js/crypto-js'
 import pinyin from "pinyin";
-import {emoji, EmojiType} from "../common/staticData/data";
-
 
 const key = cryptoJs.enc.Utf8.parse("1234123412PackMyBoxWithFiveDozenLiquorJugs");  //十六位十六进制数作为密钥
 const iv = cryptoJs.enc.Utf8.parse('PackMyBoxWithFiveDozenLiquorJugs1234123412');   //十六位十六进制数作为密钥偏移量
@@ -169,6 +167,12 @@ export function dealMsgTime (time:number,separator:string | string[] | undefined
         HM = '五分钟前'
       }
       str = ''
+
+      //时间为及时几分格式时，处理小时（去掉小时前的0）
+      if(Number(HM.substring(0,1)) === 0){
+        HM = HM.substring(1,HM.length)
+      }
+
     }
     else if( interval === 1 ){
       //间隔一天
@@ -269,86 +273,28 @@ export function utf16ToEmoji(str:string){
 
 }
 
-export function getNameCode(str:string,e:string,saveStr:string){
+/**
+ * 将消息中的表情转换成[微笑]等格式
+ * @param str { string } 消息
+ * @param indexArr { any[] } 带有表情在消息中的位置，以及需要转换的字符
+ * @return { string } 返回转换后的消息
+ */
+export function transMsgToNameCode(str:string,indexArr:any[]){
+  let strCode = '',preStrArr:any[] = []
+  let i = 0
+  indexArr?.map((item:any,index:number)=>{
+    preStrArr.push(str.substring(i,item.index))
 
-  let nameCode = ''
-  emoji.map((item:EmojiType)=>{
-    if(item.emoji === e){
-      nameCode = item.nameCode
-    }
-    return true
+    //获取完表情前的消息后，设置下一个表情的索引（一个表情占两个长度）
+    i = item.index +2
+
+    //将表情前消息与转换字符拼接
+    return strCode += preStrArr[index] + item.nameCode
   })
 
-  if(saveStr.length){
-    //待完善有bug
-    console.log(str.substring(str.length - saveStr.length,str.length -4))
-    return saveStr + str.substring(str.length - saveStr.length,str.length -4) + nameCode
-  }
-  else{
-    return str.substring(0,str.length -2) + nameCode
-  }
+  //获取最后一个表情后面的消息
+  let lastStr = str.substring(indexArr[indexArr.length -1]?.index + 2)
 
+  //判断最后一个表情后面是否还有消息，若有与之拼接
+  return lastStr ? strCode = strCode + lastStr : strCode
 }
-
-
-function isEmojiCharacter(substring:string){
-  let ls;
-  for  (let i = 0; i < substring.length; i ++){
-    const hs = substring.charCodeAt(i);
-    if  (0xd800 <= hs && hs <= 0xdbff){
-      if  (substring.length> 1){
-        ls = substring.charCodeAt(i + 1);
-        const uc = ((hs - 0xd800) * 0x400) + (ls - 0xdc00) + 0x10000;
-        if  (0x1d000 <= uc && uc <= 0x1f77f){
-          return true ;
-        }
-      }
-    }
-    else if(substring.length> 1){
-      ls = substring.charCodeAt(i + 1);
-      if  (ls === 0x20e3){
-        return true ;
-      }
-    }  else  {
-      if(0x2100 <= hs && hs <= 0x27ff){
-        return true ;
-      }  else if  (0x2B05 <= hs && hs <= 0x2b07){
-        return true ;
-      }  else if  (0x2934 <= hs && hs <= 0x2935){
-        return true ;
-      }  else if  (0x3297 <= hs && hs <= 0x3299){
-        return true ;
-      }  else if  (hs === 0xa9 || hs === 0xae || hs === 0x303d || hs === 0x3030
-      || hs === 0x2b55 || hs === 0x2b1c || hs === 0x2b1b
-      || hs === 0x2b50){
-        return true ;
-      }
-    }
-  }
-}
-
-
-// export function emojiCode(){
-//   let s = '🌹🍀🍎💰📱🌙🍁🍂🍃🌷💎🔪🔫🏀👄👍🔥😀😁😂😃😄😅😆😉😊😋😎😍😘😗😙😚😇😐😑😶😏😣😥😮😯😪😫😴😌😛😜😝😒😓😔😕😲😷😖😞😟😤😢😭😦😧😨😬😰😱😳😵😡😠😈👿👹👺💀👻👽👦👧👨👩👴👵👶👱👮👲👳👷👸💂🎅👰👼💆💇🙍🙎🙅🙆💁🙋🙇🙌🙏👤👥🚶🏃👯💃👫👬👭💏💑👪💪👈👉👆👇✋✊👊👋👏👐👣👀👂👃👅👄💋👓👔👕👖👗👘👙👚👛👜👝🎒💼👞👟👠👡👢👑👒🎩🎓💄💅💍🌂'
-//   let codeArr:any[] =  s.split('')
-//   let transformCode:any[] = [],data:any[] = []
-//
-//   let i = 0
-//   codeArr.map((item:any)=>{
-//     transformCode.push(codeArr[i]+codeArr[i+1])
-//     i +=2
-//   })
-//
-//
-//   transformCode = transformCode.splice(0,transformCode.length/2)
-//   transformCode.map((item:any)=>{
-//     data.push({
-//       emoji:item,
-//       code:emojiToUtf16(item),
-//       nameCode:'[玫瑰]',
-//       title:'玫瑰'
-//     })
-//   })
-//
-//   console.log(data)
-// }

@@ -4,7 +4,7 @@ import { operationsData,IconMenu } from "../../common/staticData/data";
 import MessageContent from "../MessageContent/MessageContent";
 import {useEffect, useState} from "react";
 import {useMessageStore} from "../../zustand/store";
-import {emojiToUtf16, getNameCode} from "../../util/util";
+import {emojiToUtf16, transMsgToNameCode} from "../../util/util";
 
 export default function ChatContent (props:any){
     const { Header,Content,Footer } = Layout
@@ -12,8 +12,7 @@ export default function ChatContent (props:any){
     const { TextArea } = Input
     const msgData = useMessageStore((state:any)=> state.msgData)
     const [msg,setMsg] = useState('')
-    const [msgCode,setMsgCode] = useState('')
-    const [saveMsg,setSaveMsg] = useState('')
+    const [emojiIndex,setEmojiIndex] = useState([])
     const [count,setCount] = useState(0)
     const friendInfo = useMessageStore((state:any)=> state.friendInfo)
     const customer = useMessageStore((state:any)=> state.customer)
@@ -24,17 +23,17 @@ export default function ChatContent (props:any){
 
 
     //监听聊天消息列表，列表数据量变化，让最后一项出现在视口，保持滚动到最新消息
-    useEffect(()=>{
-
-        const el = document.getElementsByClassName('msg-li').item(msgData[listId]?.length -2)
-
-        el?.scrollIntoView({behavior:'smooth'})
-
-        return ()=>{
-
-        }
-
-    },[count,msg])
+    // useEffect(()=>{
+    //
+    //     const el = document.getElementsByClassName('msg-li').item(msgData[listId]?.length -2)
+    //
+    //     el?.scrollIntoView({behavior:'smooth'})
+    //
+    //     return ()=>{
+    //
+    //     }
+    //
+    // },[count,msg])
 
 
     const changeBgColor =(status:0|1,direction:boolean,index:number)=>{
@@ -63,22 +62,26 @@ export default function ChatContent (props:any){
     }
 
     const changeMsg = (e:any)=>{
+
         let msg = e.target.value.trim()
+
         setMsg(msg)
+
     }
 
     const sendMsg = (msg:string)=>{
         let time = new Date().getTime()
         setMsg('')
-        setSaveMsg('')
+
         if(msg.length){
+
             changeChatList({
                 userId:customer.user_id,
                 avatar:customer.avatar,
                 isLeft:false,
                 bgColor:'var(--success-font-color)',
                 msg:emojiToUtf16(msg),
-                msgCode,
+                msgCode:transMsgToNameCode(msg,emojiIndex),
                 time
             },listId)
             let c = count
@@ -92,8 +95,12 @@ export default function ChatContent (props:any){
                 receiver:friendInfo.user,
                 avatar:friendInfo.avatar,
                 sendTime:time,
-                msg:emojiToUtf16(msg)
+                msg:emojiToUtf16(msg),
+                msgCode:transMsgToNameCode(msg,emojiIndex)
             })
+
+            setEmojiIndex([])
+
         }
 
     }
@@ -101,7 +108,7 @@ export default function ChatContent (props:any){
 
         if(e.keyCode === 13 && msg.length ){
             sendMsg(msg)
-            setSaveMsg('')
+
         }
     }
 
@@ -117,12 +124,16 @@ export default function ChatContent (props:any){
     }
 
     const CustomEventChooseEmoji =(event:any)=>{
-        let data = msg + event.detail.emoji
-        setMsg(data)
-        let nameCode = getNameCode(data,event.detail.emoji,saveMsg)
-        setMsgCode(nameCode)
-        setSaveMsg(nameCode)
 
+        let data = msg + event.detail.emoji
+
+        let indexArr = JSON.parse(JSON.stringify(emojiIndex))
+        indexArr.push({
+            index:data.length -2,
+            nameCode:event.detail.nameCode
+        })
+        setEmojiIndex(indexArr)
+        setMsg(data)
         document.removeEventListener('chooseEmoji',CustomEventChooseEmoji)
     }
 

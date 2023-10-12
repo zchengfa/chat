@@ -16,7 +16,7 @@ class MessageContent extends Component<any,any> {
             loading:false,
             data:this.props.Zustand.msgData[this.props.Zustand.listId],
             hasMore:true,
-            currentData:this.props.Zustand.msgData[this.props.Zustand.listId].slice(this.props.Zustand.msgData[this.props.Zustand.listId].length-15,this.props.Zustand.msgData[this.props.Zustand.listId].length)
+            currentData:[]
         }
     }
 
@@ -69,7 +69,9 @@ class MessageContent extends Component<any,any> {
         // const { msgData,listId} = this.props.Zustand
         // const currentMsgData = msgData[listId]
 
-        const {data,currentData,loading} = this.state
+        let {data,currentData,loading} = this.state
+
+        currentData = this.props.Zustand.msgData[this.props.Zustand.listId].slice(this.props.Zustand.msgData[this.props.Zustand.listId].length-15,this.props.Zustand.msgData[this.props.Zustand.listId].length)
 
         return <div className={'message-content'}>
            <div className={'msg-ul'}>

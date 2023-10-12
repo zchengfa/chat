@@ -14,6 +14,7 @@ export default function ChatContent (props:any){
     const [msg,setMsg] = useState('')
     const [emojiIndex,setEmojiIndex] = useState([])
     const [count,setCount] = useState(0)
+
     const friendInfo = useMessageStore((state:any)=> state.friendInfo)
     const customer = useMessageStore((state:any)=> state.customer)
     const changeChatList = useMessageStore((state:any)=> state.changeChatList)
@@ -36,30 +37,30 @@ export default function ChatContent (props:any){
     // },[count,msg])
 
 
-    const changeBgColor =(status:0|1,direction:boolean,index:number)=>{
-
-        let data = []
-        data = JSON.parse(JSON.stringify(msgData[listId]))
-
-        data.map((item:any,i:number)=>{
-            if(Object.keys(item).length){
-
-                if(direction && i === index){
-
-                    status === 1 ? item.bgColor = 'var(--gray-color)' : item.bgColor = 'var(--white-color)'
-                }
-                else if((!direction) && i === index){
-
-                    status === 0 ? item.bgColor = 'var(--success-font-color)' : item.bgColor = 'var(--deep-green-color)'
-
-                }
-            }
-            return true
-
-        })
-        changeBg(data[index],index,listId)
-
-    }
+    // const changeBgColor =(status:0|1,direction:boolean,index:number)=>{
+    //
+    //     let data = []
+    //     data = JSON.parse(JSON.stringify(msgData[listId]))
+    //
+    //     data.map((item:any,i:number)=>{
+    //         if(Object.keys(item).length){
+    //
+    //             if(direction && i === index){
+    //
+    //                 status === 1 ? item.bgColor = 'var(--gray-color)' : item.bgColor = 'var(--white-color)'
+    //             }
+    //             else if((!direction) && i === index){
+    //
+    //                 status === 0 ? item.bgColor = 'var(--success-font-color)' : item.bgColor = 'var(--deep-green-color)'
+    //
+    //             }
+    //         }
+    //         return true
+    //
+    //     })
+    //     changeBg(data[index],index,listId)
+    //
+    // }
 
     const changeMsg = (e:any)=>{
 
@@ -100,7 +101,6 @@ export default function ChatContent (props:any){
             })
 
             setEmojiIndex([])
-
         }
 
     }
@@ -112,9 +112,9 @@ export default function ChatContent (props:any){
         }
     }
 
-    const setEmptyDiv = ()=>{
-        sendMsg('')
-    }
+    // const setEmptyDiv = ()=>{
+    //     sendMsg('')
+    // }
     const iconClick = (item:any)=>{
         switch (item.title) {
             case '表情':
@@ -144,7 +144,7 @@ export default function ChatContent (props:any){
             <span className={'receiver-title'}>{friendInfo.user}</span>
         </Header>
         <Content className={'msg-content'}>
-            <MessageContent changeBgColor={changeBgColor} setEmptyDiv={setEmptyDiv}></MessageContent>
+            <MessageContent></MessageContent>
         </Content>
         <Divider className={'chat-divider'} />
         <Footer className={'sender-operations'}>

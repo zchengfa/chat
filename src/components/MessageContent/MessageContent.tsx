@@ -1,10 +1,11 @@
 import { Component } from "react";
 import withHook from "../../hook/withHook";
 import './messageContent.sass'
-import {List, Spin} from "antd";
+import {List, Spin,Skeleton,Divider,Avatar} from "antd";
 import { LoadingOutlined } from '@ant-design/icons'
 import InfiniteScroll from "react-infinite-scroll-component";
 import {utf16ToEmoji} from "../../util/util";
+
 
 class MessageContent extends Component<any,any> {
     constructor(props:any) {
@@ -15,16 +16,28 @@ class MessageContent extends Component<any,any> {
             loading:false,
             data:this.props.Zustand.msgData[this.props.Zustand.listId],
             hasMore:true,
+            currentData:this.props.Zustand.msgData[this.props.Zustand.listId].slice(this.props.Zustand.msgData[this.props.Zustand.listId].length-15,this.props.Zustand.msgData[this.props.Zustand.listId].length)
         }
     }
 
-    msgMouseEnter = (direction:boolean,index:number)=>{
-        this.props.changeBgColor(1,direction,index)
+    msgMouseEvent = (isEnter:boolean,direction:boolean,index:number)=>{
+        let { currentData } = this.state
 
-    }
-    msgMouseleave = (direction:boolean,index:number)=>{
-        this.props.changeBgColor(0,direction,index)
+        currentData.map((item:any,i:number)=>{
+            if(i === index){
+                if(direction){
+                    isEnter ? item.bgColor = 'var(--gray-color)' : item.bgColor = 'var(--white-color)'
+                }
+                else{
+                    !isEnter ? item.bgColor = 'var(--success-font-color)' : item.bgColor = 'var(--deep-green-color)'
+                }
+            }
+            return true
+        })
 
+        this.setState({
+            currentData
+        })
     }
     msgBox = (direction:boolean,item:any,index:number)=>{
 
@@ -33,41 +46,45 @@ class MessageContent extends Component<any,any> {
                 <img className={'msg-avatar'} src={item.avatar} alt="avatar"/>
                 <div className={'angle'} style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div>
             </div>
-            <div className={item.img ? 'msg-img-box' : 'msg-box'} onMouseEnter={()=> this.msgMouseEnter(direction,index)} onMouseLeave={()=> this.msgMouseleave(direction,index)} style={direction ? {backgroundColor: item.bgColor} : {backgroundColor: item.bgColor}}>
+            <div className={item.img ? 'msg-img-box' : 'msg-box'} onMouseEnter={()=> this.msgMouseEvent(true,direction,index)} onMouseLeave={()=> this.msgMouseEvent(false,direction,index)} style={direction ? {backgroundColor: item.bgColor} : {backgroundColor: item.bgColor}}>
                 {item.img ? <img className={'msg-image'} src={item.img} alt="msg_image"/> : <span className={'msg'}>{utf16ToEmoji(item.msg)}</span>}
             </div>
         </div>
     }
 
     loadMore = ()=>{
-        if (this.state.loading) {
-            return;
-        }
         this.setState({
-            loading:true,
-            hasMore:false
+            loading:true
         })
 
+        let timer = setTimeout(()=>{
+            this.setState({
+                loading:false
+            })
+        },3000)
+        console.log('loading')
     }
 
     render(){
         // const { msgData,listId} = this.props.Zustand
         // const currentMsgData = msgData[listId]
 
-        const {data,hasMore} = this.state
+        const {data,currentData,loading} = this.state
 
         return <div className={'message-content'}>
-           <div className={data.length > 8 ? 'msg-ul ul-reverse' : 'msg-ul'} id={'infiniteBox'}>
-               <InfiniteScroll inverse={true} next={this.loadMore}
-                               hasMore={hasMore}
-                               loader={<Spin indicator={<LoadingOutlined />} />}
-                               dataLength={data.length}
-                               scrollableTarget={'infiniteBox'}
-                               style={{ display: 'flex', flexDirection: 'column-reverse' }}
+           <div className={'msg-ul'}>
+               <InfiniteScroll
+                   inverse={true}
+                   next={this.loadMore}
+                   hasMore={currentData.length < data.length}
+                   loader={<Spin indicator={<LoadingOutlined/>} spinning={loading} />}
+                   dataLength={currentData.length}
+                   height={'54vh'}
+                   style={data.length > 8 ? { display: 'flex', flexDirection: 'column-reverse' }:{}}
                >
                    <List
                        className={'msg-list'}
-                       dataSource={data}
+                       dataSource={currentData}
                        bordered={false}
                        renderItem={(item:any,index:number)=>{
 
@@ -84,17 +101,8 @@ class MessageContent extends Component<any,any> {
                    </List>
                </InfiniteScroll>
            </div>
+
         </div>
-    }
-    componentDidMount() {
-        const {msgData,listId } = this.props.Zustand
-
-        this.setState({
-            page:(msgData[listId].length)%(this.state.count) === 0 ? Math.floor(msgData[listId].length/this.state.count) :  Math.ceil((msgData[listId].length/this.state.count))
-        })
-        this.props.setEmptyDiv()
-        this.loadMore()
-
     }
 }
 

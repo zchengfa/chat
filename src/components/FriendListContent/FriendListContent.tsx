@@ -29,7 +29,6 @@ function FriendListContent(props:any){
         props.acceptApply(data)
     }
 
-
     return <Layout className={'content-con'}>
         {
             type ? <Header className={'user-box'}>

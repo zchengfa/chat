@@ -83,7 +83,7 @@ function addFirstPinYin(data:any | any[],PO:string,PT:string,list:any[]){
            return null
         })
 
-        console.log(newData,data)
+        //console.log(newData,data)
     }
     else if( prototype === '[object Array]' ){
         let letterArr:string[] = []
@@ -159,7 +159,7 @@ export const useMessageStore = create((set)=>{
               }
               data[id].push(item)
             }
-
+            state.getCurrentMsgData()
 
             setStorageData('msgData',data)
             return {
@@ -171,20 +171,34 @@ export const useMessageStore = create((set)=>{
         changeBg:(item:any,index:number,id:number)=>{
 
           set((state:any)=>{
-            let data = state.msgData
-            data[id][index] = item
+            let data = state.currentFriendMsg
+            data[index] = item
             return {
-              msgData:data
+              currenFriendMsg:data
             }
           })
         },
         currentFriendMsg:[],
-      //获取与当前好友的聊天记录
-        getCurrentMsgData:()=>{
+        count:15,
+        changeCount:()=>{
+            set((state:any)=>{
+                let c = state.count
+                c +=15
+                state.getCurrentMsgData(undefined,c)
+                return {
+                    count:c
+                }
+            })
+        },
+      //获取与当前好友的聊天记录(指定消息数)
+        getCurrentMsgData:(id:number | undefined = undefined,count?:number)=>{
           set((state:any)=>{
-            return {
-              currentFriendMsg:state.msgData[state.listId]
-            }
+              let listId = id ? id : state.listId,c = count ? count : state.count
+              let msg = state.msgData[listId]
+              msg =  msg?.length > c ? msg.slice(msg.length - c,msg.length) : msg
+              return {
+                  currentFriendMsg:msg
+              }
           })
         },
       //消息列表激活的索引
@@ -193,6 +207,7 @@ export const useMessageStore = create((set)=>{
            set((state:any)=>{
                state.changeReadStatus(id)
                setStorageData('listId',Number(id))
+               state.getCurrentMsgData(id)
                return {
                     listId:Number(id)
                 }
@@ -375,12 +390,10 @@ export const useMessageStore = create((set)=>{
                 }
             })
         },
-        friendListInfo:getStorageData('friendListInfo',null),
+        friendListInfo:getStorageData('friendListInfo',{title:'',type:''}),
         friendData:getStorageData('friendData',null),
         changeIndexInfo(type:string,title:string,index:number,id:number){
-
             set(()=>{
-
                 setStorageData('friendListInfo',{type,title,index,hasBeenRead:true,user_id:id})
                 return {
                     friendListInfo:{

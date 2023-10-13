@@ -131,15 +131,15 @@ export function dealMsgTime (time:number,separator:string | string[] | undefined
   let showTime = undefined,S = Object.prototype.toString.call(separator),YS = '',HS = ''
 
   if( S === '[object String]' ){
-    YS = `YY` + separator + `MM` + separator + `DD`
+    YS = `YYYY` + separator + `MM` + separator + `DD`
     HS = `hh` + separator + `mm`
   }
   else if(Array.isArray(separator) ){
-    YS = `YY` + separator[0] + `MM` + separator[0] + `DD`
+    YS = `YYYY` + separator[0] + `MM` + separator[0] + `DD`
     HS = `hh` + separator[1] + `mm`
   }
   else if( S === '[object Undefined]' ){
-    YS = 'YY-MM-DD'
+    YS = 'YYYY-MM-DD'
     HS = `hh:mm`
   }
 

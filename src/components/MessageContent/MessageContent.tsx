@@ -1,43 +1,20 @@
 import { Component } from "react";
-import withHook from "../../hook/withHook";
 import './messageContent.sass'
-import {List, Spin,Skeleton,Divider,Avatar} from "antd";
+import {List, Spin} from "antd";
 import { LoadingOutlined } from '@ant-design/icons'
 import InfiniteScroll from "react-infinite-scroll-component";
 import {utf16ToEmoji} from "../../util/util";
-
+import withHook from "../../hook/withHook";
 
 class MessageContent extends Component<any,any> {
     constructor(props:any) {
         super(props);
         this.state = {
-            count:15,
-            page:0,
-            loading:false,
-            data:this.props.Zustand.msgData[this.props.Zustand.listId],
-            hasMore:true,
-            currentData:[]
+            loading:false
         }
     }
-
     msgMouseEvent = (isEnter:boolean,direction:boolean,index:number)=>{
-        let { currentData } = this.state
-
-        currentData.map((item:any,i:number)=>{
-            if(i === index){
-                if(direction){
-                    isEnter ? item.bgColor = 'var(--gray-color)' : item.bgColor = 'var(--white-color)'
-                }
-                else{
-                    !isEnter ? item.bgColor = 'var(--success-font-color)' : item.bgColor = 'var(--deep-green-color)'
-                }
-            }
-            return true
-        })
-
-        this.setState({
-            currentData
-        })
+        this.props.changeBgColor(isEnter,direction,index)
     }
     msgBox = (direction:boolean,item:any,index:number)=>{
 
@@ -53,40 +30,45 @@ class MessageContent extends Component<any,any> {
     }
 
     loadMore = ()=>{
+        const {changeCount} = this.props.Zustand
         this.setState({
             loading:true
         })
 
         let timer = setTimeout(()=>{
+            changeCount()
             this.setState({
                 loading:false
+            },()=>{
+
+                clearTimeout(timer)
             })
-        },3000)
-        console.log('loading')
+        },500)
     }
 
     render(){
-        // const { msgData,listId} = this.props.Zustand
-        // const currentMsgData = msgData[listId]
+        let {data,Zustand} = this.props
+        const {loading} = this.state
 
-        let {data,currentData,loading} = this.state
-
-        currentData = this.props.Zustand.msgData[this.props.Zustand.listId].slice(this.props.Zustand.msgData[this.props.Zustand.listId].length-15,this.props.Zustand.msgData[this.props.Zustand.listId].length)
+        data = data ? data : []
 
         return <div className={'message-content'}>
            <div className={'msg-ul'}>
                <InfiniteScroll
                    inverse={true}
                    next={this.loadMore}
-                   hasMore={currentData.length < data.length}
-                   loader={<Spin indicator={<LoadingOutlined/>} spinning={loading} />}
-                   dataLength={currentData.length}
+                   hasMore={Zustand.msgData[Zustand.listId]?.length > data.length}
+                   loader={<div className={'loader'}>
+                       <Spin indicator={<LoadingOutlined style={{color:'var(--deep-gray-color)'}}/>} spinning={loading} />
+                       <span className={'loader-msg'}>查看更多消息</span>
+                   </div>}
+                   dataLength={data.length}
                    height={'54vh'}
-                   style={data.length > 8 ? { display: 'flex', flexDirection: 'column-reverse' }:{}}
+                   style={data.length > 8 ? { display: 'flex', flexDirection: 'column-reverse'}:{}}
                >
                    <List
                        className={'msg-list'}
-                       dataSource={currentData}
+                       dataSource={data}
                        bordered={false}
                        renderItem={(item:any,index:number)=>{
 

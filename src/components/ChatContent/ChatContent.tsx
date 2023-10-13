@@ -3,64 +3,52 @@ import { Layout,Divider,Input,Button } from "antd";
 import { operationsData,IconMenu } from "../../common/staticData/data";
 import MessageContent from "../MessageContent/MessageContent";
 import {useEffect, useState} from "react";
-import {useMessageStore} from "../../zustand/store";
 import {emojiToUtf16, transMsgToNameCode} from "../../util/util";
+import withHook from "../../hook/withHook";
 
-export default function ChatContent (props:any){
+function ChatContent (props:any){
     const { Header,Content,Footer } = Layout
     const { operations,chatWay } = operationsData
     const { TextArea } = Input
-    const msgData = useMessageStore((state:any)=> state.msgData)
     const [msg,setMsg] = useState('')
     const [emojiIndex,setEmojiIndex] = useState([])
     const [count,setCount] = useState(0)
-
-    const friendInfo = useMessageStore((state:any)=> state.friendInfo)
-    const customer = useMessageStore((state:any)=> state.customer)
-    const changeChatList = useMessageStore((state:any)=> state.changeChatList)
-    const changeBg = useMessageStore((state:any)=> state.changeBg)
-    const listId = useMessageStore((state:any)=> state.listId)
-    const {changeEmojiStatus} = useMessageStore((state:any)=> state)
-
+    const {currentFriendMsg,friendInfo,customer,changeChatList,changeBg,listId,changeEmojiStatus} = props.Zustand
 
     //监听聊天消息列表，列表数据量变化，让最后一项出现在视口，保持滚动到最新消息
-    // useEffect(()=>{
-    //
-    //     const el = document.getElementsByClassName('msg-li').item(msgData[listId]?.length -2)
-    //
-    //     el?.scrollIntoView({behavior:'smooth'})
-    //
-    //     return ()=>{
-    //
-    //     }
-    //
-    // },[count,msg])
+    useEffect(()=>{
+
+        return ()=>{
+
+        }
+
+    },[count])
 
 
-    // const changeBgColor =(status:0|1,direction:boolean,index:number)=>{
-    //
-    //     let data = []
-    //     data = JSON.parse(JSON.stringify(msgData[listId]))
-    //
-    //     data.map((item:any,i:number)=>{
-    //         if(Object.keys(item).length){
-    //
-    //             if(direction && i === index){
-    //
-    //                 status === 1 ? item.bgColor = 'var(--gray-color)' : item.bgColor = 'var(--white-color)'
-    //             }
-    //             else if((!direction) && i === index){
-    //
-    //                 status === 0 ? item.bgColor = 'var(--success-font-color)' : item.bgColor = 'var(--deep-green-color)'
-    //
-    //             }
-    //         }
-    //         return true
-    //
-    //     })
-    //     changeBg(data[index],index,listId)
-    //
-    // }
+    const changeBgColor =(status:boolean,direction:boolean,index:number)=>{
+
+        let data = []
+        data = JSON.parse(JSON.stringify(currentFriendMsg))
+
+        data.map((item:any,i:number)=>{
+            if(Object.keys(item).length){
+
+                if(direction && i === index){
+
+                    status ? item.bgColor = 'var(--gray-color)' : item.bgColor = 'var(--white-color)'
+                }
+                else if((!direction) && i === index){
+
+                    !status ? item.bgColor = 'var(--success-font-color)' : item.bgColor = 'var(--deep-green-color)'
+
+                }
+            }
+            return true
+
+        })
+        changeBg(data[index],index,listId)
+
+    }
 
     const changeMsg = (e:any)=>{
 
@@ -144,7 +132,7 @@ export default function ChatContent (props:any){
             <span className={'receiver-title'}>{friendInfo.user}</span>
         </Header>
         <Content className={'msg-content'}>
-            <MessageContent></MessageContent>
+            <MessageContent changeBgColor={changeBgColor} data={currentFriendMsg}></MessageContent>
         </Content>
         <Divider className={'chat-divider'} />
         <Footer className={'sender-operations'}>
@@ -177,3 +165,5 @@ export default function ChatContent (props:any){
         </Footer>
     </Layout>
 }
+
+export default withHook(ChatContent)

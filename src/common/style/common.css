@@ -61,4 +61,14 @@ input:focus{
     border: none;
     box-shadow: none !important;
 }
+.loader{
+    padding: 1rem 0;
+    text-align: center;
+
+}
+.loader-msg{
+    margin-left: 1rem;
+    color: var(--deep-gray-color);
+    font-size: var(--mini-font-size);
+}
 

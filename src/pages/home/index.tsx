@@ -419,8 +419,13 @@ class Home extends Component<any, any>{
     }
 
     componentDidMount() {
+        const {msgData,listId} = this.props.Zustand
         //处理聊天列表与聊天记录的时间（待完善）
         this.props.Zustand.changeStorageTime()
+
+        if(msgData[listId]){
+            this.props.Zustand.getCurrentMsgData()
+        }
 
         const user = this.props.Zustand.customer
         this.props.socket.emit('online',{
@@ -496,7 +501,7 @@ class Home extends Component<any, any>{
                 time: new Date().getTime(),
                 hasBeenRead: true,
                 isGroupChat: false,
-                avatar:'',
+                avatar:''
             } as unknown as MsgDataType)
         }
 

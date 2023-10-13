@@ -254,7 +254,8 @@ export const useMessageStore = create((set)=>{
                    }
                 })
                 if(index !== undefined){
-                    data[index].msg = item.msgCode
+                    data[index].hasBeenRead = item.hasBeenRead
+                    item.msgCode?.length ? data[index].msg = item.msgCode : data[index].msg = item.msg
                     data[index].showTime = dealMsgTime(Number(item.time))
                     data[index].time = item.time
                 }

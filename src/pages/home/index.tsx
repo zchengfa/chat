@@ -439,7 +439,7 @@ class Home extends Component<any, any>{
         })
 
         this.props.socket.on('receiveMessage',(data:any)=>{
-
+            let readStatus = this.props.Zustand.listId === Number(data.userId)
             this.props.Zustand.changeChatList({
                 userId:Number(data.userId),
                 user:data.sender,
@@ -449,7 +449,7 @@ class Home extends Component<any, any>{
                 avatar:data.avatar,
                 time:data.sendTime,
                 isMute:true,
-                hasBeenRead:false,
+                hasBeenRead:readStatus,
                 isGroupChat:false
             },data.userId,true)
         })

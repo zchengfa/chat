@@ -85,7 +85,7 @@ function ChatContent (props:any){
                 avatar:friendInfo.avatar,
                 sendTime:time,
                 msg:emojiToUtf16(msg),
-                msgCode:transMsgToNameCode(msg,emojiIndex)
+                msgCode:emojiIndex.length ? transMsgToNameCode(msg,emojiIndex) : ''
             })
 
             setEmojiIndex([])

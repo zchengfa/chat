@@ -43,7 +43,11 @@ class MessageContent extends Component<any,any> {
 
                 clearTimeout(timer)
             })
-        },500)
+        },3000)
+    }
+
+    scroll = (e:any)=>{
+        console.log(e)
     }
 
     render(){
@@ -53,17 +57,17 @@ class MessageContent extends Component<any,any> {
         data = data ? data : []
 
         return <div className={'message-content'}>
-           <div className={'msg-ul'}>
+           <div className={'msg-ul'} id={'scroll'} style={{display:"flex",flexDirection:'column-reverse',height:'100%'}}>
                <InfiniteScroll
                    inverse={true}
                    next={this.loadMore}
                    hasMore={Zustand.msgData[Zustand.listId]?.length > data.length}
-                   loader={<div className={'loader'}>
+                   loader={<div className={loading ? 'loader' : 'loader-none'}>
                        <Spin indicator={<LoadingOutlined style={{color:'var(--deep-gray-color)'}}/>} spinning={loading} />
                        <span className={'loader-msg'}>查看更多消息</span>
                    </div>}
                    dataLength={data.length}
-                   height={'54vh'}
+                   scrollableTarget={'scroll'}
                    style={data.length > 8 ? { display: 'flex', flexDirection: 'column-reverse'}:{}}
                >
                    <List

@@ -64,7 +64,9 @@ input:focus{
 .loader{
     padding: 1rem 0;
     text-align: center;
-
+}
+.loader-none{
+    display: none;
 }
 .loader-msg{
     margin-left: 1rem;

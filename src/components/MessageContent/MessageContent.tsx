@@ -40,16 +40,10 @@ class MessageContent extends Component<any,any> {
             this.setState({
                 loading:false
             },()=>{
-
                 clearTimeout(timer)
             })
-        },3000)
+        },500)
     }
-
-    scroll = (e:any)=>{
-        console.log(e)
-    }
-
     render(){
         let {data,Zustand} = this.props
         const {loading} = this.state

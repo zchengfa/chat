@@ -158,8 +158,13 @@ export const useMessageStore = create((set)=>{
                   })
               }
               data[id].push(item)
+
+                if(state.listId === id){
+                    console.log(item,id)
+                    state.getCurrentMsgData(undefined,undefined,item)
+                }
             }
-            state.getCurrentMsgData()
+
 
             setStorageData('msgData',data)
             return {
@@ -191,13 +196,21 @@ export const useMessageStore = create((set)=>{
             })
         },
       //获取与当前好友的聊天记录(指定消息数)
-        getCurrentMsgData:(id:number | undefined = undefined,count?:number)=>{
+        getCurrentMsgData:(id:number | undefined = undefined,count?:number,item?:any)=>{
           set((state:any)=>{
-              let listId = id ? id : state.listId,c = count ? count : state.count
-              let msg = state.msgData[listId]
-              msg =  msg?.length > c ? msg.slice(msg.length - c,msg.length) : msg
+              //有逻辑缺陷，待改善
+              let listId = id ? id : state.listId,c = count ? count : state.count,currentData = id ? [] : state.currentFriendMsg
+              let msg = JSON.parse(JSON.stringify(state.msgData[listId]))
+
+              msg =  msg?.length > c ? msg.splice(msg.length - c,15) : msg
+              if(item){
+                  currentData.push(item)
+              }
+              else{
+                  currentData.unshift(...msg)
+              }
               return {
-                  currentFriendMsg:msg
+                  currentFriendMsg:currentData
               }
           })
         },

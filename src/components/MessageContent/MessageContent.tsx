@@ -51,7 +51,7 @@ class MessageContent extends Component<any,any> {
         data = data ? data : []
 
         return <div className={'message-content'}>
-           <div className={'msg-ul'} id={'scroll'} style={{display:"flex",flexDirection:'column-reverse',height:'100%'}}>
+           <div className={'msg-ul'} id={'scroll'} style={data.length > 8 ? { display: 'flex', flexDirection: 'column-reverse',height:'100%'}:{height:'100%'}}>
                <InfiniteScroll
                    inverse={true}
                    next={this.loadMore}

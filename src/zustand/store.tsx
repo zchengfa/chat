@@ -174,7 +174,7 @@ export const useMessageStore = create((set)=>{
             let data = state.currentFriendMsg
             data[index] = item
             return {
-              currenFriendMsg:data
+              currentFriendMsg:data
             }
           })
         },

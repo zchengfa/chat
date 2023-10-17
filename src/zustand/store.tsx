@@ -150,18 +150,24 @@ export const useMessageStore = create((set)=>{
               if(!data[id]){
                   data[id] = []
               }
-              if(new Date().getTime() - data[id][(data[id].length) -1]?.time >= 5*60*1000){
+              let newMsg = []
+              if(new Date().getTime() - data[id][(data[id].length) -1]?.time >= 5*60*1000  || !data[id].length){
                   let timeout = dealMsgTime(item.time)
                   data[id].push({
                       timeout,
                       time:item.time
                   })
+                  newMsg.push({
+                      timeout,
+                      time:item.time
+                  })
               }
-              data[id].push(item)
 
+              data[id].push(item)
+                newMsg.push(item)
                 if(state.listId === id){
                     //console.log(item,id)
-                    state.getCurrentMsgData(undefined,undefined,item)
+                    state.getCurrentMsgData(undefined,undefined,newMsg)
                 }
             }
 
@@ -196,15 +202,15 @@ export const useMessageStore = create((set)=>{
             })
         },
       //获取与当前好友的聊天记录(指定消息数)
-        getCurrentMsgData:(id:number | undefined = undefined,count?:number,item?:any)=>{
+        getCurrentMsgData:(id:number | undefined = undefined,count?:number,data?:any)=>{
           set((state:any)=>{
               //有逻辑缺陷，待改善
               let listId = id ? id : state.listId,c = count ? count : state.count,currentData = id ? [] : state.currentFriendMsg
-              let msg = JSON.parse(JSON.stringify(state.msgData[listId]))
+              let msg = state.msgData[listId] ? JSON.parse(JSON.stringify(state.msgData[listId])) : []
 
               msg =  msg?.length > c ? msg.splice(msg.length - c,15) : msg
-              if(item){
-                  currentData.push(item)
+              if(data){
+                  currentData.push(...data)
               }
               else{
                   currentData.unshift(...msg)
@@ -270,7 +276,7 @@ export const useMessageStore = create((set)=>{
                    }
                 })
                 if(index !== undefined){
-                    data[index].hasBeenRead = item.hasBeenRead
+                    data[index].hasBeenRead = Number(state.listId) === Number(item.userId)
                     item.msgCode?.length ? data[index].msg = item.msgCode : data[index].msg = item.msg
                     data[index].showTime = dealMsgTime(Number(item.time))
                     data[index].time = item.time
@@ -294,14 +300,16 @@ export const useMessageStore = create((set)=>{
             let isLeft = replyId && isReceive
             let id = replyId ? replyId : undefined
 
-              state.saveMsgData({
-                  userId:item.userId,
-                  avatar:item.avatar,
-                  msg:item.msg,
-                  bgColor,
-                  isLeft,
-                  time:item.time
-              },Number(id))
+            if(item.msg.length){
+                state.saveMsgData({
+                    userId:item.userId,
+                    avatar:item.avatar,
+                    msg:item.msg,
+                    bgColor,
+                    isLeft,
+                    time:item.time
+                },Number(id))
+            }
 
             return {
               chatList:data
@@ -382,8 +390,8 @@ export const useMessageStore = create((set)=>{
                     data[user_id].push(request)
                     data[user_id] = verifyTime(data[user_id])
 
-                    //有好友申请，每有一条申请，朋友列表中的新的朋友徽标数加1
-                    state.changeBadgeCount()
+                    //(当新的朋友项不在激活状态时)有好友申请，每有一条申请，朋友列表中的新的朋友徽标数加1，（激活中）清零,
+                    state.friendListInfo.type === 'new' ? state.changeBadgeCount(0) : state.changeBadgeCount()
                 }
                 else if(operations === 'shift'){
 

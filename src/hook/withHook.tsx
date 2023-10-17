@@ -1,7 +1,7 @@
 import { useNavigate,useLocation,useParams } from "react-router-dom";
 import { useMessageStore } from "../zustand/store";
 import { useRef } from "react";
-import { socket } from "../socket/socket";
+import { socket }  from "../socket/socket";
 import { message } from "antd";
 
 function WithHook(WrapperComponent:any){

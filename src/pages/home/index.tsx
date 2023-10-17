@@ -12,9 +12,7 @@ import {searchUserInfo} from "../../network/request";
 import PopoverCommon from "../../components/Common/PopoverCommon/PopoverCommon";
 import FriendApplication from "../../components/FriendApplication/FriendApplication";
 import FriendListContent from "../../components/FriendListContent/FriendListContent";
-import {emojiToUtf16, transMsgToNameCode} from "../../util/util";
-
-
+import {SocketEvent} from "../../socket/socket";
 
 class Home extends Component<any, any>{
     constructor(props:any) {
@@ -420,111 +418,18 @@ class Home extends Component<any, any>{
     }
 
     componentDidMount() {
-        const {msgData,listId} = this.props.Zustand
-        //处理聊天列表与聊天记录的时间（待完善）
-        this.props.Zustand.changeStorageTime()
+        const {msgData,listId,changeStorageTime,getCurrentMsgData,chatList,changeChatList,customer} = this.props.Zustand
+
+        //处理聊天列表与聊天记录的时间
+        changeStorageTime()
 
         if(msgData[listId]){
-            this.props.Zustand.getCurrentMsgData()
+            getCurrentMsgData()
         }
 
-        const user = this.props.Zustand.customer
-        this.props.socket.emit('online',{
-            name:user.username,
-            account:user.account,
-            user_id:user.user_id
-        })
-        this.props.socket.on('reciever',(data:any)=>{
-            const {friendList} = data
-            this.props.Zustand.changeFriendList(friendList,true)
-        })
-
-        this.props.socket.on('receiveMessage',(data:any)=>{
-            let readStatus = this.props.Zustand.listId === Number(data.userId)
-            this.props.Zustand.changeChatList({
-                userId:Number(data.userId),
-                user:data.sender,
-                type:'msg',
-                msg:data.msg,
-                msgCode:data.msgCode,
-                avatar:data.avatar,
-                time:data.sendTime,
-                isMute:true,
-                hasBeenRead:readStatus,
-                isGroupChat:false
-            },data.userId,true)
-        })
-        /**
-         * 好友请求已发送给对方
-         */
-        this.props.socket.on('sendRequestSuccess',()=>{
-
-            this.props.Message.messageApi.open({
-                type: 'success',
-                content: '好友请求已发送',
-            })
-        })
-
-        /**
-         * 收到好友请求
-         */
-        this.props.socket.on('receiveFriendRequest',(data:any)=>{
-            this.props.Zustand.changeFriendRequest(data)
-
-        })
-
-        /**
-         * 已同意对方的好友申请，将对方的信息添加到你的好友列表中，并删除对应的申请列表项
-         */
-        this.props.socket.on('hadAcceptApply',(info:any)=>{
-            this.props.Message.messageApi.open({
-                type: 'success',
-                content: '接受该好友申请成功',
-            })
-            this.props.Zustand.changeFriendRequest(info,'shift')
-            let {user_id,avatar,username} = this.props.Zustand.customer
-            this.props.Zustand.changeChatList({
-                userId: info.user_id,
-                type: '',
-                msg: '',
-                user: info.username,
-                time: new Date().getTime(),
-                hasBeenRead: false,
-                isGroupChat: false,
-                avatar: info.avatar
-            } as unknown as MsgDataType)
-
-            this.props.Zustand.changeChatList({
-                userId:user_id,
-                avatar:avatar,
-                isLeft:false,
-                bgColor:'var(--success-font-color)',
-                msg:'您已同意了对方的好友申请，现在可以开始聊天了',
-                time: new Date().getTime()
-            } as unknown as MsgDataType,info.user_id)
-        })
-
-        /**
-         * 好友已经同意您的申请，将好友的信息添加到你的好友列表中
-         */
-        this.props.socket.on('friendHadAcceptApply',(info:any)=>{
-
-            this.props.Zustand.changeFriendRequest(info,'shift')
-            this.props.Zustand.changeChatList({
-                userId: info.user_id,
-                type: '',
-                msg: '我已通过的你的好友请求，现在我们可以开始聊天了',
-                user: info.username,
-                time: new Date().getTime(),
-                hasBeenRead: false,
-                isGroupChat: false,
-                avatar:info.avatar
-            } as unknown as MsgDataType,info.user_id,true)
-        })
-
-        if(!this.props.Zustand.chatList.length){
-            this.props.Zustand.changeChatList({
-                userId: this.props.Zustand.customer.user_id,
+        if(!chatList.length){
+            changeChatList({
+                userId: customer.user_id,
                 type: 'self',
                 msg: '',
                 user: '文件传输助手',
@@ -534,6 +439,8 @@ class Home extends Component<any, any>{
                 avatar:''
             } as unknown as MsgDataType)
         }
+
+        SocketEvent({Zustand:this.props.Zustand,Message:this.props.Message})
 
         document.addEventListener('sendMsg',this.CustomEventSendMsg)
 

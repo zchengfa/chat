@@ -135,7 +135,7 @@ export const useMessageStore = create((set)=>{
       //聊天记录
         msgData:getStorageData('msgData',{}),
         saveMsgData:(item:any,id:number | undefined)=>{
-
+           // console.log(item,id)
           set((state:any)=>{
             let data = state.msgData
 
@@ -160,7 +160,7 @@ export const useMessageStore = create((set)=>{
               data[id].push(item)
 
                 if(state.listId === id){
-                    console.log(item,id)
+                    //console.log(item,id)
                     state.getCurrentMsgData(undefined,undefined,item)
                 }
             }
@@ -254,10 +254,13 @@ export const useMessageStore = create((set)=>{
                 }
 
               })
-
-              data[index].msg = item.msgCode
-              data[index].showTime = dealMsgTime(Number(item.time))
-              data[index].time = item.time
+                if (item.msgCode?.length) {
+                    data[index].msg = item.msgCode
+                } else {
+                    data[index].msg = item.msg
+                }
+                data[index].showTime = dealMsgTime(Number(item.time))
+                data[index].time = item.time
             }
             else if(replyId && isReceive){
                 let index:any = undefined

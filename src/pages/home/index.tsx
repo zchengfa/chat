@@ -12,6 +12,7 @@ import {searchUserInfo} from "../../network/request";
 import PopoverCommon from "../../components/Common/PopoverCommon/PopoverCommon";
 import FriendApplication from "../../components/FriendApplication/FriendApplication";
 import FriendListContent from "../../components/FriendListContent/FriendListContent";
+import {emojiToUtf16, transMsgToNameCode} from "../../util/util";
 
 
 
@@ -480,8 +481,27 @@ class Home extends Component<any, any>{
                 type: 'success',
                 content: '接受该好友申请成功',
             })
-
             this.props.Zustand.changeFriendRequest(info,'shift')
+            let {user_id,avatar,username} = this.props.Zustand.customer
+            this.props.Zustand.changeChatList({
+                userId: info.user_id,
+                type: '',
+                msg: '',
+                user: info.username,
+                time: new Date().getTime(),
+                hasBeenRead: false,
+                isGroupChat: false,
+                avatar: info.avatar
+            } as unknown as MsgDataType)
+
+            this.props.Zustand.changeChatList({
+                userId:user_id,
+                avatar:avatar,
+                isLeft:false,
+                bgColor:'var(--success-font-color)',
+                msg:'您已同意了对方的好友申请，现在可以开始聊天了',
+                time: new Date().getTime()
+            } as unknown as MsgDataType,info.user_id)
         })
 
         /**
@@ -490,6 +510,16 @@ class Home extends Component<any, any>{
         this.props.socket.on('friendHadAcceptApply',(info:any)=>{
 
             this.props.Zustand.changeFriendRequest(info,'shift')
+            this.props.Zustand.changeChatList({
+                userId: info.user_id,
+                type: '',
+                msg: '我已通过的你的好友请求，现在我们可以开始聊天了',
+                user: info.username,
+                time: new Date().getTime(),
+                hasBeenRead: false,
+                isGroupChat: false,
+                avatar:info.avatar
+            } as unknown as MsgDataType,info.user_id,true)
         })
 
         if(!this.props.Zustand.chatList.length){

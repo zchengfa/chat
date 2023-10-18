@@ -1,0 +1,123 @@
+.group-friend-list
+  position: absolute
+  display: flex
+  justify-content: center
+  align-items: center
+  top: 50%
+  left: 50%
+  width: 40vw
+  height: 50vh
+  min-width: 30rem
+  background-color: var(--white-color)
+  box-shadow: 0 0 4px  var(--deep-gray-color)
+  border-radius: .2rem
+  transform: translateX(-50%) translateY(-50%)
+  z-index: 999
+  .group-item
+    height: 100%
+  .group-input
+    margin: 1rem 0
+    width: 84%
+    height: 1.7rem
+  .group-input:hover
+    border: 1px solid var(--deep-gray-color)
+  .group-left
+    width: 45%
+    display: flex
+    flex-direction: column
+    justify-content: flex-start
+    align-items: center
+    border-right: 1px solid var(--gray-color)
+  .group-right
+    width: 55%
+  .group-list-box
+    width: 100%
+    height: calc(100% - 3.7rem)
+    .group-list
+      width: 100%
+      height: 100%
+      overflow-y: scroll
+      .group-list-item
+        display: flex
+        flex-direction: column
+        justify-content: center
+        align-items: flex-start
+        padding: 0
+  .friend-list-username
+    flex: 1
+    max-width: 8rem
+  .item-box
+    display: flex
+    align-items: center
+    justify-content: flex-start
+    padding: .7rem 1.4rem
+    width: 100%
+  .item-title
+    padding-left: 1.4rem
+    color: var(--deep-gray-color)
+  .item-box:hover
+    background-color: var(--gray-color)
+  .item-img
+    margin: 0 .5rem
+    width: 2rem
+    height: 2rem
+    border-radius: .2rem
+  .title-box
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin: 1.4rem
+    .friend-count
+      font-size: var(--mini-font-size)
+      color: var(--deep-gray-color)
+  .had-choose-box
+    padding: 0 1rem
+    height: 70%
+    .had-choose-list
+      width: 100%
+      height: 100%
+      overflow-y: scroll
+      .had-choose-list-item
+        position: relative
+        display: flex
+        flex-direction: column
+        justify-content: center
+        align-items: center
+        width: 4rem
+        .item-username
+          margin-top: .5rem
+          max-width: 4rem
+        .close-friend-icon
+          position: absolute
+          right: .4rem
+          top: .1rem
+          color: var(--deep-gray-color)
+          cursor: pointer
+          z-index: 10
+        .close-friend-icon:hover
+          color: var(--normal-text-color)
+    .choose-item-img
+      width: 3rem
+      height: 3rem
+      border-radius: .3rem
+  .group-btn-box
+    display: flex
+    justify-content: space-evenly
+    align-items: center
+    height: calc(100% - 70% - 2.8rem - 14px)
+    .btn
+      width: 35%
+    .complete-btn
+      background-color: var(--gray-color)
+      color: var(--deep-gray-color)
+    .complete-btn:hover
+      color: var(--deep-gray-color) !important
+    .cancel-btn
+      background-color: var(--gray-color)
+      color: var(--deep-green-color)
+    .cancel-btn:hover
+      color: var(--deep-green-color) !important
+      background-color: var(--deep-gray-color)
+    .complete-btn-actived
+      background-color: var(--deep-green-color)
+      color: var(--white-color)

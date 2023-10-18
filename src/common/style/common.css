@@ -54,6 +54,9 @@ button:hover{
     border: none;
     color: var(--white-color) !important;
 }
+.normal:hover{
+    color:#000 !important;
+}
 input:hover{
     border: none;
 }
@@ -72,5 +75,10 @@ input:focus{
     margin-left: 1rem;
     color: var(--deep-gray-color);
     font-size: var(--mini-font-size);
+}
+.text-ellipsis{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 

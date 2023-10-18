@@ -85,11 +85,11 @@ export const otherMenu:MenuType[] = [
 export const correctIconComponent = [
   {
     title:'聊天',
-    component:(click?:any)=> <PlusOutlined onClick={click} />
+    component:(click?:any)=> <PlusOutlined title={'发起群聊'} onClick={click} />
   },
   {
     title:'通讯录',
-    component:(click?:any)=> <UserAddOutlined onClick={click} />
+    component:(click?:any)=> <UserAddOutlined title={'添加朋友'} onClick={click} />
   }
 ]
 

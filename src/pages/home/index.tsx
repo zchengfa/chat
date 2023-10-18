@@ -4,6 +4,7 @@ import SiderMenu from "../../components/SiderMenu/SiderMenu";
 import ChatList from "../../components/ChatList/ChatList";
 import ChatContent from "../../components/ChatContent/ChatContent";
 import FriendList from "../../components/FriendList/FriendList";
+import GroupFriendList from "../../components/GroupFriendList/GroupFriendList";
 import {Button, Divider, Input, Layout, Space} from "antd";
 import {correctIconComponent, menu, MenuType, MsgDataType, otherMenu} from "../../common/staticData/data";
 import './index.sass'
@@ -40,7 +41,8 @@ class Home extends Component<any, any>{
             showFriendCom:false,
             isSelf:undefined,
             isShowPop:undefined,
-            acceptApplyData:null
+            acceptApplyData:null,
+            isShowFriendList:false
         }
     }
     socketMsg = (data:any)=>{
@@ -109,8 +111,13 @@ class Home extends Component<any, any>{
             isShowFriendBtn:true
         })
     }
+    /**
+     * 点击按钮显示选择联系人加入群聊组件
+     */
     chatGroup = ()=>{
-        console.log('发起群聊')
+        this.setState({
+            isShowFriendList:true
+        })
     }
     closeAddFriendBtn = ()=>{
         this.setState({
@@ -361,12 +368,19 @@ class Home extends Component<any, any>{
         this.chatWithSender(data,user_id)
     }
 
-
+    /**
+     * 接收子组件事件（关闭选择联系人加入群聊组件）
+     */
+    closeChooseCom = ()=>{
+        this.setState({
+            isShowFriendList:false
+        })
+    }
 
     render(){
         const { Sider,Content } = Layout
-        const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder,isShowFriendBtn,inputValue,searchUserData,showFriendCom,isSelf,isShowPop } = this.state
-        const { listId,customer,friendListInfo} = this.props.Zustand
+        const { menu,otherMenu,searchRightComponent,inputProp,inputRef,placeholder,isShowFriendBtn,inputValue,searchUserData,showFriendCom,isSelf,isShowPop,isShowFriendList } = this.state
+        const { listId,customer,friendListInfo,friendList} = this.props.Zustand
         const { contextHolder } = this.props.Message
 
         return <Fragment>
@@ -380,7 +394,7 @@ class Home extends Component<any, any>{
                 <div className={'middle-com'}>
                     <Space direction={'horizontal'} style={{width:'100%'}} className={'space-self'}>
                         <Input ref={inputRef} value={inputValue} style={{backgroundColor:'var(--gray-color)'}} onBlur={this.inputBlur} onChange={this.inputChange} suffix={inputProp} onFocus={this.inputFocus} prefix={isShowFriendBtn ? <UserSwitchOutlined /> : <SearchOutlined />} placeholder={placeholder}></Input>
-                        {isShowFriendBtn ? <Button className={'cancel-btn'} onClick={this.closeAddFriendBtn}>取消</Button> : <Button style={{backgroundColor:'var(--gray-color)'}} icon={searchRightComponent}></Button>}
+                        {isShowFriendBtn ? <Button className={'cancel-btn'} onClick={this.closeAddFriendBtn}>取消</Button> : <Button className={'normal'} style={{backgroundColor:'var(--gray-color)'}} icon={searchRightComponent}></Button>}
                     </Space>
                     { isShowPop ? <PopoverCommon btnClick={this.showFriendApplication} customer={searchUserData} arrow={false} open={!!searchUserData} btnTitle={isSelf ? '发消息' : '添加到通讯录'}></PopoverCommon>:null}
 
@@ -413,6 +427,7 @@ class Home extends Component<any, any>{
                     {/*{friendListIndexAc !== undefined ? this.state.listContent[this.state.currentMenu] : null}*/}
                 </Content>
                 {showFriendCom ? <FriendApplication confirm={this.confirmSendRequest} cancel={this.cancelFriendApp}></FriendApplication> : null}
+                {isShowFriendList ? <GroupFriendList list={friendList} closeChooseCom={this.closeChooseCom}></GroupFriendList> : null}
             </Layout>
         </Fragment>
     }

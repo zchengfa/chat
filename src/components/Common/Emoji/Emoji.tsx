@@ -7,7 +7,8 @@ import {useMessageStore} from "../../../zustand/store";
 export default function Emoji (props:any){
     const {children} = props
 
-    const chooseEmoji = (item:EmojiType)=>{
+    const chooseEmoji = (e:any,item:EmojiType)=>{
+        e.stopPropagation()
         document.dispatchEvent(new CustomEvent('chooseEmoji',{'detail':{
             ...item
         }}))
@@ -22,7 +23,7 @@ export default function Emoji (props:any){
             <div className={'emoji-popover'}>
                 {
                     emoji.map((item:EmojiType,index:number)=>{
-                        return <p title={item.title} className={'emoji-tip'} key={index} onClick={()=> chooseEmoji(item)}>
+                        return <p title={item.title} className={'emoji-tip'} key={index} onClick={(event)=> chooseEmoji(event,item)}>
                             <span className={'emoji'}>{item.emoji}</span>
                         </p>
                     })

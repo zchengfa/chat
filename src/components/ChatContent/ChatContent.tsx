@@ -100,9 +100,6 @@ function ChatContent (props:any){
         }
     }
 
-    // const setEmptyDiv = ()=>{
-    //     sendMsg('')
-    // }
     const iconClick = (item:any)=>{
         switch (item.title) {
             case '表情':

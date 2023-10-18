@@ -256,14 +256,19 @@ class Home extends Component<any, any>{
         }
     }
     /**
-     * 点击Layout盒子将搜索用户的结果数据清零，道道关闭气泡卡片的效果(需使用事件捕获)
+     * 1.点击Layout盒子将搜索用户的结果数据清零，道道关闭气泡卡片的效果(需使用事件捕获)
+     * 2.关闭显示中的表情组件
      */
-    blurPop =()=>{
+    blurCom =()=>{
 
         this.setState({
             isShowPop:false
         })
-        //console.log('blur')
+
+        //若表情组件显示中，则关闭表情组件
+        if(this.props.Zustand.emojiStatus){
+            this.props.Zustand.changeEmojiStatus()
+        }
     }
     /**
      * 需判断是否是自己，若是自己则是发消息操作，反之则是显示好友申请组件
@@ -384,7 +389,7 @@ class Home extends Component<any, any>{
         const { contextHolder } = this.props.Message
 
         return <Fragment>
-            <Layout onClickCapture={this.blurPop}>
+            <Layout onClickCapture={this.blurCom}>
                 {contextHolder}
                 {/*侧边栏*/}
                 <Sider width={'70px'}>

@@ -63,8 +63,20 @@ export default function GroupFriendList(props:any){
         setCheckedList(cl)
     }
 
-    const closeChooseCom = ()=>{
-        props.closeChooseCom()
+    const groupComBtnClick = (isAdd:boolean)=>{
+        if(!isAdd){
+            props.groupComBtnClick(isAdd)
+        }
+        else if(isAdd && checkedList.length){
+            let data:any[] = []
+            checkedList.map((item:any)=>{
+                return data.push({
+                    user_id:item.user_id,
+                    username:item.username
+                })
+            })
+            props.groupComBtnClick(isAdd,data)
+        }
     }
 
     const deleteChoose = (id:any)=>{
@@ -85,10 +97,6 @@ export default function GroupFriendList(props:any){
             return true
         })
         setData(d)
-    }
-
-    const addToGroup = ()=>{
-        console.log('确认添加好友加入群聊')
     }
 
     const inputChange = (e:any)=>{
@@ -145,8 +153,8 @@ export default function GroupFriendList(props:any){
                 ></List>
             </div>
             <div className={'group-btn-box'}>
-                <Button className={checkedList.length ? 'complete-btn-actived btn' : 'complete-btn btn'} onClick={addToGroup}>完成</Button>
-                <Button className={'cancel-btn btn'} onClick={closeChooseCom}>取消</Button>
+                <Button className={checkedList.length ? 'complete-btn-actived btn' : 'complete-btn btn'} onClick={()=>groupComBtnClick(true)}>完成</Button>
+                <Button className={'cancel-btn btn'} onClick={()=>groupComBtnClick(false)}>取消</Button>
             </div>
         </div>
     </div>

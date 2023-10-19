@@ -376,7 +376,27 @@ class Home extends Component<any, any>{
     /**
      * 接收子组件事件（关闭选择联系人加入群聊组件）
      */
-    closeChooseCom = ()=>{
+    groupComBtnClick = (isAdd:boolean,data?:any[])=>{
+        if(isAdd){
+            //只选择了一位联系人，不创建群聊，开启私人对私人聊天
+            if(data?.length === 1){
+                let e = {
+                    detail:{
+                        data:data[0]
+                    }
+                }
+                this.CustomEventSendMsg(e)
+            }
+            else{
+                //逻辑再议
+                //const {user_id,username} = this.props.Zustand.customer
+                //socket加入群聊
+                // this.props.socket.emit('inviteFriendJoinGroup',{
+                //     creator:{user_id,username},
+                //     members:data
+                // })
+            }
+        }
         this.setState({
             isShowFriendList:false
         })
@@ -432,7 +452,7 @@ class Home extends Component<any, any>{
                     {/*{friendListIndexAc !== undefined ? this.state.listContent[this.state.currentMenu] : null}*/}
                 </Content>
                 {showFriendCom ? <FriendApplication confirm={this.confirmSendRequest} cancel={this.cancelFriendApp}></FriendApplication> : null}
-                {isShowFriendList ? <GroupFriendList list={friendList} closeChooseCom={this.closeChooseCom}></GroupFriendList> : null}
+                {isShowFriendList ? <GroupFriendList list={friendList} groupComBtnClick={this.groupComBtnClick}></GroupFriendList> : null}
             </Layout>
         </Fragment>
     }

@@ -100,4 +100,16 @@ export function SocketEvent(data:any){
         } as unknown as MsgDataType,info.user_id,true)
     })
 
+    socket.on('invitedJoinGroup',(room:string)=>{
+        socket.emit('acceptJoinGroup',room)
+    })
+
+    socket.on('inviteFriendJoinGroupSuccess',()=>{
+        console.log('群聊创建成功')
+    })
+
+    socket.on('test',(msg:string)=>{
+        console.log(msg)
+    })
+
 }

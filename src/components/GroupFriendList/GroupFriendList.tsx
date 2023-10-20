@@ -72,7 +72,8 @@ export default function GroupFriendList(props:any){
             checkedList.map((item:any)=>{
                 return data.push({
                     user_id:item.user_id,
-                    username:item.username
+                    username:item.username,
+                    avatar:item.avatar
                 })
             })
             props.groupComBtnClick(isAdd,data)

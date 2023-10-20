@@ -388,13 +388,12 @@ class Home extends Component<any, any>{
                 this.CustomEventSendMsg(e)
             }
             else{
-                //逻辑再议
-                //const {user_id,username} = this.props.Zustand.customer
+                const {user_id,username,avatar} = this.props.Zustand.customer
                 //socket加入群聊
-                // this.props.socket.emit('inviteFriendJoinGroup',{
-                //     creator:{user_id,username},
-                //     members:data
-                // })
+                this.props.socket.emit('inviteFriendJoinGroup',{
+                    creator:{user_id,username,avatar},
+                    members:data
+                })
             }
         }
         this.setState({

@@ -104,8 +104,8 @@ export function SocketEvent(data:any){
         socket.emit('acceptJoinGroup',room)
     })
 
-    socket.on('inviteFriendJoinGroupSuccess',()=>{
-        console.log('群聊创建成功')
+    socket.on('inviteFriendJoinGroupSuccess',(e:string)=>{
+        console.log(e)
     })
 
     socket.on('test',(msg:string)=>{

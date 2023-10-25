@@ -76,7 +76,7 @@ export default function GroupFriendList(props:any){
                     avatar:item.avatar
                 })
             })
-            props.groupComBtnClick(isAdd,data)
+            props.groupComBtnClick(isAdd,data.splice(0,8))
         }
     }
 

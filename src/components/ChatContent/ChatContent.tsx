@@ -79,11 +79,13 @@ function ChatContent (props:any){
 
             //向父组件发送事件，将消息发动给后端的socket
             props.socketMsg({
+                type:friendInfo.type,
                 sender:customer.username,
                 userId:customer.user_id,
                 receiver:friendInfo.user,
                 avatar:friendInfo.avatar,
                 sendTime:time,
+                room: listId,
                 msg:emojiToUtf16(msg),
                 msgCode:emojiIndex.length ? transMsgToNameCode(msg,emojiIndex) : ''
             })

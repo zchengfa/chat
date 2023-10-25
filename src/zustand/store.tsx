@@ -134,7 +134,7 @@ export const useMessageStore = create((set)=>{
         },
       //聊天记录
         msgData:getStorageData('msgData',{}),
-        saveMsgData:(item:any,id:number | undefined)=>{
+        saveMsgData:(item:any,id:number | string | undefined)=>{
            // console.log(item,id)
           set((state:any)=>{
             let data = state.msgData
@@ -224,11 +224,14 @@ export const useMessageStore = create((set)=>{
         listId:getStorageData('listId',undefined),
         changeListId:(id:number)=>{
            set((state:any)=>{
+               if (!isNaN(id)) {
+                   id = Number(id)
+               }
                state.changeReadStatus(id)
-               setStorageData('listId',Number(id))
+               setStorageData('listId',id)
                state.getCurrentMsgData(id)
                return {
-                    listId:Number(id)
+                    listId:id
                 }
             })
         },
@@ -247,7 +250,8 @@ export const useMessageStore = create((set)=>{
         },
       //通讯过的用户列表
         chatList:getStorageData('chatList',[]),
-        changeChatList:(item:MsgDataType,replyId:number | undefined = undefined,isReceive:boolean = false)=>{
+        changeChatList:(item:MsgDataType,replyId:any = undefined,isReceive:boolean = false)=>{
+            console.log(replyId)
           set((state:any)=>{
             let data = state.chatList
 
@@ -255,7 +259,7 @@ export const useMessageStore = create((set)=>{
               let index:any = undefined
               data.map((it:any,i:number)=>{
 
-                if(Number(it.userId) === Number( replyId)){
+                if(it.userId.toString() === replyId.toString()){
                   index = i
                 }
 
@@ -271,12 +275,12 @@ export const useMessageStore = create((set)=>{
             else if(replyId && isReceive){
                 let index:any = undefined
                 data.map((it:any,i:number)=>{
-                   if(Number(it.userId) === Number(item.userId)){
+                   if(it.userId.toString() === replyId.toString()){
                        index = i
                    }
                 })
                 if(index !== undefined){
-                    data[index].hasBeenRead = Number(state.listId) === Number(item.userId)
+                    data[index].hasBeenRead = state.listId.toString() === item.userId.toString()
                     item.msgCode?.length ? data[index].msg = item.msgCode : data[index].msg = item.msg
                     data[index].showTime = dealMsgTime(Number(item.time))
                     data[index].time = item.time
@@ -308,7 +312,7 @@ export const useMessageStore = create((set)=>{
                     bgColor,
                     isLeft,
                     time:item.time
-                },Number(id))
+                },id)
             }
 
             return {

@@ -104,8 +104,15 @@ export function SocketEvent(data:any){
         socket.emit('acceptJoinGroup',room)
     })
 
-    socket.on('inviteFriendJoinGroupSuccess',(e:string)=>{
-        console.log(e)
+    socket.on('inviteFriendJoinGroupSuccess',(e:any)=>{
+        Zustand.changeChatList({
+            ...e,
+            type: 'group',
+            msg: '',
+            time: new Date().getTime(),
+            hasBeenRead: false,
+            isGroupChat: false,
+        } as unknown as MsgDataType)
     })
 
     socket.on('test',(msg:string)=>{

@@ -18,19 +18,23 @@ export function SocketEvent(data:any){
     })
 
     socket.on('receiveMessage',(data:any)=>{
-        let readStatus = Zustand.listId === Number(data.userId)
+        console.log(data)
+        let readStatus = data.isGroupChat ? Zustand.listId?.toString() === data.room.toString()   : Zustand.listId?.toString() === data.userId.toString()
         Zustand.changeChatList({
             userId:Number(data.userId),
             user:data.sender,
+            chatName:data.chatName,
+            chatAvatar:data.chatAvatar,
             type:'msg',
             msg:data.msg,
             msgCode:data.msgCode,
             avatar:data.avatar,
             time:data.sendTime,
             isMute:true,
+            room:data.room,
             hasBeenRead:readStatus,
-            isGroupChat:false
-        },data.userId,true)
+            isGroupChat:data.isGroupChat
+        },data.isGroupChat ? data.room : data.userId,true)
     })
     /**
      * 好友请求已发送给对方
@@ -107,11 +111,14 @@ export function SocketEvent(data:any){
     socket.on('inviteFriendJoinGroupSuccess',(e:any)=>{
         Zustand.changeChatList({
             ...e,
-            type: 'group',
+            type: 'msg',
             msg: '',
             time: new Date().getTime(),
             hasBeenRead: false,
-            isGroupChat: false,
+            isGroupChat: true,
+            room:e.userId,
+            chatAvatar:e.avatar,
+            chatName:e.user
         } as unknown as MsgDataType)
     })
 

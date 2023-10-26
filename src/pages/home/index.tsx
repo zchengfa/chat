@@ -185,7 +185,7 @@ class Home extends Component<any, any>{
             })
         }
     }
-    chatWithSender = (data:MsgDataType,id:number)=>{
+    chatWithSender = (data:MsgDataType,id:any)=>{
         const { changeListId,saveFriendInfo } = this.props.Zustand
         this.setState({
             recieverInfo:data

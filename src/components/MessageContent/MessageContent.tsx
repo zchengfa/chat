@@ -21,10 +21,16 @@ class MessageContent extends Component<any,any> {
         return  <div className={direction ? "message-item-left-box message-item-box" : "message-item-right-box message-item-box"}>
             <div className={'msg-avatar-box'}>
                 <img className={'msg-avatar'} src={item.avatar} alt="avatar"/>
-                <div className={'angle'} style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div>
+                {item.msg.length > 15 ? <div className={'angle'} style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div> : null}
             </div>
-            <div className={item.img ? 'msg-img-box' : 'msg-box'} onMouseEnter={()=> this.msgMouseEvent(true,direction,index)} onMouseLeave={()=> this.msgMouseEvent(false,direction,index)} style={direction ? {backgroundColor: item.bgColor} : {backgroundColor: item.bgColor}}>
-                {item.img ? <img className={'msg-image'} src={item.img} alt="msg_image"/> : <span className={'msg'}>{utf16ToEmoji(item.msg)}</span>}
+            <div className={'user-msg'} style={{maxWidth:'50%'}}>
+                {item.isLeft ? <span className={'username'} style={{display:'block',marginLeft:'1rem',marginBottom:'.4rem',color:'var(--deep-gray-color)',fontSize:'var(--mini-font-size)'}}>{item.username}</span> : null}
+                <div className={'img-msg-box'}>
+                    {item.msg.length <= 15 ? <div className={'angle'} style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div> : null}
+                    <div className={item.img ? 'msg-img-box' : 'msg-box'} onMouseEnter={()=> this.msgMouseEvent(true,direction,index)} onMouseLeave={()=> this.msgMouseEvent(false,direction,index)} style={direction ? {backgroundColor: item.bgColor} : {backgroundColor: item.bgColor}}>
+                        {item.img ? <img className={'msg-image'} src={item.img} alt="msg_image"/> : <span className={'msg'}>{utf16ToEmoji(item.msg)}</span>}
+                    </div>
+                </div>
             </div>
         </div>
     }

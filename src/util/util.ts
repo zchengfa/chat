@@ -125,7 +125,7 @@ export function verifyTime(arr:any[]){
  * @param separator { string | string[] | undefined } 时间分割符
  * @return { string } 返回处理后的时间
  */
-export function dealMsgTime (time:number,separator:string | string[] | undefined = undefined){
+export function dealMsgTime (time:number,separator:string | string[] = ['/',':']){
 
   //返回处理后的时间
   let showTime = undefined,S = Object.prototype.toString.call(separator),YS = '',HS = ''
@@ -135,8 +135,15 @@ export function dealMsgTime (time:number,separator:string | string[] | undefined
     HS = `hh` + separator + `mm`
   }
   else if(Array.isArray(separator) ){
-    YS = `YYYY` + separator[0] + `MM` + separator[0] + `DD`
-    HS = `hh` + separator[1] + `mm`
+    if(Array.isArray(separator[0]) && Array.isArray(separator[1])){
+      YS = `YYYY` + separator[0][0] + `MM` + separator[0][1] + `DD` + separator[0][2]
+      HS = `hh` + separator[1][0] + `mm` + separator[1][1]
+    }
+    else{
+      separator[0].length ? YS = `YYYY` + separator[0].toString() + `MM` + separator[0].toString() + `DD` : YS = `YYYY-MM-DD`
+      separator[1].length ? HS = `hh` + separator[1] + `mm` : HS = `hh:mm`
+    }
+
   }
   else if( S === '[object Undefined]' ){
     YS = 'YYYY-MM-DD'

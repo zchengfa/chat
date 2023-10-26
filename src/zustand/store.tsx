@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import {MsgDataType,operationsData} from "../common/staticData/data";
 import {sortByLocaleWithObject, getFirstPinYin, verifyTime, dealMsgTime} from "../util/util";
+import {Console} from "inspector";
 
 const defaultFriendList = [
     {
@@ -223,6 +224,7 @@ export const useMessageStore = create((set)=>{
       //消息列表激活的索引
         listId:getStorageData('listId',undefined),
         changeListId:(id:number)=>{
+            console.log(id)
            set((state:any)=>{
                if (!isNaN(id)) {
                    id = Number(id)
@@ -251,49 +253,52 @@ export const useMessageStore = create((set)=>{
       //通讯过的用户列表
         chatList:getStorageData('chatList',[]),
         changeChatList:(item:MsgDataType,replyId:any = undefined,isReceive:boolean = false)=>{
-            console.log(replyId)
+            let separator:any[] = ['/',':']
           set((state:any)=>{
             let data = state.chatList
 
             if(replyId && !isReceive){
               let index:any = undefined
               data.map((it:any,i:number)=>{
+                  let myId = item.isGroupChat ? it.room : item.userId
 
-                if(it.userId.toString() === replyId.toString()){
-                  index = i
-                }
+                  if(myId?.toString() === replyId.toString()){
+                      index = i
+                  }
 
               })
+
                 if (item.msgCode?.length) {
                     data[index].msg = item.msgCode
                 } else {
                     data[index].msg = item.msg
                 }
-                data[index].showTime = dealMsgTime(Number(item.time))
+                data[index].showTime = dealMsgTime(Number(item.time),separator)
                 data[index].time = item.time
             }
             else if(replyId && isReceive){
                 let index:any = undefined
                 data.map((it:any,i:number)=>{
-                   if(it.userId.toString() === replyId.toString()){
+                    let myId = item.isGroupChat ? it.room : item.userId
+                   if(myId?.toString() === replyId.toString()){
                        index = i
                    }
                 })
                 if(index !== undefined){
-                    data[index].hasBeenRead = state.listId.toString() === item.userId.toString()
+                    data[index].hasBeenRead = item.isGroupChat ? state.listId?.toString() === item.room.toString() : state.listId?.toString() === item.userId.toString()
                     item.msgCode?.length ? data[index].msg = item.msgCode : data[index].msg = item.msg
-                    data[index].showTime = dealMsgTime(Number(item.time))
+                    data[index].showTime = dealMsgTime(Number(item.time),separator)
                     data[index].time = item.time
                 }
                 else{
-                    item.showTime = dealMsgTime(Number(item.time))
+                    item.showTime = dealMsgTime(Number(item.time),separator)
 
                     data.unshift(item)
                 }
 
             }
             else{
-                item.showTime = dealMsgTime(Number(item.time))
+                item.showTime = dealMsgTime(Number(item.time),separator)
                 data.unshift(item)
             }
 
@@ -311,7 +316,8 @@ export const useMessageStore = create((set)=>{
                     msg:item.msg,
                     bgColor,
                     isLeft,
-                    time:item.time
+                    time:item.time,
+                    username:item.user
                 },id)
             }
 

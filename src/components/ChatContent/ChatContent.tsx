@@ -67,11 +67,14 @@ function ChatContent (props:any){
             changeChatList({
                 userId:customer.user_id,
                 avatar:customer.avatar,
+                user:customer.username,
                 isLeft:false,
                 bgColor:'var(--success-font-color)',
                 msg:emojiToUtf16(msg),
                 msgCode:transMsgToNameCode(msg,emojiIndex),
-                time
+                time,
+                isGroupChat:friendInfo.isGroupChat,
+                room:listId
             },listId)
             let c = count
             c++
@@ -83,9 +86,12 @@ function ChatContent (props:any){
                 sender:customer.username,
                 userId:customer.user_id,
                 receiver:friendInfo.user,
-                avatar:friendInfo.avatar,
+                avatar:customer.avatar,
                 sendTime:time,
                 room: listId,
+                chatName:friendInfo.user ,
+                chatAvatar:friendInfo.avatar,
+                isGroupChat:friendInfo.isGroupChat,
                 msg:emojiToUtf16(msg),
                 msgCode:emojiIndex.length ? transMsgToNameCode(msg,emojiIndex) : ''
             })
@@ -128,7 +134,7 @@ function ChatContent (props:any){
 
     return <Layout className={'content-con'}>
         <Header className={'user-box'}>
-            <span className={'receiver-title'}>{friendInfo.user}</span>
+            <span className={'receiver-title text-ellipsis'}>{friendInfo.user}</span>
         </Header>
         <Content className={'msg-content'}>
             <MessageContent changeBgColor={changeBgColor} data={currentFriendMsg}></MessageContent>

@@ -38,7 +38,6 @@
         height: 32px
         cursor: pointer
       .msg-box
-        max-width: 50%
         .msg
           line-height: 1.2rem
           letter-spacing: 1px
@@ -53,18 +52,27 @@
         border-radius: .2rem
 
     .message-item-left-box
-        justify-content: flex-start
+      justify-content: flex-start
+      .img-msg-box
+        flex-direction: row
     .message-item-right-box
       flex-direction: row-reverse
       .msg-avatar-box
         flex-direction: row-reverse
-        .angle
-          border: .4rem solid transparent
+      .angle
+        border: .4rem solid transparent
 
     .msg-avatar-box
       display: flex
       justify-content: space-between
       align-items: center
+      .angle
+        border: .4rem solid transparent
+    .img-msg-box
+      display: flex
+      align-items: center
+      flex-direction: row-reverse
+      width: 100%
       .angle
         border: .4rem solid transparent
 

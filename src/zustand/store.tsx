@@ -136,7 +136,6 @@ export const useMessageStore = create((set)=>{
       //聊天记录
         msgData:getStorageData('msgData',{}),
         saveMsgData:(item:any,id:number | string | undefined)=>{
-           // console.log(item,id)
           set((state:any)=>{
             let data = state.msgData
 
@@ -166,8 +165,8 @@ export const useMessageStore = create((set)=>{
 
               data[id].push(item)
                 newMsg.push(item)
-                if(state.listId === id){
-                    //console.log(item,id)
+                if(state.listId.toString() === id.toString()){
+
                     state.getCurrentMsgData(undefined,undefined,newMsg)
                 }
             }
@@ -239,91 +238,94 @@ export const useMessageStore = create((set)=>{
         },
         changeReadStatus:(id:number,status:boolean = true)=>{
             set((state:any)=>{
-                let data = state.chatList
+                let allList = state.chatList
+                let data = allList[state.customer.user_id]
 
                 data.map((item:any)=>{
                    return item.userId === id ? item.hasBeenRead = status : null
                 })
-                setStorageData('chatList',data)
+                setStorageData('chatList',allList)
                 return {
-                    chatList:data
+                    chatList:allList
                 }
             })
         },
       //通讯过的用户列表
-        chatList:getStorageData('chatList',[]),
+        chatList:getStorageData('chatList',{}),
         changeChatList:(item:MsgDataType,replyId:any = undefined,isReceive:boolean = false)=>{
             let separator:any[] = ['/',':']
           set((state:any)=>{
-            let data = state.chatList
+              let allList = state.chatList
+              let data = allList[state.customer.user_id] ? allList[state.customer.user_id] : []
 
-            if(replyId && !isReceive){
-              let index:any = undefined
-              data.map((it:any,i:number)=>{
-                  let myId = item.isGroupChat ? it.room : item.userId
+                if(replyId && !isReceive){
+                  let index:any = undefined
+                  data.map((it:any,i:number)=>{
+                      let myId = item.isGroupChat ? it.room : it.userId
 
-                  if(myId?.toString() === replyId.toString()){
-                      index = i
-                  }
+                      if(myId?.toString() === replyId.toString() && !it.isAssistant){
+                          index = i
+                      }
 
-              })
+                  })
 
-                if (item.msgCode?.length) {
-                    data[index].msg = item.msgCode
-                } else {
-                    data[index].msg = item.msg
-                }
-                data[index].showTime = dealMsgTime(Number(item.time),separator)
-                data[index].time = item.time
-            }
-            else if(replyId && isReceive){
-                let index:any = undefined
-                data.map((it:any,i:number)=>{
-                    let myId = item.isGroupChat ? it.room : item.userId
-                   if(myId?.toString() === replyId.toString()){
-                       index = i
-                   }
-                })
-                if(index !== undefined){
-                    data[index].hasBeenRead = item.isGroupChat ? state.listId?.toString() === item.room.toString() : state.listId?.toString() === item.userId.toString()
-                    item.msgCode?.length ? data[index].msg = item.msgCode : data[index].msg = item.msg
+                    if (item.msgCode?.length) {
+                        data[index].msg = item.msgCode
+                    } else {
+                        data[index].msg = item.msg
+                    }
                     data[index].showTime = dealMsgTime(Number(item.time),separator)
                     data[index].time = item.time
                 }
+                else if(replyId && isReceive){
+                    let index:any = undefined
+                    data.map((it:any,i:number)=>{
+                        let myId = item.isGroupChat ? it.room : item.userId
+                       if(myId?.toString() === replyId.toString() && !it.isAssistant){
+                           index = i
+                       }
+                    })
+                    if(index !== undefined){
+                        data[index].hasBeenRead = item.isGroupChat ? state.listId?.toString() === item.room.toString() : state.listId?.toString() === item.userId.toString()
+                        item.msgCode?.length ? data[index].msg = item.msgCode : data[index].msg = item.msg
+                        data[index].showTime = dealMsgTime(Number(item.time),separator)
+                        data[index].time = item.time
+                    }
+                    else{
+                        item.showTime = dealMsgTime(Number(item.time),separator)
+
+                        data.unshift(item)
+                    }
+
+                }
                 else{
                     item.showTime = dealMsgTime(Number(item.time),separator)
-
                     data.unshift(item)
                 }
 
-            }
-            else{
-                item.showTime = dealMsgTime(Number(item.time),separator)
-                data.unshift(item)
-            }
 
+                setStorageData('chatList',allList)
 
-            setStorageData('chatList',data)
+                let bgColor = replyId && !isReceive ? 'var(--success-font-color)' : 'var(--white-color)'
+                let isLeft = replyId && isReceive
+                let id = replyId ? replyId : undefined
 
-            let bgColor = replyId && !isReceive ? 'var(--success-font-color)' : 'var(--white-color)'
-            let isLeft = replyId && isReceive
-            let id = replyId ? replyId : undefined
+                if(item.msg.length){
+                    state.saveMsgData({
+                        userId:item.userId,
+                        avatar:item.avatar,
+                        msg:item.msg,
+                        bgColor,
+                        isLeft,
+                        time:item.time,
+                        username:item.user
+                    },id)
+                }
 
-            if(item.msg.length){
-                state.saveMsgData({
-                    userId:item.userId,
-                    avatar:item.avatar,
-                    msg:item.msg,
-                    bgColor,
-                    isLeft,
-                    time:item.time,
-                    username:item.user
-                },id)
-            }
-
-            return {
-              chatList:data
-            }
+                allList[state.customer.user_id] = data
+                return {
+                  chatList:allList
+                }
           })
         },
       //最新沟通过的好友信息
@@ -455,9 +457,11 @@ export const useMessageStore = create((set)=>{
         },
         changeStorageTime(){
             set((state:any)=>{
-                let {chatList,msgData} = state
+                let {chatList,msgData,customer} = state
 
-                chatList.map((item:any)=>{
+                let data = chatList[customer.user_id] ? chatList[customer.user_id] : []
+
+                data.map((item:any)=>{
                     return item.showTime = dealMsgTime(item.time)
                 })
 
@@ -468,6 +472,8 @@ export const useMessageStore = create((set)=>{
                         }
                     })
                 }
+
+                chatList[customer.user_id] = data
 
                 return {
                     chatList,

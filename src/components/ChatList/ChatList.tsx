@@ -8,7 +8,7 @@ import withHook from "../../hook/withHook";
 
 function ChatList (props:any){
 
-  const { chatList,listId } = props.Zustand
+  const { chatList,listId,customer } = props.Zustand
 
   const chatWithSender = (item:MsgDataType,id:any)=>{
 
@@ -16,7 +16,7 @@ function ChatList (props:any){
   }
 
   const chatListElement = ()=>{
-    return chatList.map((item:any,index:number)=>{
+    return chatList[customer.user_id].map((item:any,index:number)=>{
       return <li key={index}>
         <div className={(item.isGroupChat ? listId?.toString() === item.room?.toString() : listId?.toString() === item.userId?.toString() ) ? 'message-box actived' : 'message-box'} onClick={()=> chatWithSender(item,item.isGroupChat ? item.room : item.userId)}>
           <Space className={'msg-left'}>
@@ -42,7 +42,7 @@ function ChatList (props:any){
 
   return <ul className={'list-container'}>
 
-    {chatList?.length ? chatListElement() : null}
+    {chatList[customer.user_id]?.length ? chatListElement() : null}
   </ul>
 }
  export default withHook(ChatList)

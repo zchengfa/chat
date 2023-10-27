@@ -348,7 +348,7 @@ class Home extends Component<any, any>{
     CustomEventSendMsg = (event:any)=>{
         //点击发消息，1.选择聊天菜单项、2.查看聊天列表中是否有与该该好友的通讯记录，有就直接激活与该好友的聊天状态，没有就添加一个聊天记录项
         this.changeMenu(0,'menu')
-        const list = this.props.Zustand.chatList
+        const list = this.props.Zustand.chatList[this.props.Zustand.customer.user_id]
         const {user_id,username,avatar} = event.detail.data
         let isInclude = false
         let data = {
@@ -466,7 +466,7 @@ class Home extends Component<any, any>{
             getCurrentMsgData()
         }
 
-        if(!chatList.length){
+        if(!chatList[customer.user_id].length){
             changeChatList({
                 userId: customer.user_id,
                 type: 'self',
@@ -475,7 +475,8 @@ class Home extends Component<any, any>{
                 time: new Date().getTime(),
                 hasBeenRead: true,
                 isGroupChat: false,
-                avatar:''
+                avatar:'',
+                isAssistant:true
             } as unknown as MsgDataType)
         }
 

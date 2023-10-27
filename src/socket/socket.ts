@@ -18,7 +18,7 @@ export function SocketEvent(data:any){
     })
 
     socket.on('receiveMessage',(data:any)=>{
-        console.log(data)
+
         let readStatus = data.isGroupChat ? Zustand.listId?.toString() === data.room.toString()   : Zustand.listId?.toString() === data.userId.toString()
         Zustand.changeChatList({
             userId:Number(data.userId),

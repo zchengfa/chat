@@ -24,7 +24,7 @@ class MessageContent extends Component<any,any> {
                 {item.msg.length > 15 ? <div className={'angle'} style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div> : null}
             </div>
             <div className={'user-msg'} style={{maxWidth:'50%'}}>
-                {item.isLeft ? <span className={'username'} style={{display:'block',marginLeft:'1rem',marginBottom:'.4rem',color:'var(--deep-gray-color)',fontSize:'var(--mini-font-size)'}}>{item.username}</span> : null}
+                {item.isLeft && this.props.Zustand.friendInfo.isGroupChat ? <span className={'username'} style={{display:'block',marginLeft:'1rem',marginBottom:'.4rem',color:'var(--deep-gray-color)',fontSize:'var(--mini-font-size)'}}>{item.username}</span> : null}
                 <div className={'img-msg-box'}>
                     {item.msg.length <= 15 ? <div className={'angle'} style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div> : null}
                     <div className={item.img ? 'msg-img-box' : 'msg-box'} onMouseEnter={()=> this.msgMouseEvent(true,direction,index)} onMouseLeave={()=> this.msgMouseEvent(false,direction,index)} style={direction ? {backgroundColor: item.bgColor} : {backgroundColor: item.bgColor}}>

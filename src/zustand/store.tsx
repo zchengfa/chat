@@ -223,7 +223,6 @@ export const useMessageStore = create((set)=>{
       //消息列表激活的索引
         listId:getStorageData('listId',undefined),
         changeListId:(id:number)=>{
-            console.log(id)
            set((state:any)=>{
                if (!isNaN(id)) {
                    id = Number(id)

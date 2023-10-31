@@ -1,9 +1,13 @@
-import {Button, Divider, Image, Popover} from "antd";
+import {Button, Divider, Image, Popover, Upload,message} from "antd";
 import './popoverCommon.sass'
 import { operationsData } from "../../../common/staticData/data";
+import {baseURL} from "../../../network/network";
+import {RcFile} from "antd/es/upload";
+
 
 export default function PopoverCommon(props:any){
     const {customer,children,open,placement} = props
+    const [messageApi,contextHolder] = message.useMessage()
     const btnList = [
         {
             title:'发消息',
@@ -28,8 +32,21 @@ export default function PopoverCommon(props:any){
         }
     ]
 
-    const btnClick = ()=>{
-        props.btnClick()
+
+    const beforeUpload =(file:RcFile)=>{
+        let isLimit = file.size/1024/1024 <2
+        if(!isLimit){
+            messageApi.open({
+                type:'error',
+                content:'上传的头像不可超过2M'
+            })
+        }
+
+        return isLimit
+    }
+
+    const uploadChange = (e:any)=>{
+        console.log(e)
     }
 
     const addNotes = ()=>{
@@ -38,6 +55,7 @@ export default function PopoverCommon(props:any){
 
     const content = (
         <div className={Object.keys(customer).length ? 'popover-box' : 'box-none'}>
+            {contextHolder}
             <div className={'box-top'}>
                 <Image className={'avatar'} src={customer.avatar} preview={false}></Image>
                 <div className={'user-info'}>
@@ -69,7 +87,7 @@ export default function PopoverCommon(props:any){
                                 })
                             }
                         </div>
-                    </div> : <Button className={'btn'} onClickCapture={btnClick}>{props.btnTitle}</Button>
+                    </div> : <Upload action={baseURL + '/uploadAvatar'} fileList={[]} onChange={uploadChange} beforeUpload={beforeUpload} maxCount={1} name={'avatar'} accept={"image/png, image/jpeg"}><Button className={'btn'}>{props.btnTitle}</Button></Upload>
                 }
             </div>
         </div>

@@ -2,7 +2,7 @@ import axios, {AxiosError} from "axios";
 import { Navigate } from "react-router-dom";
 
 
-const baseURL = 'http://localhost:4000'
+export const baseURL = 'http://localhost:4000'
 const timeout = 5000
 export function Get(config:any){
     const instance = axios.create({

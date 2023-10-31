@@ -1,5 +1,5 @@
 import './chatContent.sass'
-import { Layout,Divider,Input,Button } from "antd";
+import {Layout, Divider, Input, Button, Upload} from "antd";
 import { operationsData,IconMenu } from "../../common/staticData/data";
 import MessageContent from "../MessageContent/MessageContent";
 import {useEffect, useState} from "react";
@@ -14,8 +14,8 @@ function ChatContent (props:any){
     const [emojiIndex,setEmojiIndex] = useState([])
     const [count,setCount] = useState(0)
     const {currentFriendMsg,friendInfo,customer,changeChatList,changeBg,listId,changeEmojiStatus} = props.Zustand
+    const textAreaRef = props.Refs
 
-    //监听聊天消息列表，列表数据量变化，让最后一项出现在视口，保持滚动到最新消息
     useEffect(()=>{
 
         return ()=>{
@@ -127,6 +127,7 @@ function ChatContent (props:any){
         })
         setEmojiIndex(indexArr)
         setMsg(data)
+        textAreaRef.current.focus()
         document.removeEventListener('chooseEmoji',CustomEventChooseEmoji)
     }
 
@@ -146,7 +147,7 @@ function ChatContent (props:any){
                     {
                         operations.map((item:IconMenu,index:number)=>{
                             return <div className={'icon-box'} key={index} onClick={()=> iconClick(item)}>
-                                {item.component()}
+                                {item.title === '发送文件' ? <Upload>{item.component()}</Upload> : item.component()}
                             </div>
                         })
                     }
@@ -162,7 +163,7 @@ function ChatContent (props:any){
                 </div>
             </div>
             <div className={'text-area-box'}>
-                <TextArea style={{height:'100%',resize:'none'}} bordered={false} value={msg} onKeyDown={keyboardSendMsg} onChange={changeMsg}></TextArea>
+                <TextArea ref={textAreaRef} style={{height:'100%',resize:'none'}} bordered={false} value={msg} onKeyDown={keyboardSendMsg} onChange={changeMsg}></TextArea>
             </div>
             <div className={'send-btn-box'}>
                 <Button className={'send-button'} size={'small'} onClick={()=> sendMsg(msg)}>发送(S)</Button>

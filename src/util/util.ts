@@ -125,7 +125,7 @@ export function verifyTime(arr:any[]){
  * @param separator { string | string[] | undefined } 时间分割符
  * @return { string } 返回处理后的时间
  */
-export function dealMsgTime (time:number,separator:string | string[] = ['/',':']){
+export function dealMsgTime (time:number,separator:string | any[] = ['/',':']){
 
   //返回处理后的时间
   let showTime = undefined,S = Object.prototype.toString.call(separator),YS = '',HS = ''

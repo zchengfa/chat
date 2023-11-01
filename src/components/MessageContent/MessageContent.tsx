@@ -3,7 +3,7 @@ import './messageContent.sass'
 import {List, Spin} from "antd";
 import { LoadingOutlined } from '@ant-design/icons'
 import InfiniteScroll from "react-infinite-scroll-component";
-import {utf16ToEmoji} from "../../util/util";
+import {dealMsgTime, utf16ToEmoji} from "../../util/util";
 import withHook from "../../hook/withHook";
 
 class MessageContent extends Component<any,any> {

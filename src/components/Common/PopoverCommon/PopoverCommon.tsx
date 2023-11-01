@@ -3,7 +3,8 @@ import './popoverCommon.sass'
 import { operationsData } from "../../../common/staticData/data";
 import {baseURL} from "../../../network/network";
 import {RcFile} from "antd/es/upload";
-
+import {useMessageStore} from "../../../zustand/store";
+import {useState} from "react";
 
 export default function PopoverCommon(props:any){
     const {customer,children,open,placement} = props
@@ -32,6 +33,10 @@ export default function PopoverCommon(props:any){
         }
     ]
 
+    const {setUserInfo} = useMessageStore((state:any)=> state)
+
+    const [fileList,setFileList] = useState([])
+
 
     const beforeUpload =(file:RcFile)=>{
         let isLimit = file.size/1024/1024 <2
@@ -46,7 +51,20 @@ export default function PopoverCommon(props:any){
     }
 
     const uploadChange = (e:any)=>{
-        console.log(e)
+        if(e.file.xhr){
+            console.log(e.file.xhr)
+            let {avatar,err} = JSON.parse(e.file.xhr.response)
+            if(avatar){
+                customer.avatar = avatar
+                setUserInfo(customer)
+            }
+            if(err){
+                messageApi.open({
+                    type:'error',
+                    content:err
+                })
+            }
+        }
     }
 
     const addNotes = ()=>{
@@ -87,7 +105,7 @@ export default function PopoverCommon(props:any){
                                 })
                             }
                         </div>
-                    </div> : <Upload action={baseURL + '/uploadAvatar'} fileList={[]} onChange={uploadChange} beforeUpload={beforeUpload} maxCount={1} name={'avatar'} accept={"image/png, image/jpeg"}><Button className={'btn'}>{props.btnTitle}</Button></Upload>
+                    </div> : <Upload defaultFileList={fileList} action={baseURL + '/uploadAvatar?user_id=' + customer.user_id + '&username=' + customer.username} onChange={uploadChange} beforeUpload={beforeUpload} maxCount={1} name={'avatar'} accept={"image/png, image/jpeg"}><Button className={'btn'}>{props.btnTitle}</Button></Upload>
                 }
             </div>
         </div>

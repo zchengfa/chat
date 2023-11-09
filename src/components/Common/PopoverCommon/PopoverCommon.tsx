@@ -4,10 +4,9 @@ import { operationsData } from "../../../common/staticData/data";
 import {baseURL} from "../../../network/network";
 import {RcFile} from "antd/es/upload";
 import {useMessageStore} from "../../../zustand/store";
-import {useState} from "react";
 
 export default function PopoverCommon(props:any){
-    const {customer,children,open,placement} = props
+    const {customer,children,open,placement,isSelf} = props
     const [messageApi,contextHolder] = message.useMessage()
     const btnList = [
         {
@@ -35,15 +34,13 @@ export default function PopoverCommon(props:any){
 
     const {setUserInfo} = useMessageStore((state:any)=> state)
 
-    const [fileList,setFileList] = useState([])
-
 
     const beforeUpload =(file:RcFile)=>{
-        let isLimit = file.size/1024/1024 <2
+        let isLimit = file.size <= 64*1024
         if(!isLimit){
             messageApi.open({
                 type:'error',
-                content:'上传的头像不可超过2M'
+                content:'图片超出上传限制（64KB以内）'
             })
         }
 
@@ -52,7 +49,6 @@ export default function PopoverCommon(props:any){
 
     const uploadChange = (e:any)=>{
         if(e.file.xhr){
-            console.log(e.file.xhr)
             let {avatar,err} = JSON.parse(e.file.xhr.response)
             if(avatar){
                 customer.avatar = avatar
@@ -70,6 +66,11 @@ export default function PopoverCommon(props:any){
     const addNotes = ()=>{
         alert('该功能待完善')
     }
+
+    const showF = ()=>{
+        props.btnClick()
+    }
+
 
     const content = (
         <div className={Object.keys(customer).length ? 'popover-box' : 'box-none'}>
@@ -105,7 +106,7 @@ export default function PopoverCommon(props:any){
                                 })
                             }
                         </div>
-                    </div> : <Upload defaultFileList={fileList} action={baseURL + '/uploadAvatar?user_id=' + customer.user_id + '&username=' + customer.username} onChange={uploadChange} beforeUpload={beforeUpload} maxCount={1} name={'avatar'} accept={"image/png, image/jpeg"}><Button className={'btn'}>{props.btnTitle}</Button></Upload>
+                    </div> : isSelf&&props.btnTitle === '更换头像' ? <Upload showUploadList={false} action={baseURL + '/uploadAvatar?user_id=' + customer.user_id + '&username=' + customer.username} onChange={uploadChange} beforeUpload={beforeUpload} maxCount={1} name={'avatar'} accept={"image/png, image/jpeg"}><Button className={'btn'}>{props.btnTitle}</Button></Upload> : <Button onClickCapture={showF} className={'btn'}>{props.btnTitle}</Button>
                 }
             </div>
         </div>

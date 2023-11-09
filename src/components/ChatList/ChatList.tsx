@@ -21,7 +21,7 @@ function ChatList (props:any){
         <div className={(item.isGroupChat ? listId?.toString() === item.room?.toString() : listId?.toString() === item.userId?.toString() ) ? 'message-box actived' : 'message-box'} onClick={()=> chatWithSender(item,item.isGroupChat ? item.room : item.userId)}>
           <Space className={'msg-left'}>
             <Badge dot={!item.hasBeenRead}>
-              { item.avatar.length ? <div className={'avatar'}><img style={{width:'2.5rem'}} src={item.isGroupChat ? item.chatAvatar : item.avatar} alt=""/></div> : item.type === 'text' ? <Avatar shape={'square'} icon={<UserOutlined />}></Avatar> : <div className={'avatar'} style={{alignItems:'center',backgroundColor:'var(--success-font-color)'}}><FileTransIconComponent /></div> }
+              { item.avatar.length ? <div className={'avatar'}><img style={item.isGroupChat ?{width:'2.5rem',borderRadius:'.2rem'} : {width:'2.5rem',height:'2.5rem',borderRadius:'.2rem'}} src={item.isGroupChat ? item.chatAvatar : item.avatar} alt=""/></div> : item.type === 'text' ? <Avatar shape={'square'} icon={<UserOutlined />}></Avatar> : <div className={'avatar'} style={{alignItems:'center',backgroundColor:'var(--success-font-color)'}}><FileTransIconComponent /></div> }
             </Badge>
           </Space>
           <Space className={'msg-right'}>

@@ -363,6 +363,7 @@ class Home extends Component<any, any>{
 
         list.map((item:any)=>{
             if(item.userId === user_id){
+                console.log(item.userId,user_id)
                 isInclude = true
             }
         })
@@ -420,7 +421,7 @@ class Home extends Component<any, any>{
                         <Input ref={inputRef} value={inputValue} style={{backgroundColor:'var(--gray-color)'}} onBlur={this.inputBlur} onChange={this.inputChange} suffix={inputProp} onFocus={this.inputFocus} prefix={isShowFriendBtn ? <UserSwitchOutlined /> : <SearchOutlined />} placeholder={placeholder}></Input>
                         {isShowFriendBtn ? <Button className={'cancel-btn'} onClick={this.closeAddFriendBtn}>取消</Button> : <Button className={'normal'} style={{backgroundColor:'var(--gray-color)'}} icon={searchRightComponent}></Button>}
                     </Space>
-                    { isShowPop ? <PopoverCommon btnClick={this.showFriendApplication} customer={searchUserData} arrow={false} open={!!searchUserData} btnTitle={isSelf ? '发消息' : '添加到通讯录'}></PopoverCommon>:null}
+                    { isShowPop ? <PopoverCommon btnClick={this.showFriendApplication} customer={searchUserData} arrow={false} open={!!searchUserData} isSelf={isSelf} btnTitle={isSelf ? '发消息' : '添加到通讯录'}></PopoverCommon>:null}
 
                     <div className={'middle-list'}>
                         {this.state.menuList[this.state.currentMenu]}
@@ -450,7 +451,7 @@ class Home extends Component<any, any>{
                     {listId !== undefined || friendListInfo?.index !== undefined  ? this.state.listContent[this.state.currentMenu] : null}
                     {/*{friendListIndexAc !== undefined ? this.state.listContent[this.state.currentMenu] : null}*/}
                 </Content>
-                {showFriendCom ? <FriendApplication confirm={this.confirmSendRequest} cancel={this.cancelFriendApp}></FriendApplication> : null}
+                {showFriendCom ? <FriendApplication btnClick={this.showFriendApplication} confirm={this.confirmSendRequest} cancel={this.cancelFriendApp}></FriendApplication> : null}
                 {isShowFriendList ? <GroupFriendList list={friendList} groupComBtnClick={this.groupComBtnClick}></GroupFriendList> : null}
             </Layout>
         </Fragment>

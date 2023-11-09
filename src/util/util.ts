@@ -1,6 +1,7 @@
 // @ts-ignore
 import cryptoJs from 'crypto-js/crypto-js'
 import pinyin from "pinyin";
+import {Md5} from 'ts-md5'
 
 const key = cryptoJs.enc.Utf8.parse("1234123412PackMyBoxWithFiveDozenLiquorJugs");  //十六位十六进制数作为密钥
 const iv = cryptoJs.enc.Utf8.parse('PackMyBoxWithFiveDozenLiquorJugs1234123412');   //十六位十六进制数作为密钥偏移量
@@ -304,4 +305,28 @@ export function transMsgToNameCode(str:string,indexArr:any[]){
 
   //判断最后一个表情后面是否还有消息，若有与之拼接
   return lastStr ? strCode = strCode + lastStr : strCode
+}
+
+/**
+ * 文件分片
+ * @param file 文件blob
+ * @param totalSize 文件总大小
+ * @param chunkSize 每个分片大小
+ */
+export function createFileChunk(file:File,totalSize:number,chunkSize:number){
+  let size = totalSize
+
+  let fileChunk: { file: Blob; index: number; identity: unknown; }[] = []
+  let cur = 0
+  let index = 0
+
+  let hasher = Md5.hashAsciiStr('encrypt file' + new Date().getTime());
+  while (cur < size){
+    const chunk = file.slice(cur,cur + chunkSize)
+    fileChunk.push({file:chunk,index,identity:hasher})
+    cur += chunkSize
+    index+=1
+  }
+
+  return fileChunk
 }

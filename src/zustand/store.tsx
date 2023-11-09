@@ -165,7 +165,7 @@ export const useMessageStore = create((set)=>{
 
               data[id].push(item)
                 newMsg.push(item)
-                if(state.listId.toString() === id.toString()){
+                if(state.listId?.toString() === id.toString()){
 
                     state.getCurrentMsgData(undefined,undefined,newMsg)
                 }
@@ -241,7 +241,7 @@ export const useMessageStore = create((set)=>{
                 let data = allList[state.customer.user_id]
 
                 data.map((item:any)=>{
-                   return item.userId === id ? item.hasBeenRead = status : null
+                   return item.userId === id || item.room === id ? item.hasBeenRead = status : null
                 })
                 setStorageData('chatList',allList)
                 return {
@@ -265,7 +265,7 @@ export const useMessageStore = create((set)=>{
                       if(myId?.toString() === replyId.toString() && !it.isAssistant){
                           index = i
                       }
-
+                      return data
                   })
 
                     if (item.msgCode?.length) {
@@ -279,10 +279,12 @@ export const useMessageStore = create((set)=>{
                 else if(replyId && isReceive){
                     let index:any = undefined
                     data.map((it:any,i:number)=>{
-                        let myId = item.isGroupChat ? it.room : item.userId
+                        let myId = item.isGroupChat ? it.room : it.userId
+
                        if(myId?.toString() === replyId.toString() && !it.isAssistant){
                            index = i
                        }
+                       return true
                     })
                     if(index !== undefined){
                         data[index].hasBeenRead = item.isGroupChat ? state.listId?.toString() === item.room.toString() : state.listId?.toString() === item.userId.toString()
@@ -292,8 +294,14 @@ export const useMessageStore = create((set)=>{
                     }
                     else{
                         item.showTime = dealMsgTime(Number(item.time),separator)
-
-                        data.unshift(item)
+                        if (item.msgCode?.length) {
+                            let d = JSON.parse(JSON.stringify(item))
+                            d.msg = d.msgCode
+                            data.unshift(d)
+                        }
+                        else{
+                            data.unshift(item)
+                        }
                     }
 
                 }
@@ -373,6 +381,7 @@ export const useMessageStore = create((set)=>{
                     if(item.type === 'new'){
                         count ? item.count ++ : item.count = 0
                     }
+                    return true
                 })
                 return {
                     friendList:list
@@ -414,6 +423,7 @@ export const useMessageStore = create((set)=>{
                             data[user_id].splice(index,1)
 
                         }
+                        return true
                     })
                     //好友信息加入好友列表
                     state.changeFriendList(request)
@@ -469,6 +479,7 @@ export const useMessageStore = create((set)=>{
                         if(item.timeout){
                             item.timeout = dealMsgTime(item.time)
                         }
+                        return true
                     })
                 }
 

@@ -1,10 +1,11 @@
 import './chatContent.sass'
-import {Layout, Divider, Input, Button, Upload} from "antd";
+import {Layout, Divider, Input, Button, Upload, message} from "antd";
 import { operationsData,IconMenu } from "../../common/staticData/data";
 import MessageContent from "../MessageContent/MessageContent";
 import {useEffect, useState} from "react";
-import {emojiToUtf16, transMsgToNameCode} from "../../util/util";
+import {createFileChunk, emojiToUtf16, transMsgToNameCode} from "../../util/util";
 import withHook from "../../hook/withHook";
+import {RcFile} from "antd/es/upload";
 
 function ChatContent (props:any){
     const { Header,Content,Footer } = Layout
@@ -15,6 +16,7 @@ function ChatContent (props:any){
     const [count,setCount] = useState(0)
     const {currentFriendMsg,friendInfo,customer,changeChatList,changeBg,listId,changeEmojiStatus} = props.Zustand
     const textAreaRef = props.Refs
+    const [messageApi,contextHolder] = message.useMessage()
 
     useEffect(()=>{
 
@@ -127,13 +129,50 @@ function ChatContent (props:any){
         })
         setEmojiIndex(indexArr)
         setMsg(data)
-        textAreaRef.current.focus()
+        textAreaRef.current?.focus()
         document.removeEventListener('chooseEmoji',CustomEventChooseEmoji)
     }
 
     document.addEventListener('chooseEmoji',CustomEventChooseEmoji)
 
+    const beforeUpload = (file:RcFile)=>{
+        let type = file.type.split('/')
+        if(type[0] === 'image'){
+            let reader = new FileReader()
+
+            reader.readAsArrayBuffer(file)
+
+            reader.onload = function () {
+
+                // @ts-ignore
+                let chunkList = createFileChunk(reader.result,reader.result?.byteLength,100*1024)
+                chunkList.map((item:any,i:number)=>{
+                    if(i === chunkList.length -1){
+                        props.socket.emit('sendMsg',{
+                            isGroupChat:false,
+                            imgChunk:item,
+                            chunkCount:chunkList.length
+                        })
+                    }
+                    else{
+                        props.socket.emit('sendMsg',item)
+                    }
+                })
+
+
+            }
+        }
+        else{
+            messageApi.open({
+                type:'error',
+                content:'暂时只支持图片传送'
+            })
+        }
+        return false
+    }
+
     return <Layout className={'content-con'}>
+        {contextHolder}
         <Header className={'user-box'}>
             <span className={'receiver-title text-ellipsis'}>{friendInfo.user}</span>
         </Header>
@@ -147,7 +186,7 @@ function ChatContent (props:any){
                     {
                         operations.map((item:IconMenu,index:number)=>{
                             return <div className={'icon-box'} key={index} onClick={()=> iconClick(item)}>
-                                {item.title === '发送文件' ? <Upload>{item.component()}</Upload> : item.component()}
+                                {item.title === '发送文件' ? <Upload showUploadList={false} beforeUpload={beforeUpload}>{item.component()}</Upload> : item.component()}
                             </div>
                         })
                     }

@@ -76,7 +76,7 @@ function ChatContent (props:any){
                 msgCode:transMsgToNameCode(msg,emojiIndex),
                 time,
                 isGroupChat:friendInfo.isGroupChat,
-                room:listId
+                room:friendInfo.isGroupChat ?listId : undefined
             },listId)
             let c = count
             c++
@@ -84,15 +84,15 @@ function ChatContent (props:any){
 
             //向父组件发送事件，将消息发动给后端的socket
             props.socketMsg({
-                type:friendInfo.type,
+                type:'msg',
                 sender:customer.username,
                 userId:customer.user_id,
                 receiver:friendInfo.user,
                 avatar:customer.avatar,
                 sendTime:time,
-                room: listId,
+                room:friendInfo.isGroupChat ? listId :undefined,
                 chatName:friendInfo.user ,
-                chatAvatar:friendInfo.avatar,
+                chatAvatar:friendInfo.isGroupChat ?friendInfo.avatar:undefined,
                 isGroupChat:friendInfo.isGroupChat,
                 msg:emojiToUtf16(msg),
                 msgCode:emojiIndex.length ? transMsgToNameCode(msg,emojiIndex) : ''
@@ -147,16 +147,16 @@ function ChatContent (props:any){
                 // @ts-ignore
                 let chunkList = createFileChunk(reader.result,reader.result?.byteLength,100*1024)
                 chunkList.map((item:any,i:number)=>{
-                    if(i === chunkList.length -1){
-                        props.socket.emit('sendMsg',{
-                            isGroupChat:false,
-                            imgChunk:item,
-                            chunkCount:chunkList.length
-                        })
-                    }
-                    else{
-                        props.socket.emit('sendMsg',item)
-                    }
+                    props.socket.emit('sendMsg',{
+                        isGroupChat:friendInfo.isGroupChat,
+                        ...item,
+                        sender:customer.username,
+                        userId:customer.user_id,
+                        receiver:friendInfo.user,
+                        avatar:customer.avatar,
+                        chunkCount:chunkList.length,
+                        sendTime:new Date().getTime()
+                    })
                 })
 
 

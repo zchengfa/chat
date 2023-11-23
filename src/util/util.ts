@@ -261,7 +261,7 @@ export function emojiToUtf16(str:string){
  * @param str { string } 字符串
  */
 export function utf16ToEmoji(str:string){
-  const reg = /\&#.*?;/g;
+  const reg = /&#.*?;/g;
   return str.replace(reg, (char)=> {
 
     let H, L, code;
@@ -316,17 +316,31 @@ export function transMsgToNameCode(str:string,indexArr:any[]){
 export function createFileChunk(file:File,totalSize:number,chunkSize:number){
   let size = totalSize
 
-  let fileChunk: { file: Blob; index: number; identity: unknown; }[] = []
+  let fileChunk: { type:String;file: Blob; index: number; identity: unknown;totalSize:number }[] = []
   let cur = 0
   let index = 0
 
   let hasher = Md5.hashAsciiStr('encrypt file' + new Date().getTime());
   while (cur < size){
     const chunk = file.slice(cur,cur + chunkSize)
-    fileChunk.push({file:chunk,index,identity:hasher})
+    fileChunk.push({type:'img',file:chunk,index,identity:hasher,totalSize:size})
     cur += chunkSize
     index+=1
   }
 
   return fileChunk
+}
+
+/**
+ * Uint8Array转换成base64
+ * @param arr
+ * @constructor
+ */
+export function Uint8ArrayToBase64(arr:Uint8Array) {
+  let binary = "";
+  let len = arr.byteLength
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(arr[i]);
+  }
+  return  'data:image/jpg;base64,' + window.btoa(binary).replace(/=/g, "");
 }

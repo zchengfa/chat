@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client'
 import {MsgDataType} from "../common/staticData/data";
-
+import {Uint8ArrayToBase64} from "../util/util";
 
 export const socket = io('ws://localhost:4000')
 
@@ -18,23 +18,37 @@ export function SocketEvent(data:any){
     })
 
     socket.on('receiveMessage',(data:any)=>{
-
         let readStatus = data.isGroupChat ? Zustand.listId?.toString() === data.room.toString()   : Zustand.listId?.toString() === data.userId.toString()
-        Zustand.changeChatList({
-            userId:data.isGroupChat ? data.room : Number(data.userId),
-            user:data.sender,
-            chatName:data.chatName,
-            chatAvatar:data.chatAvatar,
-            type:'msg',
-            msg:data.msg,
-            msgCode:data.msgCode,
-            avatar:data.avatar,
-            time:data.sendTime,
-            isMute:true,
-            room:data.room,
-            hasBeenRead:readStatus,
-            isGroupChat:data.isGroupChat
-        },data.isGroupChat ? data.room : data.userId,true)
+
+        if(data.type === 'msg'){
+           changeListFun(data)
+       }
+       else if(data.type === 'img'){
+           data.file =new Uint8Array(data.file)
+           Zustand.changeFileBuffer(data)
+           let d = Zustand.fileBuffer[data.userId][data.identity][0]
+           if(d.file.length === d.totalSize){
+               //待完善，当前已得到图片的base64数据
+                console.log(Uint8ArrayToBase64(d.file))
+           }
+       }
+       function changeListFun(data:any){
+           Zustand.changeChatList({
+               userId:data.isGroupChat ? data.room : Number(data.userId),
+               user:data.sender,
+               chatName:data.isGroupChat?data.chatName:undefined,
+               chatAvatar:data.isGroupChat?data.chatAvatar:undefined,
+               type:data.type,
+               msg:data.type === 'msg' ? data.msg : '[图片]',
+               msgCode:data.type === 'msg' ? data.msgCode : data.file,
+               avatar:data.avatar,
+               time:data.sendTime,
+               isMute:true,
+               room:data.isGroupChat ?data.room : undefined,
+               hasBeenRead:readStatus,
+               isGroupChat:data.isGroupChat
+           },data.isGroupChat ? data.room : data.userId,true)
+       }
     })
     /**
      * 好友请求已发送给对方

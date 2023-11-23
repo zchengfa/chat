@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import {MsgDataType,operationsData} from "../common/staticData/data";
 import {sortByLocaleWithObject, getFirstPinYin, verifyTime, dealMsgTime} from "../util/util";
-import {Console} from "inspector";
 
 const defaultFriendList = [
     {
@@ -499,5 +498,43 @@ export const useMessageStore = create((set)=>{
                 }
             })
         },
+        fileBuffer:{},
+        changeFileBuffer(data:any){
+            set((state:any)=>{
+                let fileB = state.fileBuffer
+                let userId = data.userId
+                if(fileB[userId]&&fileB[userId][data.identity]){
+                    dealImageData(data,fileB,userId)
+                }
+                else{
+                    fileB[userId] = {}
+                    fileB[userId][data.identity] = []
+                    dealImageData(data,fileB,userId)
+                }
+                return {
+                    fileBuffer:fileB
+                }
+            })
+        }
     }
 })
+
+function mergeUint8Array(data:any,fileB:any,userId:any){
+
+    let allFB = new Uint8Array(data.totalSize),offset = 0
+    fileB[userId][data.identity].forEach((item:any)=>{
+        allFB.set(item.file,offset)
+        offset += item.file.length
+    })
+
+    data.file = allFB
+    return data
+}
+function dealImageData(data:any,fileB:any,userId:any){
+    fileB[userId][data.identity].push(data)
+    if(data.index === data.chunkCount -1){
+        let allFB = mergeUint8Array(data,fileB,userId)
+        fileB[userId][data.identity] = []
+        fileB[userId][data.identity].push(allFB)
+    }
+}

@@ -1,6 +1,40 @@
 import { create } from "zustand";
 import {MsgDataType,operationsData} from "../common/staticData/data";
 import {sortByLocaleWithObject, getFirstPinYin, verifyTime, dealMsgTime} from "../util/util";
+import {
+    openDB,
+    getDataByCursorIndex,
+    closeDB,
+    updateDB,
+    deleteDataByCursorIndex,
+    deleteDBByPrimaryKey
+} from "../indexedDB/DB";
+
+function getMsgDataFromIndexedDB(){
+    return new Promise(resolve => {
+        openDB('chats',{
+            storeName:'chat',
+            storeOptions:{
+                keyPath:'ID',
+                autoIncrement:true
+            },
+            indexArr:['userId','messages'],
+            indexOptions:{userId:true}
+        }).then((DB:any)=>{
+            let db = DB.db
+            getDataByCursorIndex(db,'chat').then((res:any)=>{
+                let msgData:any = {}
+                res.list.forEach((item:any)=>{
+                    msgData[item.userId] = [...item.messages]
+                })
+                resolve(msgData)
+                closeDB(db)
+            })
+        })
+    })
+}
+ // @ts-ignore
+let msgData = await getMsgDataFromIndexedDB().then((res:any) => res)
 
 const defaultFriendList = [
     {
@@ -133,8 +167,8 @@ export const useMessageStore = create((set)=>{
           })
         },
       //聊天记录
-        msgData:getStorageData('msgData',{}),
-        saveMsgData:(item:any,id:number | string | undefined)=>{
+        msgData:msgData,
+        saveMsgData:(item:any,id:number | string)=>{
           set((state:any)=>{
             let data = state.msgData
 
@@ -171,7 +205,34 @@ export const useMessageStore = create((set)=>{
             }
 
 
-            setStorageData('msgData',data)
+            //setStorageData('msgData',data)
+            openDB('chats').then((DB:any)=>{
+                //此功能还有逻辑bug，需要判定id（自己发送与收到消息时的id不一样，会导致出现两份消息记录）
+                let db = DB.db
+                id = Number(id)
+                getDataByCursorIndex(db,'chat',true,'userId',id).then((res:any)=>{
+                    if(res.list.length){
+                        deleteDataByCursorIndex(db,'chat','userId',id).then((r:any)=>{
+                            console.log(r)
+                            updateDB(db,'chat',{
+                                userId:id,
+                                messages:data[id]
+                            }).then()
+                        }).catch((e:any)=>{
+                            console.log(e)
+                        })
+
+                    }
+                    else{
+                        updateDB(db,'chat',{
+                            userId:id,
+                            messages:data[id]
+                        }).then()
+                    }
+                })
+
+            })
+
             return {
               msgData:data
             }

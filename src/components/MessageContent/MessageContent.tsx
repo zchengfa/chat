@@ -1,6 +1,6 @@
 import { Component } from "react";
 import './messageContent.sass'
-import {List, Spin} from "antd";
+import {List, Spin,Progress} from "antd";
 import { LoadingOutlined } from '@ant-design/icons'
 import InfiniteScroll from "react-infinite-scroll-component";
 import {dealMsgTime, utf16ToEmoji} from "../../util/util";
@@ -28,7 +28,10 @@ class MessageContent extends Component<any,any> {
                 <div className={'img-msg-box'}>
                     {item.msg.length <= 15 ? <div className={'angle'} style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div> : null}
                     <div className={item.img ? 'msg-img-box' : 'msg-box'} onMouseEnter={()=> this.msgMouseEvent(true,direction,index)} onMouseLeave={()=> this.msgMouseEvent(false,direction,index)} style={direction ? {backgroundColor: item.bgColor} : {backgroundColor: item.bgColor}}>
-                        {item.img ? <img className={'msg-image'} src={item.img} alt="msg_image"/> : <span className={'msg'}>{utf16ToEmoji(item.msg)}</span>}
+                        {item.img ? <div className={'image-mask'}>
+                            <div className={'image-progress'}></div>
+                            <img className={'msg-image'} src={item.img} alt="msg_image"/>
+                        </div> : <span className={'msg'}>{utf16ToEmoji(item.msg)}</span>}
                     </div>
                 </div>
             </div>

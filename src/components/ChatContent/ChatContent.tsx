@@ -3,7 +3,7 @@ import {Layout, Divider, Input, Button, Upload, message} from "antd";
 import { operationsData,IconMenu } from "../../common/staticData/data";
 import MessageContent from "../MessageContent/MessageContent";
 import {useEffect, useState} from "react";
-import {createFileChunk, emojiToUtf16, transMsgToNameCode} from "../../util/util";
+import {createFileChunk, emojiToUtf16, transMsgToNameCode, Uint8ArrayToBase64} from "../../util/util";
 import withHook from "../../hook/withHook";
 import {RcFile} from "antd/es/upload";
 
@@ -143,10 +143,23 @@ function ChatContent (props:any){
             reader.readAsArrayBuffer(file)
 
             reader.onload = function () {
+                changeChatList({
+                    type:'img',
+                    userId:customer.user_id,
+                    avatar:customer.avatar,
+                    user:customer.username,
+                    isLeft:false,
+                    bgColor:'var(--success-font-color)',
+                    msg:'[图片]',
+                    img:Uint8ArrayToBase64(new Uint8Array((reader.result) as ArrayBufferLike)),
+                    time:new Date().getTime(),
+                    isGroupChat:friendInfo.isGroupChat,
+                    room:friendInfo.isGroupChat ?listId : undefined
+                },listId)
 
                 // @ts-ignore
                 let chunkList = createFileChunk(reader.result,reader.result?.byteLength,100*1024)
-                chunkList.map((item:any,i:number)=>{
+                chunkList.forEach((item:any)=>{
                     props.socket.emit('sendMsg',{
                         isGroupChat:friendInfo.isGroupChat,
                         ...item,

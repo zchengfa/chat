@@ -11,7 +11,8 @@
     --deep-green-color: #0aa23d;
     --children-app: 90vh;
     --orange-color: #e7ab3e;
-    --blue-color: #42a5f6
+    --blue-color: #42a5f6;
+    --image-progress-mask: rgba(155, 152, 152, 0.8)
 }
 
 .App{

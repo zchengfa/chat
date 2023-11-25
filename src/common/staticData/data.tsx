@@ -95,6 +95,7 @@ export const correctIconComponent = [
 
 
 export interface MsgDataType {
+  img: any;
   room?: any;
   userId:number,
   user:string,

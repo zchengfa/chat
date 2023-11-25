@@ -22,17 +22,21 @@ export function SocketEvent(data:any){
 
         if(data.type === 'msg'){
            changeListFun(data)
-       }
-       else if(data.type === 'img'){
+        }
+        else if(data.type === 'img'){
            data.file =new Uint8Array(data.file)
            Zustand.changeFileBuffer(data)
            let d = Zustand.fileBuffer[data.userId][data.identity][0]
            if(d.file.length === d.totalSize){
                //待完善，当前已得到图片的base64数据
-                console.log(Uint8ArrayToBase64(d.file))
+              let {file,avatar,isGroupChat,senderTime,sender,type,userId} = d
+              changeListFun({
+                  avatar,isGroupChat,senderTime,sender,type,userId,
+                  img:Uint8ArrayToBase64(file)
+              })
            }
-       }
-       function changeListFun(data:any){
+        }
+        function changeListFun(data:any){
            Zustand.changeChatList({
                userId:data.isGroupChat ? data.room : Number(data.userId),
                user:data.sender,
@@ -44,11 +48,12 @@ export function SocketEvent(data:any){
                avatar:data.avatar,
                time:data.sendTime,
                isMute:true,
+               img:data.img ? data.img : undefined,
                room:data.isGroupChat ?data.room : undefined,
                hasBeenRead:readStatus,
                isGroupChat:data.isGroupChat
            },data.isGroupChat ? data.room : data.userId,true)
-       }
+        }
     })
     /**
      * 好友请求已发送给对方
@@ -138,6 +143,10 @@ export function SocketEvent(data:any){
 
     socket.on('test',(msg:string)=>{
         console.log(msg)
+    })
+
+    socket.on('sendImageProgress',(data:any)=>{
+        console.log(data)
     })
 
 }

@@ -6,10 +6,13 @@ import {
     getDataByCursorIndex,
     closeDB,
     updateDB,
-    deleteDataByCursorIndex,
-    deleteDBByPrimaryKey
+    deleteDataByCursorIndex
 } from "../indexedDB/DB";
 
+/**
+ * 从indexedDB数据库中获取聊天记录
+ * @return {Promise} 返回一个Promise
+ */
 function getMsgDataFromIndexedDB(){
     return new Promise(resolve => {
         openDB('chats',{
@@ -57,9 +60,11 @@ const defaultFriendList = [
     }
 ]
 
+/**
+ * 获取好友列表
+ */
 function getFriendList (){
     let data = getStorageData('friendList',[],)
-
     if(data.length){
         data.map((item:any)=>{
             defaultFriendList.push(item)
@@ -67,9 +72,7 @@ function getFriendList (){
         })
 
     }
-
     return defaultFriendList
-
 }
 
 /**
@@ -89,10 +92,23 @@ function getStorageData(propertyName:string,returnData:any,needParse:boolean = t
   }
 }
 
+/**
+ * 存储数据到localStorage中
+ * @param propertyName {string} 存储名
+ * @param data {any} 数据
+ */
 function setStorageData(propertyName:string,data:any){
   localStorage.setItem(propertyName,JSON.stringify(data))
 }
 
+/**
+ * 给数组或对象添加首字母
+ * @param data {Array} 要处理的数据
+ * @param PO {string} 属性名
+ * @param PT {string} 属性名
+ * @param list
+ * @return {Array} 返回获得了首字母的数据
+ */
 function addFirstPinYin(data:any | any[],PO:string,PT:string,list:any[]){
     const prototype = Object.prototype.toString.call(data)
 
@@ -116,8 +132,6 @@ function addFirstPinYin(data:any | any[],PO:string,PT:string,list:any[]){
            }
            return null
         })
-
-        //console.log(newData,data)
     }
     else if( prototype === '[object Array]' ){
         let letterArr:string[] = []
@@ -207,19 +221,20 @@ export const useMessageStore = create((set)=>{
 
             //setStorageData('msgData',data)
             openDB('chats').then((DB:any)=>{
-                //此功能还有逻辑bug，需要判定id（自己发送与收到消息时的id不一样，会导致出现两份消息记录）
+
                 let db = DB.db
                 id = Number(id)
                 getDataByCursorIndex(db,'chat',true,'userId',id).then((res:any)=>{
                     if(res.list.length){
-                        deleteDataByCursorIndex(db,'chat','userId',id).then((r:any)=>{
-                            console.log(r)
+                        deleteDataByCursorIndex(db,'chat','userId',id).then(()=>{
                             updateDB(db,'chat',{
                                 userId:id,
                                 messages:data[id]
-                            }).then()
-                        }).catch((e:any)=>{
-                            console.log(e)
+                            }).then(()=>{
+                                closeDB(db)
+                            })
+                        }).catch(()=>{
+                            closeDB(db)
                         })
 
                     }
@@ -227,7 +242,9 @@ export const useMessageStore = create((set)=>{
                         updateDB(db,'chat',{
                             userId:id,
                             messages:data[id]
-                        }).then()
+                        }).then(()=>{
+                            closeDB(db)
+                        })
                     }
                 })
 
@@ -239,7 +256,7 @@ export const useMessageStore = create((set)=>{
           })
         },
       //鼠标停留在消息上改变消息的背景颜色
-        changeBg:(item:any,index:number,id:number)=>{
+        changeBg:(item:any,index:number)=>{
 
           set((state:any)=>{
             let data = state.currentFriendMsg
@@ -376,12 +393,13 @@ export const useMessageStore = create((set)=>{
                 let bgColor = replyId && !isReceive ? 'var(--success-font-color)' : 'var(--white-color)'
                 let isLeft = replyId && isReceive
                 let id = replyId ? replyId : undefined
-
+                console.log(item)
                 if(item.msg.length){
                     state.saveMsgData({
                         userId:item.userId,
                         avatar:item.avatar,
                         msg:item.msg,
+                        img:item.type === 'img' ? item.img : undefined,
                         bgColor,
                         isLeft,
                         time:item.time,
@@ -580,6 +598,13 @@ export const useMessageStore = create((set)=>{
     }
 })
 
+/**
+ * 合并Uint8Array
+ * @param data
+ * @param fileB
+ * @param userId
+ * @return {Object} 返回含有整合后的数据
+ */
 function mergeUint8Array(data:any,fileB:any,userId:any){
 
     let allFB = new Uint8Array(data.totalSize),offset = 0

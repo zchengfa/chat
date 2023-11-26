@@ -19,7 +19,7 @@ export function SocketEvent(data:any){
 
     socket.on('receiveMessage',(data:any)=>{
         let readStatus = data.isGroupChat ? Zustand.listId?.toString() === data.room.toString()   : Zustand.listId?.toString() === data.userId.toString()
-
+        console.log(data)
         if(data.type === 'msg'){
            changeListFun(data)
         }
@@ -29,10 +29,11 @@ export function SocketEvent(data:any){
            let d = Zustand.fileBuffer[data.userId][data.identity][0]
            if(d.file.length === d.totalSize){
                //待完善，当前已得到图片的base64数据
-              let {file,avatar,isGroupChat,senderTime,sender,type,userId} = d
+              let {file,avatar,isGroupChat,sendTime,sender,type,userId,identity,room,chatName,chatAvatar} = d
               changeListFun({
-                  avatar,isGroupChat,senderTime,sender,type,userId,
-                  img:Uint8ArrayToBase64(file)
+                  avatar,isGroupChat,sendTime,sender,type,userId,room,chatName,chatAvatar,
+                  img:Uint8ArrayToBase64(file),
+                  imgID:identity
               })
            }
         }
@@ -49,6 +50,7 @@ export function SocketEvent(data:any){
                time:data.sendTime,
                isMute:true,
                img:data.img ? data.img : undefined,
+               imgID:data.imgID,
                room:data.isGroupChat ?data.room : undefined,
                hasBeenRead:readStatus,
                isGroupChat:data.isGroupChat
@@ -141,12 +143,8 @@ export function SocketEvent(data:any){
         } as unknown as MsgDataType)
     })
 
-    socket.on('test',(msg:string)=>{
-        console.log(msg)
-    })
-
     socket.on('sendImageProgress',(data:any)=>{
-        console.log(data)
+        Zustand.updateImageSendProgress(data)
     })
 
 }

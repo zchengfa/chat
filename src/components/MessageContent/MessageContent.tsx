@@ -1,9 +1,9 @@
 import { Component } from "react";
 import './messageContent.sass'
-import {List, Spin,Progress} from "antd";
+import {List, Spin} from "antd";
 import { LoadingOutlined } from '@ant-design/icons'
 import InfiniteScroll from "react-infinite-scroll-component";
-import {dealMsgTime, utf16ToEmoji} from "../../util/util";
+import {utf16ToEmoji} from "../../util/util";
 import withHook from "../../hook/withHook";
 
 class MessageContent extends Component<any,any> {
@@ -21,15 +21,15 @@ class MessageContent extends Component<any,any> {
         return  <div className={direction ? "message-item-left-box message-item-box" : "message-item-right-box message-item-box"}>
             <div className={'msg-avatar-box'}>
                 <img className={'msg-avatar'} src={item.avatar} alt="avatar"/>
-                {item.msg.length > 15 ? <div className={'angle'} style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div> : null}
+                {item.msg.length > 15  || item.imgID ? <div className={item.isLeft && this.props.Zustand.friendInfo.isGroupChat ? 'angle angle-down' : 'angle'} style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div> : null}
             </div>
             <div className={'user-msg'} style={{maxWidth:'50%'}}>
                 {item.isLeft && this.props.Zustand.friendInfo.isGroupChat ? <span className={'username'} style={{display:'block',marginLeft:'1rem',marginBottom:'.4rem',color:'var(--deep-gray-color)',fontSize:'var(--mini-font-size)'}}>{item.username}</span> : null}
                 <div className={'img-msg-box'}>
-                    {item.msg.length <= 15 ? <div className={'angle'} style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div> : null}
+                    {item.msg.length <= 15 && !item.imgID ? <div className={'angle'} style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div> : null}
                     <div className={item.img ? 'msg-img-box' : 'msg-box'} onMouseEnter={()=> this.msgMouseEvent(true,direction,index)} onMouseLeave={()=> this.msgMouseEvent(false,direction,index)} style={direction ? {backgroundColor: item.bgColor} : {backgroundColor: item.bgColor}}>
                         {item.img ? <div className={'image-mask'}>
-                            <div className={'image-progress'}></div>
+                            {item.progress ? <div className={'image-progress'} style={{height:(100 - item.progress) + "%"}}></div> : null}
                             <img className={'msg-image'} src={item.img} alt="msg_image"/>
                         </div> : <span className={'msg'}>{utf16ToEmoji(item.msg)}</span>}
                     </div>

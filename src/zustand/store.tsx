@@ -223,7 +223,7 @@ export const useMessageStore = create((set)=>{
             openDB('chats').then((DB:any)=>{
 
                 let db = DB.db
-                id = Number(id)
+                id = Number(id) ? Number(id) : id
                 getDataByCursorIndex(db,'chat',true,'userId',id).then((res:any)=>{
                     if(res.list.length){
                         deleteDataByCursorIndex(db,'chat','userId',id).then(()=>{
@@ -254,6 +254,20 @@ export const useMessageStore = create((set)=>{
               msgData:data
             }
           })
+        },
+        //更新图片的发送进度
+        updateImageSendProgress(progress:any){
+            set((state:any)=>{
+                let data = state.msgData, {userId,identity,index,totalCount} = progress
+                data[userId].forEach((item:any)=>{
+                    if(item.imgID === identity){
+                        item.progress = Number(((( index + 1 )/totalCount)*100).toFixed(0))
+                    }
+                })
+                return {
+                    msgData:data
+                }
+            })
         },
       //鼠标停留在消息上改变消息的背景颜色
         changeBg:(item:any,index:number)=>{
@@ -400,6 +414,7 @@ export const useMessageStore = create((set)=>{
                         avatar:item.avatar,
                         msg:item.msg,
                         img:item.type === 'img' ? item.img : undefined,
+                        imgID:item.type === 'img' ? item.imgID : undefined,
                         bgColor,
                         isLeft,
                         time:item.time,

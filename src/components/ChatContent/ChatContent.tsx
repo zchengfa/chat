@@ -143,6 +143,9 @@ function ChatContent (props:any){
             reader.readAsArrayBuffer(file)
 
             reader.onload = function () {
+                // @ts-ignore
+                let chunkList = createFileChunk(reader.result,reader.result?.byteLength,100*1024)
+
                 changeChatList({
                     type:'img',
                     userId:customer.user_id,
@@ -151,14 +154,15 @@ function ChatContent (props:any){
                     isLeft:false,
                     bgColor:'var(--success-font-color)',
                     msg:'[图片]',
+                    imgID:chunkList[0]['identity'],
                     img:Uint8ArrayToBase64(new Uint8Array((reader.result) as ArrayBufferLike)),
                     time:new Date().getTime(),
                     isGroupChat:friendInfo.isGroupChat,
-                    room:friendInfo.isGroupChat ?listId : undefined
+                    room:friendInfo.isGroupChat ?listId : undefined,
+                    chatName:friendInfo.user ,
+                    chatAvatar:friendInfo.isGroupChat ?friendInfo.avatar:undefined,
                 },listId)
 
-                // @ts-ignore
-                let chunkList = createFileChunk(reader.result,reader.result?.byteLength,100*1024)
                 chunkList.forEach((item:any)=>{
                     props.socket.emit('sendMsg',{
                         isGroupChat:friendInfo.isGroupChat,
@@ -166,9 +170,13 @@ function ChatContent (props:any){
                         sender:customer.username,
                         userId:customer.user_id,
                         receiver:friendInfo.user,
+                        rID:friendInfo.userId,
                         avatar:customer.avatar,
                         chunkCount:chunkList.length,
-                        sendTime:new Date().getTime()
+                        sendTime:new Date().getTime(),
+                        room:friendInfo.isGroupChat ?listId : undefined,
+                        chatName:friendInfo.user ,
+                        chatAvatar:friendInfo.isGroupChat ?friendInfo.avatar:undefined,
                     })
                 })
 

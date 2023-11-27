@@ -1,4 +1,4 @@
-import {Layout,List,Avatar,Button} from "antd";
+import {Layout, List, Avatar, Button, Empty} from "antd";
 import {useMessageStore} from "../../zustand/store";
 import './friendListContent.sass'
 import withHook from "../../hook/withHook";
@@ -38,6 +38,7 @@ function FriendListContent(props:any){
         <Content className={type ? 'content-normal' : 'content-center'}>
             {type === 'new' ? <List className={'friend-list-request'}
                                     dataSource={friendRequest[user_id]}
+                                    locale={{emptyText:<Empty description={<span style={{color:'var(--deep-gray-color)',fontSize:'var(--mini-font-size)'}}>暂无好友申请</span>}></Empty>}}
                                     renderItem={(item:any)=>{
                                         return <List.Item>
                                             <div className={'list-item'}>

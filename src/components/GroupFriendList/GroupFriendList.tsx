@@ -1,5 +1,5 @@
 import './groupFriendList.sass'
-import {Input, List, Checkbox, Image, Button} from 'antd'
+import {Input, List, Checkbox, Image, Button, Empty} from 'antd'
 import {SearchOutlined,CloseCircleFilled} from "@ant-design/icons";
 import {useState} from "react";
 
@@ -115,6 +115,7 @@ export default function GroupFriendList(props:any){
                 <List
                     className={'group-list'}
                     dataSource={data}
+                    locale={{emptyText:<Empty description={<span style={{color:'var(--deep-gray-color)',fontSize:'var(--mini-font-size)'}}>没有可供选择的好友</span>}></Empty>}}
                     renderItem={(item:any,index:number)=>{
                         return <List.Item style={{border:'none'}} key={index} className={'group-list-item'}>
                             <h6 className={'item-title'}>{item.title}</h6>
@@ -144,6 +145,7 @@ export default function GroupFriendList(props:any){
                     className={'had-choose-list'}
                     grid={{column:3}}
                     dataSource={checkedList}
+                    locale={{emptyText:<Empty description={<span style={{color:'var(--deep-gray-color)',fontSize:'var(--mini-font-size)'}}>您未选择好友</span>}></Empty>}}
                     renderItem={(item:any)=>{
                         return <List.Item className={'had-choose-list-item'}>
                             <CloseCircleFilled className={'close-friend-icon'} title={'移除'}  onClick={()=> deleteChoose(item.user_id)}/>

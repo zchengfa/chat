@@ -1,6 +1,6 @@
 import { Component } from "react";
 import './messageContent.sass'
-import {List, Spin} from "antd";
+import {Empty, List, Spin} from "antd";
 import { LoadingOutlined } from '@ant-design/icons'
 import InfiniteScroll from "react-infinite-scroll-component";
 import {utf16ToEmoji} from "../../util/util";
@@ -77,6 +77,7 @@ class MessageContent extends Component<any,any> {
                        className={'msg-list'}
                        dataSource={data}
                        bordered={false}
+                       locale={{emptyText:<Empty description={<span style={{color:'var(--deep-gray-color)',fontSize:'var(--mini-font-size)'}}>暂无聊天数据</span>}></Empty>}}
                        renderItem={(item:any,index:number)=>{
 
                            return item.msg?.length ? <List.Item className={'msg-li'} style={{border:'none'}} key={index}>

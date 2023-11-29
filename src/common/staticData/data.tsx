@@ -12,7 +12,7 @@ import {
   CircleFriendIconComponent,
   LockIconComponent,
   ChatIconComponent,
-  CorrectIconComponent, EyeIconComponent
+  CorrectIconComponent, EyeIconComponent, MoreHorizationIconComponent
 } from '../svg/svg'
 
 import Emoji from '../../components/Common/Emoji/Emoji'
@@ -157,6 +157,11 @@ export const operationsData = {
     }
   ]
 }
+
+export const commonApplicationComponent = {
+  moreHorization: <MoreHorizationIconComponent className={'more-horization'} />
+}
+
 
 export const friendApplication = {
   circleFriend:<CircleFriendIconComponent />,

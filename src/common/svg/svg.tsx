@@ -369,4 +369,25 @@ const CorrectIconSvg = ()=>{
 export const CorrectIconComponent = (props:Partial<CustomIconComponentProps>)=>{
     return <Icon component={CorrectIconSvg} {...props}></Icon>
 }
+/**
+ * 横向更多svg
+ * @constructor
+ */
+const MoreHorizationIconSvg = ()=>{
+    return <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+         fill={'currentColor'}   width={CUSTOM_SIZE} height={CUSTOM_SIZE}>
+        <path
+            d="M298.666667 586.666667a74.666667 74.666667 0 1 1 0-149.333334 74.666667 74.666667 0 0 1 0 149.333334z m213.333333 0a74.666667 74.666667 0 1 1 0-149.333334 74.666667 74.666667 0 0 1 0 149.333334z m213.333333 0a74.666667 74.666667 0 1 1 0-149.333334 74.666667 74.666667 0 0 1 0 149.333334z"
+            fill="#000000"></path>
+    </svg>
+}
+
+/**
+ * 横向更多Icon组件
+ * @param props
+ * @constructor
+ */
+export const MoreHorizationIconComponent = (props:Partial<CustomIconComponentProps>)=>{
+    return <Icon component={MoreHorizationIconSvg} {...props}></Icon>
+}
 

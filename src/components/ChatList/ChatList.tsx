@@ -11,8 +11,11 @@ function ChatList (props:any){
   const { chatList,listId,customer } = props.Zustand
 
   const chatWithSender = (item:MsgDataType,id:any)=>{
+    //判断点击项是否是在激活状态，防止重复点击
+    if(listId !== id){
+      props.chatWithSender(item,id)
+    }
 
-    props.chatWithSender(item,id)
   }
 
   const chatListElement = ()=>{

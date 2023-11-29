@@ -1,78 +1,80 @@
-import { create } from "zustand";
-import {MsgDataType,operationsData} from "../common/staticData/data";
+import {create} from "zustand";
+import {MsgDataType, operationsData} from "../common/staticData/data";
 import {sortByLocaleWithObject, getFirstPinYin, verifyTime, dealMsgTime} from "../util/util";
 import {
-    openDB,
-    getDataByCursorIndex,
-    closeDB,
-    updateDB,
-    deleteDataByCursorIndex
+  openDB,
+  getDataByCursorIndex,
+  closeDB,
+  updateDB,
+  deleteDataByCursorIndex
 } from "../indexedDB/DB";
+import {strangerInfoForGroup} from "../network/request";
 
 /**
  * 从indexedDB数据库中获取聊天记录
  * @return {Promise} 返回一个Promise
  */
-function getMsgDataFromIndexedDB(){
-    return new Promise(resolve => {
-        openDB('chats',{
-            storeName:'chat',
-            storeOptions:{
-                keyPath:'ID',
-                autoIncrement:true
-            },
-            indexArr:['userId','messages'],
-            indexOptions:{userId:true}
-        }).then((DB:any)=>{
-            let db = DB.db
-            getDataByCursorIndex(db,'chat').then((res:any)=>{
-                let msgData:any = {}
-                res.list.forEach((item:any)=>{
-                    msgData[item.userId] = [...item.messages]
-                })
-                resolve(msgData)
-                closeDB(db)
-            })
+function getMsgDataFromIndexedDB() {
+  return new Promise(resolve => {
+    openDB('chats', {
+      storeName: 'chat',
+      storeOptions: {
+        keyPath: 'ID',
+        autoIncrement: true
+      },
+      indexArr: ['userId', 'messages'],
+      indexOptions: {userId: true}
+    }).then((DB: any) => {
+      let db = DB.db
+      getDataByCursorIndex(db, 'chat').then((res: any) => {
+        let msgData: any = {}
+        res.list.forEach((item: any) => {
+          msgData[item.userId] = [...item.messages]
         })
+        resolve(msgData)
+        closeDB(db)
+      })
     })
+  })
 }
- // @ts-ignore
-let msgData = await getMsgDataFromIndexedDB().then((res:any) => res)
+
+// @ts-ignore
+let msgData = await getMsgDataFromIndexedDB().then((res: any) => res)
 
 const defaultFriendList = [
-    {
-        type:'btn',
-        avatar:'',
-        username:'通讯录管理'
-    },
-    {
-        type:'new',
-        title:'新的朋友',
-        avatar:operationsData.list[0].component(),
-        username:'新的朋友',
-        count:0
-    },
-    {
-        type:'common',
-        title:'公众号',
-        avatar:operationsData.list[1].component(),
-        username:'公众号'
-    }
+  {
+    type: 'btn',
+    avatar: '',
+    username: '通讯录管理'
+  },
+  {
+    type: 'new',
+    title: '新的朋友',
+    avatar: operationsData.list[0].component(),
+    username: '新的朋友',
+    count: 0
+  },
+  {
+    type: 'common',
+    title: '公众号',
+    avatar: operationsData.list[1].component(),
+    username: '公众号'
+  }
 ]
 
 /**
  * 获取好友列表
  */
-function getFriendList (){
-    let data = getStorageData('friendList',[],)
-    if(data.length){
-        data.map((item:any)=>{
-            defaultFriendList.push(item)
-            return true
-        })
+function getFriendList() {
+  let data = getStorageData('friendList', [],)
+  if (data.length) {
+    data.map((item: any) => {
+      defaultFriendList.push(item)
+      return true
+    })
 
-    }
-    return defaultFriendList
+  }
+  return defaultFriendList
 }
 
 /**
@@ -82,12 +84,11 @@ function getFriendList (){
  * @param needParse { boolean } 是否需要将JSON数据进行转换
  * @param isLocalStorage { boolean } 是否默认从localStorage获取数据
  */
-function getStorageData(propertyName:string,returnData:any,needParse:boolean = true,isLocalStorage:boolean = true){
+function getStorageData(propertyName: string, returnData: any, needParse: boolean = true, isLocalStorage: boolean = true) {
   let data = isLocalStorage ? localStorage.getItem(propertyName) : sessionStorage.getItem(propertyName)
-  if(needParse){
+  if (needParse) {
     return data ? JSON.parse(data as string) : returnData
-  }
-  else{
+  } else {
     return data ? data : returnData
   }
 }
@@ -97,8 +98,8 @@ function getStorageData(propertyName:string,returnData:any,needParse:boolean = t
  * @param propertyName {string} 存储名
  * @param data {any} 数据
  */
-function setStorageData(propertyName:string,data:any){
-  localStorage.setItem(propertyName,JSON.stringify(data))
+function setStorageData(propertyName: string, data: any) {
+  localStorage.setItem(propertyName, JSON.stringify(data))
 }
 
 /**
@@ -109,508 +110,534 @@ function setStorageData(propertyName:string,data:any){
  * @param list
  * @return {Array} 返回获得了首字母的数据
  */
-function addFirstPinYin(data:any | any[],PO:string,PT:string,list:any[]){
-    const prototype = Object.prototype.toString.call(data)
+function addFirstPinYin(data: any | any[], PO: string, PT: string, list: any[]) {
+  const prototype = Object.prototype.toString.call(data)
 
-    let newData:any[] = []
-    if( prototype === '[object Object]' ){
-        data[PO] = getFirstPinYin(data[PT])
-        list.map((item:any,index:number)=>{
-           if(item.title === data[PO]){
-               item.content.push(data)
-               newData = list.slice(3,list.length-1)
-           }
-           else if(index === list.length -1){
-               for (let i = 0; i < 1; i++) {
-                   newData.push({
-                       title:undefined,
-                       content:[]
-                   })
-                   newData[i].title = data[PO]
-                   newData[i].content.push(data)
-               }
-           }
-           return null
-        })
-    }
-    else if( prototype === '[object Array]' ){
-        let letterArr:string[] = []
-        data.map((item:any)=>{
-            item[PO] = getFirstPinYin(item[PT])
-            return  letterArr.push(item[PO])
-       })
-       // @ts-ignore
-       let uniqueLetterArr:string[] = [...new Set(letterArr)]
+  let newData: any[] = []
+  if (prototype === '[object Object]') {
+    data[PO] = getFirstPinYin(data[PT])
+    list.map((item: any, index: number) => {
+      if (item.title === data[PO]) {
+        item.content.push(data)
+        newData = list.slice(3, list.length - 1)
+      } else if (index === list.length - 1) {
+        for (let i = 0; i < 1; i++) {
+          newData.push({
+            title: undefined,
+            content: []
+          })
+          newData[i].title = data[PO]
+          newData[i].content.push(data)
+        }
+      }
+      return null
+    })
+  } else if (prototype === '[object Array]') {
+    let letterArr: string[] = []
+    data.map((item: any) => {
+      item[PO] = getFirstPinYin(item[PT])
+      return letterArr.push(item[PO])
+    })
+    // @ts-ignore
+    let uniqueLetterArr: string[] = [...new Set(letterArr)]
 
-       uniqueLetterArr.map(()=> newData.push({
-           title:undefined,
-           content:[]
-       }))
-       data.map((item:any)=>{
-          return uniqueLetterArr.map((letter:any,index:number)=>{
-               if(item[PO] === letter){
-                   newData[index][PO] = letter
-                   newData[index]['content'].push(item)
-               }
-               return true
-           })
-       })
-    }
+    uniqueLetterArr.map(() => newData.push({
+      title: undefined,
+      content: []
+    }))
+    data.map((item: any) => {
+      return uniqueLetterArr.map((letter: any, index: number) => {
+        if (item[PO] === letter) {
+          newData[index][PO] = letter
+          newData[index]['content'].push(item)
+        }
+        return true
+      })
+    })
+  }
 
-    return sortByLocaleWithObject(newData,'title')
+  return sortByLocaleWithObject(newData, 'title')
 }
 
-export const useMessageStore = create((set)=>{
-    return {
-        token:getStorageData('token',undefined,false,false),
-        setToken:(token:string)=>{
-          set(()=>{
-            sessionStorage.setItem('token',token)
-            return {
-              token
+export const useMessageStore = create((set) => {
+  return {
+    token: getStorageData('token', undefined, false, false),
+    setToken: (token: string) => {
+      set(() => {
+        sessionStorage.setItem('token', token)
+        return {
+          token
+        }
+      })
+    },
+    customer: getStorageData('userInfo', null, true, false),
+    setUserInfo: (info: any) => {
+      set(() => {
+        sessionStorage.setItem('userInfo', JSON.stringify(info))
+        return {
+          customer: info
+        }
+      })
+    },
+    //聊天记录
+    msgData: msgData,
+    saveMsgData: (item: any, id: number | string) => {
+      set((state: any) => {
+        let data = state.msgData
+
+        if (!id) {
+          if (!data[item.userId]) {
+            data[item.userId] = []
+            data[item.userId].push(item)
+          }
+
+        } else {
+          if (!data[id]) {
+            data[id] = []
+          }
+          let newMsg = []
+          if (new Date().getTime() - data[id][(data[id].length) - 1]?.time >= 5 * 60 * 1000 || !data[id].length) {
+            let timeout = dealMsgTime(item.time)
+            data[id].push({
+              timeout,
+              time: item.time
+            })
+            newMsg.push({
+              timeout,
+              time: item.time
+            })
+          }
+
+          data[id].push(item)
+          newMsg.push(item)
+          if (state.listId?.toString() === id.toString()) {
+
+            state.getCurrentMsgData(undefined, undefined, newMsg)
+          }
+        }
+
+
+        //setStorageData('msgData',data)
+        openDB('chats').then((DB: any) => {
+
+          let db = DB.db
+          id = Number(id) ? Number(id) : id
+          getDataByCursorIndex(db, 'chat', true, 'userId', id).then((res: any) => {
+            if (res.list.length) {
+              deleteDataByCursorIndex(db, 'chat', 'userId', id).then(() => {
+                updateDB(db, 'chat', {
+                  userId: id,
+                  messages: data[id]
+                }).then(() => {
+                  closeDB(db)
+                })
+              }).catch(() => {
+                closeDB(db)
+              })
+
+            } else {
+              updateDB(db, 'chat', {
+                userId: id,
+                messages: data[id]
+              }).then(() => {
+                closeDB(db)
+              })
             }
           })
-        },
-        customer:getStorageData('userInfo',null,true,false),
-        setUserInfo:(info:any)=>{
-          set(()=>{
-            sessionStorage.setItem('userInfo',JSON.stringify(info))
-            return {
-              customer:info
+
+        })
+
+        return {
+          msgData: data
+        }
+      })
+    },
+    //更新图片的发送进度
+    updateImageSendProgress(progress: any) {
+      set((state: any) => {
+        let data = state.msgData, {userId, identity, index, totalCount} = progress
+        data[userId].forEach((item: any) => {
+          if (item.imgID === identity) {
+            item.progress = Number((((index + 1) / totalCount) * 100).toFixed(0))
+          }
+        })
+        return {
+          msgData: data
+        }
+      })
+    },
+    //鼠标停留在消息上改变消息的背景颜色
+    changeBg: (item: any, index: number) => {
+
+      set((state: any) => {
+        let data = state.currentFriendMsg
+        data[index] = item
+        return {
+          currentFriendMsg: data
+        }
+      })
+    },
+    currentFriendMsg: [],
+    count: 15,
+    changeCount: () => {
+      set((state: any) => {
+        let c = state.count
+        c += 15
+        state.getCurrentMsgData(undefined, c)
+        return {
+          count: c
+        }
+      })
+    },
+    //获取与当前好友的聊天记录(指定消息数)
+    getCurrentMsgData: (id: number | undefined = undefined, count?: number, data?: any) => {
+      set((state: any) => {
+        let listId = id ? id : state.listId, c = count ? count : state.count,
+          currentData = id ? [] : state.currentFriendMsg
+        let msg = state.msgData[listId] ? JSON.parse(JSON.stringify(state.msgData[listId])) : []
+
+        msg = msg?.length > c ? msg.splice(msg.length - c, 15) : msg
+        if (data) {
+          currentData.push(...data)
+        } else {
+          currentData.unshift(...msg)
+        }
+        return {
+          currentFriendMsg: currentData
+        }
+      })
+    },
+    //消息列表激活的索引
+    listId: getStorageData('listId', undefined),
+    changeListId: (id: number) => {
+      set((state: any) => {
+        if (!isNaN(id)) {
+          id = Number(id)
+        }
+        state.changeReadStatus(id)
+        setStorageData('listId', id)
+        state.getCurrentMsgData(id)
+        return {
+          listId: id
+        }
+      })
+    },
+    changeReadStatus: (id: number, status: boolean = true) => {
+      set((state: any) => {
+        let allList = state.chatList
+        let data = allList[state.customer.user_id]
+
+        data.map((item: any) => {
+          return item.userId === id || item.room === id ? item.hasBeenRead = status : null
+        })
+        setStorageData('chatList', allList)
+        return {
+          chatList: allList
+        }
+      })
+    },
+    //通讯过的用户列表
+    chatList: getStorageData('chatList', {}),
+    changeChatList: (item: MsgDataType, replyId: any = undefined, isReceive: boolean = false) => {
+      let separator: any[] = ['/', ':']
+      set((state: any) => {
+        let allList = state.chatList
+        let data = allList[state.customer.user_id] ? allList[state.customer.user_id] : []
+
+        if (replyId && !isReceive) {
+          let index: any = undefined
+          data.map((it: any, i: number) => {
+            let myId = item.isGroupChat ? it.room : it.userId
+
+            if (myId?.toString() === replyId.toString() && !it.isAssistant) {
+              index = i
             }
+            return data
           })
-        },
-      //聊天记录
-        msgData:msgData,
-        saveMsgData:(item:any,id:number | string)=>{
-          set((state:any)=>{
-            let data = state.msgData
 
-            if(!id){
-              if(!data[item.userId]){
-                data[item.userId] = []
-                data[item.userId].push(item)
-              }
+          if (item.msgCode?.length) {
+            data[index].msg = item.msgCode
+          } else {
+            data[index].msg = item.msg
+          }
+          data[index].showTime = dealMsgTime(Number(item.time), separator)
+          data[index].time = item.time
+        } else if (replyId && isReceive) {
+          let index: any = undefined
+          data.map((it: any, i: number) => {
+            let myId = item.isGroupChat ? it.room : it.userId
 
+            if (myId?.toString() === replyId.toString() && !it.isAssistant) {
+              index = i
+            }
+            return true
+          })
+          if (index !== undefined) {
+            data[index].hasBeenRead = item.isGroupChat ? state.listId?.toString() === item.room.toString() : state.listId?.toString() === item.userId.toString()
+            item.msgCode?.length ? data[index].msg = item.msgCode : data[index].msg = item.msg
+            data[index].showTime = dealMsgTime(Number(item.time), separator)
+            data[index].time = item.time
+          } else {
+            item.showTime = dealMsgTime(Number(item.time), separator)
+            if (item.msgCode?.length) {
+              let d = JSON.parse(JSON.stringify(item))
+              d.msg = d.msgCode
+              data.unshift(d)
+            } else {
+              data.unshift(item)
+            }
+          }
+
+        } else {
+          item.showTime = dealMsgTime(Number(item.time), separator)
+          data.unshift(item)
+        }
+
+
+        setStorageData('chatList', allList)
+
+        let bgColor = replyId && !isReceive ? 'var(--success-font-color)' : 'var(--white-color)'
+        let isLeft = replyId && isReceive
+        let id = replyId ? replyId : undefined
+        console.log(item)
+        if (item.msg.length) {
+          state.saveMsgData({
+            userId: item.userId,
+            avatar: item.avatar,
+            msg: item.msg,
+            img: item.type === 'img' ? item.img : undefined,
+            imgID: item.type === 'img' ? item.imgID : undefined,
+            bgColor,
+            isLeft,
+            time: item.time,
+            username: item.user
+          }, id)
+        }
+
+        allList[state.customer.user_id] = data
+        return {
+          chatList: allList
+        }
+      })
+    },
+    //最新沟通过的好友信息
+    friendInfo: getStorageData('friendInfo', {}),
+    saveFriendInfo: (item: MsgDataType) => {
+      set(() => {
+
+        setStorageData('friendInfo', item)
+        return {
+          friendInfo: item
+        }
+      })
+    },
+    //通讯录列表
+    friendList: getFriendList(),
+    changeFriendList(data: any, isOnline: boolean = false) {
+
+      set((state: any) => {
+        let list = isOnline ? defaultFriendList : state.friendList
+        const prototype = Object.prototype.toString.call(data)
+
+        data = addFirstPinYin(data, 'title', 'username', list)
+
+        if (prototype === '[object Array]') {
+          //没有好友的情况需删除某些数据
+          if (!data.length) {
+            //清空之前查看过的好友信息
+            state.changeFriendData({})
+          }
+          list = list.splice(0, 3)
+        }
+        list.push(...data)
+        let listCopy = JSON.parse(JSON.stringify(list))
+        setStorageData('friendList', sortByLocaleWithObject(listCopy.splice(3, list.length), 'title'))
+        return {
+          friendList: list
+        }
+      })
+
+
+    },
+    changeBadgeCount(count: number = 1) {
+      set((state: any) => {
+        let list = state.friendList
+        list.map((item: any) => {
+          if (item.type === 'new') {
+            count ? item.count++ : item.count = 0
+          }
+          return true
+        })
+        return {
+          friendList: list
+        }
+      })
+    },
+    //收到的好友请求
+    friendRequest: getStorageData('friendRequest', {}),
+    /**
+     * 修改好友申请列表数据
+     * @param request 好友申请相关数据
+     * @param operations { string } 操作类型
+     * @param operations.push { string } 增加数据
+     * @param operations.shift { string } 删除数据
+     */
+    changeFriendRequest: (request: any, operations: string = 'push') => {
+
+      set((state: any) => {
+
+        let data = state.friendRequest, user_id = state.customer.user_id
+        if (!data.hasOwnProperty(user_id)) {
+          data[user_id] = []
+        }
+
+        if (operations === 'push') {
+          data[user_id].push(request)
+          data[user_id] = verifyTime(data[user_id])
+
+          //(当新的朋友项不在激活状态时)有好友申请，每有一条申请，朋友列表中的新的朋友徽标数加1，（激活中）清零,
+          state.friendListInfo.type === 'new' ? state.changeBadgeCount(0) : state.changeBadgeCount()
+        } else if (operations === 'shift') {
+
+          data[user_id].map((item: any, index: number) => {
+
+            if (Number(item.receiver.RUN) === Number(user_id)) {
+
+              //删除当前好友申请
+              data[user_id].splice(index, 1)
+
+            }
+            return true
+          })
+          //好友信息加入好友列表
+          state.changeFriendList(request)
+        }
+
+        setStorageData('friendRequest', data)
+
+        return {
+          friendRequest: data
+        }
+      })
+    },
+    friendListInfo: getStorageData('friendListInfo', {title: '', type: ''}),
+    friendData: getStorageData('friendData', null),
+    changeIndexInfo(type: string, title: string, index: number, id: number) {
+      set(() => {
+        setStorageData('friendListInfo', {type, title, index, hasBeenRead: true, user_id: id})
+        return {
+          friendListInfo: {
+            type, title, index, hasBeenRead: true, user_id: id
+          }
+        }
+      })
+    },
+    changeFriendData(data: any) {
+      set(() => {
+        setStorageData('friendData', data)
+        return {
+          friendData: data
+        }
+      })
+    },
+    isAcceptApply: undefined,
+    changeAcceptApply(status: boolean) {
+      set(() => {
+        return {
+          isAcceptApply: status
+        }
+      })
+    },
+    changeStorageTime() {
+      set((state: any) => {
+        let {chatList, msgData, customer} = state
+
+        let data = chatList[customer.user_id] ? chatList[customer.user_id] : []
+
+        data.map((item: any) => {
+          return item.showTime = dealMsgTime(item.time)
+        })
+
+        for (const i in msgData) {
+          msgData[i].map((item: any) => {
+            if (item.timeout) {
+              item.timeout = dealMsgTime(item.time)
+            }
+            return true
+          })
+        }
+
+        chatList[customer.user_id] = data
+
+        return {
+          chatList,
+          msgData
+        }
+      })
+    },
+    emojiStatus: false,
+    changeEmojiStatus() {
+      set((state: any) => {
+        return {
+          emojiStatus: !state.emojiStatus
+        }
+      })
+    },
+    fileBuffer: {},
+    changeFileBuffer(data: any) {
+      set((state: any) => {
+        let fileB = state.fileBuffer
+        let userId = data.userId
+        if (fileB[userId] && fileB[userId][data.identity]) {
+          dealImageData(data, fileB, userId)
+        } else {
+          fileB[userId] = {}
+          fileB[userId][data.identity] = []
+          dealImageData(data, fileB, userId)
+        }
+        return {
+          fileBuffer: fileB
+        }
+      })
+    },
+    chatWindowSiderInfo: getStorageData('chatWindowSiderInfo', {}),
+    //获取聊天窗口右侧更多信息（成员信息、消息免打扰等）
+    changeChatWindowSiderInfo(data: any,newData:any = {}) {
+
+      set(() => {
+        let d = JSON.parse(JSON.stringify(data))
+        if(Object.keys(newData).length){
+          d.members.forEach((item:any)=>{
+            if(item.user_id === newData.user_id){
+
+              item.isShowPop = newData.isShowPop
             }
             else{
-              if(!data[id]){
-                  data[id] = []
-              }
-              let newMsg = []
-              if(new Date().getTime() - data[id][(data[id].length) -1]?.time >= 5*60*1000  || !data[id].length){
-                  let timeout = dealMsgTime(item.time)
-                  data[id].push({
-                      timeout,
-                      time:item.time
-                  })
-                  newMsg.push({
-                      timeout,
-                      time:item.time
-                  })
-              }
-
-              data[id].push(item)
-                newMsg.push(item)
-                if(state.listId?.toString() === id.toString()){
-
-                    state.getCurrentMsgData(undefined,undefined,newMsg)
-                }
-            }
-
-
-            //setStorageData('msgData',data)
-            openDB('chats').then((DB:any)=>{
-
-                let db = DB.db
-                id = Number(id) ? Number(id) : id
-                getDataByCursorIndex(db,'chat',true,'userId',id).then((res:any)=>{
-                    if(res.list.length){
-                        deleteDataByCursorIndex(db,'chat','userId',id).then(()=>{
-                            updateDB(db,'chat',{
-                                userId:id,
-                                messages:data[id]
-                            }).then(()=>{
-                                closeDB(db)
-                            })
-                        }).catch(()=>{
-                            closeDB(db)
-                        })
-
-                    }
-                    else{
-                        updateDB(db,'chat',{
-                            userId:id,
-                            messages:data[id]
-                        }).then(()=>{
-                            closeDB(db)
-                        })
-                    }
-                })
-
-            })
-
-            return {
-              msgData:data
+              item.isShowPop = false
             }
           })
-        },
-        //更新图片的发送进度
-        updateImageSendProgress(progress:any){
-            set((state:any)=>{
-                let data = state.msgData, {userId,identity,index,totalCount} = progress
-                data[userId].forEach((item:any)=>{
-                    if(item.imgID === identity){
-                        item.progress = Number(((( index + 1 )/totalCount)*100).toFixed(0))
-                    }
-                })
-                return {
-                    msgData:data
-                }
-            })
-        },
-      //鼠标停留在消息上改变消息的背景颜色
-        changeBg:(item:any,index:number)=>{
-
-          set((state:any)=>{
-            let data = state.currentFriendMsg
-            data[index] = item
-            return {
-              currentFriendMsg:data
-            }
-          })
-        },
-        currentFriendMsg:[],
-        count:15,
-        changeCount:()=>{
-            set((state:any)=>{
-                let c = state.count
-                c +=15
-                state.getCurrentMsgData(undefined,c)
-                return {
-                    count:c
-                }
-            })
-        },
-      //获取与当前好友的聊天记录(指定消息数)
-        getCurrentMsgData:(id:number | undefined = undefined,count?:number,data?:any)=>{
-          set((state:any)=>{
-              //有逻辑缺陷，待改善
-              let listId = id ? id : state.listId,c = count ? count : state.count,currentData = id ? [] : state.currentFriendMsg
-              let msg = state.msgData[listId] ? JSON.parse(JSON.stringify(state.msgData[listId])) : []
-
-              msg =  msg?.length > c ? msg.splice(msg.length - c,15) : msg
-              if(data){
-                  currentData.push(...data)
-              }
-              else{
-                  currentData.unshift(...msg)
-              }
-              return {
-                  currentFriendMsg:currentData
-              }
-          })
-        },
-      //消息列表激活的索引
-        listId:getStorageData('listId',undefined),
-        changeListId:(id:number)=>{
-           set((state:any)=>{
-               if (!isNaN(id)) {
-                   id = Number(id)
-               }
-               state.changeReadStatus(id)
-               setStorageData('listId',id)
-               state.getCurrentMsgData(id)
-               return {
-                    listId:id
-                }
-            })
-        },
-        changeReadStatus:(id:number,status:boolean = true)=>{
-            set((state:any)=>{
-                let allList = state.chatList
-                let data = allList[state.customer.user_id]
-
-                data.map((item:any)=>{
-                   return item.userId === id || item.room === id ? item.hasBeenRead = status : null
-                })
-                setStorageData('chatList',allList)
-                return {
-                    chatList:allList
-                }
-            })
-        },
-      //通讯过的用户列表
-        chatList:getStorageData('chatList',{}),
-        changeChatList:(item:MsgDataType,replyId:any = undefined,isReceive:boolean = false)=>{
-            let separator:any[] = ['/',':']
-          set((state:any)=>{
-              let allList = state.chatList
-              let data = allList[state.customer.user_id] ? allList[state.customer.user_id] : []
-
-                if(replyId && !isReceive){
-                  let index:any = undefined
-                  data.map((it:any,i:number)=>{
-                      let myId = item.isGroupChat ? it.room : it.userId
-
-                      if(myId?.toString() === replyId.toString() && !it.isAssistant){
-                          index = i
-                      }
-                      return data
-                  })
-
-                    if (item.msgCode?.length) {
-                        data[index].msg = item.msgCode
-                    } else {
-                        data[index].msg = item.msg
-                    }
-                    data[index].showTime = dealMsgTime(Number(item.time),separator)
-                    data[index].time = item.time
-                }
-                else if(replyId && isReceive){
-                    let index:any = undefined
-                    data.map((it:any,i:number)=>{
-                        let myId = item.isGroupChat ? it.room : it.userId
-
-                       if(myId?.toString() === replyId.toString() && !it.isAssistant){
-                           index = i
-                       }
-                       return true
-                    })
-                    if(index !== undefined){
-                        data[index].hasBeenRead = item.isGroupChat ? state.listId?.toString() === item.room.toString() : state.listId?.toString() === item.userId.toString()
-                        item.msgCode?.length ? data[index].msg = item.msgCode : data[index].msg = item.msg
-                        data[index].showTime = dealMsgTime(Number(item.time),separator)
-                        data[index].time = item.time
-                    }
-                    else{
-                        item.showTime = dealMsgTime(Number(item.time),separator)
-                        if (item.msgCode?.length) {
-                            let d = JSON.parse(JSON.stringify(item))
-                            d.msg = d.msgCode
-                            data.unshift(d)
-                        }
-                        else{
-                            data.unshift(item)
-                        }
-                    }
-
-                }
-                else{
-                    item.showTime = dealMsgTime(Number(item.time),separator)
-                    data.unshift(item)
-                }
-
-
-                setStorageData('chatList',allList)
-
-                let bgColor = replyId && !isReceive ? 'var(--success-font-color)' : 'var(--white-color)'
-                let isLeft = replyId && isReceive
-                let id = replyId ? replyId : undefined
-                console.log(item)
-                if(item.msg.length){
-                    state.saveMsgData({
-                        userId:item.userId,
-                        avatar:item.avatar,
-                        msg:item.msg,
-                        img:item.type === 'img' ? item.img : undefined,
-                        imgID:item.type === 'img' ? item.imgID : undefined,
-                        bgColor,
-                        isLeft,
-                        time:item.time,
-                        username:item.user
-                    },id)
-                }
-
-                allList[state.customer.user_id] = data
-                return {
-                  chatList:allList
-                }
-          })
-        },
-      //最新沟通过的好友信息
-        friendInfo:getStorageData('friendInfo',{}),
-        saveFriendInfo:(item:MsgDataType)=>{
-          set(()=>{
-
-            setStorageData('friendInfo',item)
-            return {
-              friendInfo:item
-            }
-          })
-        },
-        //通讯录列表
-        friendList:getFriendList(),
-        changeFriendList(data:any,isOnline:boolean = false){
-
-           set((state:any)=>{
-               let list = isOnline ? defaultFriendList : state.friendList
-               const prototype = Object.prototype.toString.call(data)
-
-               data = addFirstPinYin(data,'title','username',list)
-
-               if( prototype === '[object Array]' ){
-                   //没有好友的情况需删除某些数据
-                   if(!data.length){
-                       //清空之前查看过的好友信息
-                       state.changeFriendData({})
-                   }
-                   list = list.splice(0,3)
-               }
-               list.push(...data)
-               let listCopy = JSON.parse(JSON.stringify(list))
-               setStorageData('friendList',sortByLocaleWithObject(listCopy.splice(3,list.length),'title'))
-               return {
-                   friendList:list
-               }
-           })
-
-
-        },
-        changeBadgeCount(count:number = 1){
-            set((state:any)=>{
-                let list = state.friendList
-                list.map((item:any)=>{
-                    if(item.type === 'new'){
-                        count ? item.count ++ : item.count = 0
-                    }
-                    return true
-                })
-                return {
-                    friendList:list
-                }
-            })
-        },
-        //收到的好友请求
-        friendRequest:getStorageData('friendRequest',{}),
-        /**
-         * 修改好友申请列表数据
-         * @param request 好友申请相关数据
-         * @param operations { string } 操作类型
-         * @param operations.push { string } 增加数据
-         * @param operations.shift { string } 删除数据
-         */
-        changeFriendRequest: (request:any,operations: string = 'push')=>{
-
-            set((state:any)=>{
-
-                let data = state.friendRequest,user_id = state.customer.user_id
-                if(!data.hasOwnProperty(user_id)){
-                    data[user_id] = []
-                }
-
-                if(operations === 'push'){
-                    data[user_id].push(request)
-                    data[user_id] = verifyTime(data[user_id])
-
-                    //(当新的朋友项不在激活状态时)有好友申请，每有一条申请，朋友列表中的新的朋友徽标数加1，（激活中）清零,
-                    state.friendListInfo.type === 'new' ? state.changeBadgeCount(0) : state.changeBadgeCount()
-                }
-                else if(operations === 'shift'){
-
-                    data[user_id].map((item:any,index:number)=>{
-
-                        if(Number(item.receiver.RUN) === Number(user_id)){
-
-                            //删除当前好友申请
-                            data[user_id].splice(index,1)
-
-                        }
-                        return true
-                    })
-                    //好友信息加入好友列表
-                    state.changeFriendList(request)
-                }
-
-                setStorageData('friendRequest',data)
-
-                return {
-                    friendRequest:data
-                }
-            })
-        },
-        friendListInfo:getStorageData('friendListInfo',{title:'',type:''}),
-        friendData:getStorageData('friendData',null),
-        changeIndexInfo(type:string,title:string,index:number,id:number){
-            set(()=>{
-                setStorageData('friendListInfo',{type,title,index,hasBeenRead:true,user_id:id})
-                return {
-                    friendListInfo:{
-                        type,title,index,hasBeenRead:true,user_id:id
-                    }
-                }
-            })
-        },
-        changeFriendData(data:any){
-            set(()=>{
-                setStorageData('friendData',data)
-                return {
-                    friendData:data
-                }
-            })
-        },
-        isAcceptApply:undefined,
-        changeAcceptApply(status:boolean){
-            set(()=>{
-                return {
-                    isAcceptApply:status
-                }
-            })
-        },
-        changeStorageTime(){
-            set((state:any)=>{
-                let {chatList,msgData,customer} = state
-
-                let data = chatList[customer.user_id] ? chatList[customer.user_id] : []
-
-                data.map((item:any)=>{
-                    return item.showTime = dealMsgTime(item.time)
-                })
-
-                for (const i in msgData) {
-                    msgData[i].map((item:any)=>{
-                        if(item.timeout){
-                            item.timeout = dealMsgTime(item.time)
-                        }
-                        return true
-                    })
-                }
-
-                chatList[customer.user_id] = data
-
-                return {
-                    chatList,
-                    msgData
-                }
-            })
-        },
-        emojiStatus:false,
-        changeEmojiStatus(){
-            set((state:any)=>{
-                return {
-                    emojiStatus:!state.emojiStatus
-                }
-            })
-        },
-        fileBuffer:{},
-        changeFileBuffer(data:any){
-            set((state:any)=>{
-                let fileB = state.fileBuffer
-                let userId = data.userId
-                if(fileB[userId]&&fileB[userId][data.identity]){
-                    dealImageData(data,fileB,userId)
-                }
-                else{
-                    fileB[userId] = {}
-                    fileB[userId][data.identity] = []
-                    dealImageData(data,fileB,userId)
-                }
-                return {
-                    fileBuffer:fileB
-                }
-            })
         }
+        else{
+          d.members.forEach((item:any)=>{
+            item.isShowPop = false
+          })
+          setStorageData('chatWindowSiderInfo', data)
+        }
+        console.log(data,d,newData)
+        return {
+          chatWindowSiderInfo: d
+        }
+      })
+    },
+    chatWindowStatus:false,
+    changeWindowStatus(status:boolean){
+      set(()=>{
+        return {
+          chatWindowStatus:status
+        }
+      })
     }
+  }
 })
 
 /**
@@ -620,22 +647,23 @@ export const useMessageStore = create((set)=>{
  * @param userId
  * @return {Object} 返回含有整合后的数据
  */
-function mergeUint8Array(data:any,fileB:any,userId:any){
+function mergeUint8Array(data: any, fileB: any, userId: any) {
 
-    let allFB = new Uint8Array(data.totalSize),offset = 0
-    fileB[userId][data.identity].forEach((item:any)=>{
-        allFB.set(item.file,offset)
-        offset += item.file.length
-    })
+  let allFB = new Uint8Array(data.totalSize), offset = 0
+  fileB[userId][data.identity].forEach((item: any) => {
+    allFB.set(item.file, offset)
+    offset += item.file.length
+  })
 
-    data.file = allFB
-    return data
+  data.file = allFB
+  return data
 }
-function dealImageData(data:any,fileB:any,userId:any){
-    fileB[userId][data.identity].push(data)
-    if(data.index === data.chunkCount -1){
-        let allFB = mergeUint8Array(data,fileB,userId)
-        fileB[userId][data.identity] = []
-        fileB[userId][data.identity].push(allFB)
-    }
+
+function dealImageData(data: any, fileB: any, userId: any) {
+  fileB[userId][data.identity].push(data)
+  if (data.index === data.chunkCount - 1) {
+    let allFB = mergeUint8Array(data, fileB, userId)
+    fileB[userId][data.identity] = []
+    fileB[userId][data.identity].push(allFB)
+  }
 }

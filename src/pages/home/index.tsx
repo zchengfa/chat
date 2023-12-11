@@ -85,7 +85,12 @@ class Home extends Component<any, any> {
 
     m.map((item: MenuType, index: number) => {
 
-      return index === childIndex ? item.isActived = true : item.isActived = false
+      if(menuName === 'menu' && [0,1,2].indexOf(childIndex) !==-1){
+        return index === childIndex ? item.isActived = true : item.isActived = false
+      }
+      else{
+        return index === childIndex ? item.isActived = true : undefined
+      }
     })
 
     this.setState({
@@ -137,9 +142,11 @@ class Home extends Component<any, any> {
   getMenuTitle = (name: string, index: number) => {
     let arr = []
     name === 'menu' ? arr = this.state.menu : arr = this.state.otherMenu
-    this.setState({
-      currentMenu: arr[index].title
-    })
+    if(name === 'menu' && [0,1,2].indexOf(index) !==-1){
+      this.setState({
+        currentMenu: arr[index].title
+      })
+    }
   }
   /**
    * 输入框聚焦时，在输入框后面添加关闭组件
@@ -211,6 +218,7 @@ class Home extends Component<any, any> {
     let friendList = JSON.parse(localStorage.getItem('friendList') as string), list: any[] = []
     if (data.isGroupChat) {
       strangerInfoForGroup(data.room, Number(customer.user_id)).then((res: any) => {
+        console.log(res)
         list.push({
           isSelf: true,
           ...customer
@@ -315,17 +323,14 @@ class Home extends Component<any, any> {
    * 2.关闭显示中的表情组件
    */
   blurCom = () => {
-
     this.setState({
       isShowPop: false
     })
 
-    //若表情组件显示中，则关闭表情组件
-    if (this.props.Zustand.emojiStatus) {
-      this.props.Zustand.changeEmojiStatus()
-    }
-    if(this.props.Zustand.chatWindowStatus){
-      this.props.Zustand.changeWindowStatus(false)
+     const {emojiStatus,changeEmojiStatus} = this.props.Zustand
+
+    if(emojiStatus){
+      changeEmojiStatus()
     }
   }
   /**
@@ -479,7 +484,7 @@ class Home extends Component<any, any> {
     const {contextHolder} = this.props.Message
 
     return <Fragment>
-      <Layout onClickCapture={this.blurCom}>
+      <Layout onClick={this.blurCom}>
         {contextHolder}
         {/*侧边栏*/}
         <Sider width={'70px'}>

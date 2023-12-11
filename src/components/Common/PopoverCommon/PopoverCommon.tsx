@@ -36,7 +36,6 @@ export default function PopoverCommon(props: any) {
 
   const {setUserInfo} = useMessageStore((state: any) => state)
 
-
   const beforeUpload = (file: RcFile) => {
     let isLimit = file.size <= 64 * 1024
     if (!isLimit) {

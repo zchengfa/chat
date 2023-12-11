@@ -8,7 +8,6 @@ import {
   updateDB,
   deleteDataByCursorIndex
 } from "../indexedDB/DB";
-import {strangerInfoForGroup} from "../network/request";
 
 /**
  * 从indexedDB数据库中获取聊天记录
@@ -579,7 +578,8 @@ export const useMessageStore = create((set) => {
     changeEmojiStatus() {
       set((state: any) => {
         return {
-          emojiStatus: !state.emojiStatus
+          emojiStatus: !state.emojiStatus,
+          chatWindowStatus:false
         }
       })
     },
@@ -623,7 +623,6 @@ export const useMessageStore = create((set) => {
           })
           setStorageData('chatWindowSiderInfo', data)
         }
-        console.log(data,d,newData)
         return {
           chatWindowSiderInfo: d
         }

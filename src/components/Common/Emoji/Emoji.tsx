@@ -7,7 +7,6 @@ export default function Emoji(props: any) {
   const {children} = props
 
   const chooseEmoji = (e: any, item: EmojiType) => {
-    e.stopPropagation()
     document.dispatchEvent(new CustomEvent('chooseEmoji', {
       'detail': {
         ...item

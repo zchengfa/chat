@@ -53,7 +53,7 @@ div:hover::-webkit-scrollbar-thumb{
 }
 button:hover{
     border: none;
-    color: var(--white-color) !important;
+    color: var(--white-color);
 }
 .normal:hover{
     color:#000 !important;

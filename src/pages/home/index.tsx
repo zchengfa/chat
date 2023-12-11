@@ -27,6 +27,7 @@ class Home extends Component<any, any> {
       inputRef: this.props.Refs,
       placeholder: '搜索',
       currentMenu: '聊天',
+      currentIndex: 0,
       isShowAddFriendBtn: undefined,
       inputValue: undefined,
       menuList: {
@@ -57,14 +58,11 @@ class Home extends Component<any, any> {
    * @param menuName { string } 列表名
    */
   changeMenu = (childIndex: number, menuName: string) => {
-
     const m: MenuType[] = this.state[menuName]
-
     this.getMenuTitle(menuName, childIndex)
     if (this.state.nameArr.indexOf(menuName) === -1) {
       this.state.nameArr.push(menuName)
     }
-
     const propArr: string[] = Object.keys(this.state)
     propArr.map((i: any) => {
       if (Object.prototype.toString.call(this.state[i] === '[object Array]')) {
@@ -83,13 +81,19 @@ class Home extends Component<any, any> {
       return null
     })
 
-    m.map((item: MenuType, index: number) => {
+    m.forEach((item: MenuType, index: number) => {
 
-      if(menuName === 'menu' && [0,1,2].indexOf(childIndex) !==-1){
-        return index === childIndex ? item.isActived = true : item.isActived = false
-      }
-      else{
-        return index === childIndex ? item.isActived = true : undefined
+      if (menuName === 'menu' && [0, 1, 2].indexOf(childIndex) !== -1) {
+        if (index === childIndex) {
+          item.isActived = true
+        }
+        this.setState({
+          currentIndex: childIndex
+        })
+
+      } else {
+        let d = this.state.menu
+        d[this.state.currentIndex].isActived = true
       }
     })
 
@@ -142,7 +146,7 @@ class Home extends Component<any, any> {
   getMenuTitle = (name: string, index: number) => {
     let arr = []
     name === 'menu' ? arr = this.state.menu : arr = this.state.otherMenu
-    if(name === 'menu' && [0,1,2].indexOf(index) !==-1){
+    if (name === 'menu' && [0, 1, 2].indexOf(index) !== -1) {
       this.setState({
         currentMenu: arr[index].title
       })
@@ -210,8 +214,8 @@ class Home extends Component<any, any> {
     this.getWindowInfo(data)
   }
 
-  getWindowInfo = (data:any)=>{
-    let {customer, friendInfo,changeChatWindowSiderInfo} = this.props.Zustand
+  getWindowInfo = (data: any) => {
+    let {customer, friendInfo, changeChatWindowSiderInfo} = this.props.Zustand
     //如果点击的列表项是属于群聊（发起带有当前群聊房间id的请求，获取与当前用户不是好友关系的用户信息，
     // 属于好友关系的用户信息可以从已获得的好友信息列表获取）
     //从本地存储中获取该用户的好友列表数据
@@ -240,7 +244,7 @@ class Home extends Component<any, any> {
           })
         })
         changeChatWindowSiderInfo({
-          members:list
+          members: list
         })
       })
     } else {
@@ -255,7 +259,7 @@ class Home extends Component<any, any> {
         })
       })
       changeChatWindowSiderInfo({
-        members:list
+        members: list
       })
     }
   }
@@ -327,9 +331,9 @@ class Home extends Component<any, any> {
       isShowPop: false
     })
 
-     const {emojiStatus,changeEmojiStatus} = this.props.Zustand
+    const {emojiStatus, changeEmojiStatus} = this.props.Zustand
 
-    if(emojiStatus){
+    if (emojiStatus) {
       changeEmojiStatus()
     }
   }
@@ -585,6 +589,7 @@ class Home extends Component<any, any> {
     SocketEvent({Zustand: this.props.Zustand, Message: this.props.Message})
     document.addEventListener('sendMsg', this.CustomEventSendMsg)
   }
+
   componentWillUnmount() {
     document.removeEventListener('sendMsg', this.CustomEventSendMsg)
   }

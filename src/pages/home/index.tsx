@@ -73,16 +73,12 @@ class Home extends Component<any, any> {
             }
             return null
           })
-        } catch (e) {
-
-        }
+        } catch (e) {}
       }
-
       return null
     })
 
     m.forEach((item: MenuType, index: number) => {
-
       if (menuName === 'menu' && [0, 1, 2].indexOf(childIndex) !== -1) {
         if (index === childIndex) {
           item.isActived = true
@@ -90,7 +86,6 @@ class Home extends Component<any, any> {
         this.setState({
           currentIndex: childIndex
         })
-
       } else {
         let d = this.state.menu
         d[this.state.currentIndex].isActived = true
@@ -104,17 +99,30 @@ class Home extends Component<any, any> {
       inputValue: undefined,
       placeholder: '搜索'
     })
+    if (menuName === 'menu') {
+      let setClickFunc = childIndex ? this.addFriend : this.chatGroup
+      this.setState({
+        searchRightComponent: correctIconComponent[childIndex]?.component(setClickFunc)
+      })
 
-    try {
-      if (menuName === 'menu') {
-        let setClickFunc = childIndex ? this.addFriend : this.chatGroup
-        this.setState({
-          searchRightComponent: correctIconComponent[childIndex].component(setClickFunc)
-        })
+      const {otherMenu} = this.state
+      otherMenu.forEach((item:any)=>{
+        if(item.hasPop){
+          item.hasPop = false
+        }
+      })
+      if([0, 1, 2].indexOf(childIndex) === -1){
+        //点击的是顶部除前三个菜单项
+        //console.log(m)
       }
-    } catch (e) {
     }
+    else{
+      //点击的是底部三个菜单项
+      m.forEach((item:MenuType,i:number)=>{
+        i === childIndex && childIndex !== 0 ? item.hasPop = !item.hasPop : item.hasPop = false
+      })
 
+    }
   }
   addFriend = () => {
     this.setState({
@@ -189,9 +197,7 @@ class Home extends Component<any, any> {
    * 失去焦点后触发
    */
   inputBlur = () => {
-
     if (!this.state.isShowFriendBtn) {
-
       this.setState({
         placeholder: '搜索',
         inputProp: null,
@@ -332,7 +338,6 @@ class Home extends Component<any, any> {
     })
 
     const {emojiStatus, changeEmojiStatus} = this.props.Zustand
-
     if (emojiStatus) {
       changeEmojiStatus()
     }

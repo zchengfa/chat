@@ -1,0 +1,28 @@
+$defaultBgColor: #001529
+@mixin normal-style
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  position: absolute
+  left: 120%
+  width: 120px
+  bottom: 0
+  background-color: $defaultBgColor
+  z-index: 999
+.has-content.sider-pop
+  width: 200px
+  .box-item
+    span.title
+      text-align: center
+.sider-pop
+  @include normal-style
+  .box-item
+    display: flex
+    justify-content: flex-start
+    align-items: center
+    padding: 1rem
+    width: 100%
+    span.title
+      flex: 1
+      text-align: left

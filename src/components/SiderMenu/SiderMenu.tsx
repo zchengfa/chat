@@ -13,16 +13,16 @@ class SiderMenu extends Component<any, any>{
 
     menuHtml = (htmlProps:any)=> <div className={'data-item'} key={htmlProps.index} onClick={() => this.changeMenuContent(htmlProps.index,htmlProps.menuName)}>
       <img className={'menu-img'} src={htmlProps.image} alt="menu_img" title={htmlProps.title}/>
+      {htmlProps.hasPop ? htmlProps.pop() : undefined}
     </div>
 
     correctMenuHtml = (data:MenuType[],menuName:string)=> {
       return data.map((item:any,index:number) => {
-        if(item.isActived){
-          return this.menuHtml({index,image:item.imageAc,title:item.title,menuName})
+        let htmlProps = {index,image:item.image,title:item.title,menuName,hasPop:item.hasPop,pop:item.pop}
+        if (item.isActived && item.imageAc) {
+          htmlProps.image = item.imageAc
         }
-        else{
-          return this.menuHtml({index,image:item.image,title:item.title,menuName})
-        }
+        return this.menuHtml(htmlProps)
       })
     }
 

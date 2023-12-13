@@ -12,16 +12,19 @@ import {
   CircleFriendIconComponent,
   LockIconComponent,
   ChatIconComponent,
-  CorrectIconComponent, EyeIconComponent, MoreHorizationIconComponent
+  CorrectIconComponent, EyeIconComponent, MoreHorizationIconComponent, FileTransIconComponent
 } from '../svg/svg'
 
 import Emoji from '../../components/Common/Emoji/Emoji'
+import {SiderPop} from "../../pages/home/siderContent/components/siderPop/SiderPop";
 
 export interface MenuType {
   title:string,
   image:string,
-  imageAc:string,
-  isActived:boolean
+  imageAc?:string,
+  isActived:boolean,
+  hasPop?:boolean,
+  pop?:Function
 }
 export const menu:MenuType[] = [
   {
@@ -45,19 +48,16 @@ export const menu:MenuType[] = [
   {
     title:'聊天文件',
     image:require('../images/files.png'),
-    imageAc:require('../images/files_ac.png'),
     isActived:false
   },
   {
     title:'朋友圈',
     image:require('../images/circle.png'),
-    imageAc:require('../images/circle_ac.png'),
     isActived:false
   },
   {
     title:'搜一搜',
     image:require('../images/search.png'),
-    imageAc:require('../images/search_ac.png'),
     isActived:false
   }
 ]
@@ -66,20 +66,21 @@ export const otherMenu:MenuType[] = [
   {
     title:'小程序面板',
     image:require('../images/miniprogram.png'),
-    imageAc:require('../images/miniprogram_ac.png'),
     isActived:false
   },
   {
     title:'手机',
     image:require('../images/iphone.png'),
-    imageAc:require('../images/iphone_ac.png'),
-    isActived:false
+    isActived:false,
+    hasPop:false,
+    pop:()=> <SiderPop data={['手机正在浏览和浮窗的内容将会在这里显示',{title:'文件传输助手',content:<div className={'avatar'} style={{display:"flex",justifyContent:"center",alignItems:'center',width:'2.4rem',height:'2.4rem',backgroundColor:'var(--success-font-color)',fontSize:'20px'}}><FileTransIconComponent /></div>}]} />
   },
   {
     title:'设置及其他',
     image:require('../images/other.png'),
-    imageAc:require('../images/other_ac.png'),
-    isActived:false
+    isActived:false,
+    hasPop:false,
+    pop:()=> <SiderPop data={['迁移与备份','锁定','意见反馈','设置']} />
   }
 ]
 export const correctIconComponent = [

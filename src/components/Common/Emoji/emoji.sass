@@ -7,21 +7,16 @@
   margin-left: 1.4rem
   color: var(--deep-gray-color)
 .emoji-popover
-  padding: .5rem
   display: flex
+  flex-wrap: wrap
   justify-content: space-between
   align-items: center
-  flex-wrap: wrap
-  font-size: 1.4rem
   .emoji-tip
-    display: flex
-    justify-content: center
-    align-items: center
     width: 10%
+    text-align: center
     border-radius: .4rem
-  .emoji-tip:hover
-    background-color: var(--gray-color)
-  &::after
-    display: block
-    content: ''
-    width: 10%
+    font-size: 1.4rem
+.emoji-popover::after
+  display: block
+  content: ''
+  width: 10%

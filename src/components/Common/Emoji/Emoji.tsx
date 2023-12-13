@@ -21,10 +21,10 @@ export default function Emoji(props: any) {
       <div className={'emoji-popover'}>
         {
           emoji.map((item: EmojiType, index: number) => {
-            return <p title={item.title} className={'emoji-tip'} key={index}
+            return <div title={item.title} className={'emoji-tip'} key={index}
                       onClick={(event) => chooseEmoji(event, item)}>
               <span className={'emoji'}>{item.emoji}</span>
-            </p>
+            </div>
           })
         }
       </div>

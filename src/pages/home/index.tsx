@@ -73,7 +73,8 @@ class Home extends Component<any, any> {
             }
             return null
           })
-        } catch (e) {}
+        } catch (e) {
+        }
       }
       return null
     })
@@ -106,19 +107,18 @@ class Home extends Component<any, any> {
       })
 
       const {otherMenu} = this.state
-      otherMenu.forEach((item:any)=>{
-        if(item.hasPop){
+      otherMenu.forEach((item: any) => {
+        if (item.hasPop) {
           item.hasPop = false
         }
       })
-      if([0, 1, 2].indexOf(childIndex) === -1){
+      if ([0, 1, 2].indexOf(childIndex) === -1) {
         //点击的是顶部除前三个菜单项
         //console.log(m)
       }
-    }
-    else{
+    } else {
       //点击的是底部三个菜单项
-      m.forEach((item:MenuType,i:number)=>{
+      m.forEach((item: MenuType, i: number) => {
         i === childIndex && childIndex !== 0 ? item.hasPop = !item.hasPop : item.hasPop = false
       })
 
@@ -487,7 +487,8 @@ class Home extends Component<any, any> {
       showFriendCom,
       isSelf,
       isShowPop,
-      isShowFriendList
+      isShowFriendList,
+      currentMenu
     } = this.state
     const {listId, customer, friendListInfo, friendList} = this.props.Zustand
     const {contextHolder} = this.props.Message
@@ -502,15 +503,15 @@ class Home extends Component<any, any> {
         </Sider>
         {/*中部搜索框及各个菜单项详情列表*/}
         <div className={'middle-com'}>
-          <Space direction={'horizontal'} style={{width: '100%'}} className={'space-self'}>
-            <Input ref={inputRef} value={inputValue} style={{backgroundColor: 'var(--gray-color)'}}
+          <div style={{width: '100%'}} className={'space-self'}>
+            <Input ref={inputRef} value={inputValue} style={{flex:1,backgroundColor: 'var(--gray-color)'}}
                    onBlur={this.inputBlur} onChange={this.inputChange} suffix={inputProp} onFocus={this.inputFocus}
                    prefix={isShowFriendBtn ? <UserSwitchOutlined/> : <SearchOutlined/>}
                    placeholder={placeholder}></Input>
             {isShowFriendBtn ? <Button className={'cancel-btn'} onClick={this.closeAddFriendBtn}>取消</Button> :
-              <Button className={'normal'} style={{backgroundColor: 'var(--gray-color)'}}
-                      icon={searchRightComponent}></Button>}
-          </Space>
+              currentMenu === '收藏' ? undefined : <Button className={'normal'} style={{marginLeft:'1rem',backgroundColor: 'var(--gray-color)'}}
+                                                 icon={searchRightComponent}></Button>}
+          </div>
           {isShowPop ? <PopoverCommon btnClick={this.showFriendApplication} customer={searchUserData} arrow={false}
                                       open={!!searchUserData} isSelf={isSelf}
                                       btnTitle={isSelf ? '发消息' : '添加到通讯录'}></PopoverCommon> : null}

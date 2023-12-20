@@ -1,7 +1,7 @@
 import {List, Avatar, Button, Badge} from "antd";
 import {UsergroupDeleteOutlined} from '@ant-design/icons'
 import './friendList.sass'
-import withHook from "../../hook/withHook";
+import withHook from "../../../hook/withHook";
 
 function FriendList(props: any) {
 

@@ -1,8 +1,8 @@
 import {Layout, List, Avatar, Button, Empty} from "antd";
-import {useMessageStore} from "../../zustand/store";
+import {useMessageStore} from "../../../zustand/store";
 import './friendListContent.sass'
-import withHook from "../../hook/withHook";
-import PopoverCommon from "../Common/PopoverCommon/PopoverCommon";
+import withHook from "../../../hook/withHook";
+import PopoverCommon from "../../../components/Common/PopoverCommon/PopoverCommon";
 function FriendListContent(props:any){
     const { Header,Content } = Layout
     const {title,type} = useMessageStore((state:any)=> state.friendListInfo)

@@ -1,19 +1,21 @@
 import WithHook from "../../hook/withHook";
 import {Component, Fragment} from "react";
 import SiderMenu from "../../components/SiderMenu/SiderMenu";
-import ChatList from "../../components/ChatList/ChatList";
-import ChatContent from "../../components/ChatContent/ChatContent";
-import FriendList from "../../components/FriendList/FriendList";
+import ChatList from "./ChatList/ChatList";
+import ChatContent from "./ChatContent/ChatContent";
+import FriendList from "./FriendList/FriendList";
 import GroupFriendList from "../../components/GroupFriendList/GroupFriendList";
-import {Button, Divider, Input, Layout, Space} from "antd";
+import {Button, Divider, Input, Layout} from "antd";
 import {correctIconComponent, menu, MenuType, MsgDataType, otherMenu} from "../../common/staticData/data";
 import './index.sass'
 import {CloseCircleOutlined, RightOutlined, SearchOutlined, UserSwitchOutlined} from '@ant-design/icons'
 import {searchUserInfo, strangerInfoForGroup} from "../../network/request";
 import PopoverCommon from "../../components/Common/PopoverCommon/PopoverCommon";
 import FriendApplication from "../../components/FriendApplication/FriendApplication";
-import FriendListContent from "../../components/FriendListContent/FriendListContent";
+import FriendListContent from "./FriendListContent/FriendListContent";
 import {SocketEvent} from "../../socket/socket";
+import {CollectionList} from "./CollectionList/CollectionList";
+import {CollectionListContent} from "./CollectionListContent/CollectionListContent";
 
 class Home extends Component<any, any> {
   constructor(props: any) {
@@ -32,12 +34,14 @@ class Home extends Component<any, any> {
       inputValue: undefined,
       menuList: {
         '聊天': <ChatList chatWithSender={this.chatWithSender}></ChatList>,
-        "通讯录": <FriendList showListContent={this.showListContent}></FriendList>
+        "通讯录": <FriendList showListContent={this.showListContent}></FriendList>,
+        "收藏":<CollectionList></CollectionList>
       },
       listContent: {
         '聊天': <ChatContent socketMsg={this.socketMsg}></ChatContent>,
         '通讯录': <FriendListContent acceptApply={this.acceptApply}
-                                     applyStatus={props.Zustand.isAcceptApply}></FriendListContent>
+                                     applyStatus={props.Zustand.isAcceptApply}></FriendListContent>,
+        '收藏':<CollectionListContent></CollectionListContent>
       },
       searchUserData: {},
       showFriendCom: false,
@@ -152,7 +156,7 @@ class Home extends Component<any, any> {
    * @param index { number } 索引
    */
   getMenuTitle = (name: string, index: number) => {
-    let arr = []
+    let arr:any[]
     name === 'menu' ? arr = this.state.menu : arr = this.state.otherMenu
     if (name === 'menu' && [0, 1, 2].indexOf(index) !== -1) {
       this.setState({
@@ -488,7 +492,8 @@ class Home extends Component<any, any> {
       isSelf,
       isShowPop,
       isShowFriendList,
-      currentMenu
+      currentMenu,
+      currentIndex
     } = this.state
     const {listId, customer, friendListInfo, friendList} = this.props.Zustand
     const {contextHolder} = this.props.Message
@@ -502,8 +507,8 @@ class Home extends Component<any, any> {
                      changeMenuContent={this.changeMenu}></SiderMenu>
         </Sider>
         {/*中部搜索框及各个菜单项详情列表*/}
-        <div className={'middle-com'}>
-          <div style={{width: '100%'}} className={'space-self'}>
+        <div className={'middle-com'} style={currentIndex === 2 ? {backgroundColor:'transparent'} : {}}>
+          <div className={'space-self'} style={currentIndex === 2 ? {width: '100%',backgroundColor:'transparent'} : {width: '100%'}}>
             <Input ref={inputRef} value={inputValue} style={{flex:1,backgroundColor: 'var(--gray-color)'}}
                    onBlur={this.inputBlur} onChange={this.inputChange} suffix={inputProp} onFocus={this.inputFocus}
                    prefix={isShowFriendBtn ? <UserSwitchOutlined/> : <SearchOutlined/>}

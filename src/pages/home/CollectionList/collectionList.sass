@@ -1,0 +1,47 @@
+.menu-box
+  width: 100%
+  height: 100%
+  .menu-item
+    padding: 0
+    width: 100%
+    .item-box
+      display: flex
+      justify-content: flex-start
+      align-items: center
+      padding: .5rem 0
+      width: 100%
+    .collection-icon
+      margin-left: 1rem
+      margin-right: .5rem
+      font-size: 1.3rem
+  .menu-item:hover
+    background-color: var(--gray-color)
+  .menu-item:first-child
+    margin-left: 5%
+    margin-bottom: 1rem
+    width: 90%
+    .item-box
+      justify-content: center
+      padding: .3rem 0
+      height: 80%
+      border-radius: .2rem
+      background-color: var(--white-color)
+      cursor: pointer
+      .collection-icon
+        margin-left: 0
+    .item-box:hover
+      background-color: var(--gray-color)
+  .menu-item:last-child
+    margin-top: .5rem
+    border-block-start: 1px solid var(--deep-gray-color)
+    .item-box
+      justify-content: space-between
+      margin-top: .5rem
+    .item-box:hover
+      background-color: var(--gray-color)
+    .up-down
+      margin-right: 1rem
+      font-size: .8rem
+      color: var(--deep-gray-color)
+  .menu-item:last-child:hover
+    background-color: transparent

@@ -1,5 +1,5 @@
 
-import {PlusOutlined, UserAddOutlined} from '@ant-design/icons'
+import {PlusCircleOutlined,PlusOutlined, UserAddOutlined} from '@ant-design/icons'
 import {
   EmojiIconComponent,
   FileIconComponent,
@@ -12,7 +12,12 @@ import {
   CircleFriendIconComponent,
   LockIconComponent,
   ChatIconComponent,
-  CorrectIconComponent, EyeIconComponent, MoreHorizationIconComponent, FileTransIconComponent
+  CorrectIconComponent,
+  EyeIconComponent,
+  MoreHorizationIconComponent,
+  FileTransIconComponent,
+  AllIconComponent,
+  LinkIconComponent, TagIconComponent
 } from '../svg/svg'
 
 import Emoji from '../../components/Common/Emoji/Emoji'
@@ -26,6 +31,8 @@ export interface MenuType {
   hasPop?:boolean,
   pop?:Function
 }
+
+//首页侧边栏数据
 export const menu:MenuType[] = [
   {
     title:'聊天',
@@ -62,6 +69,7 @@ export const menu:MenuType[] = [
   }
 ]
 
+//首页侧边栏惨淡数据
 export const otherMenu:MenuType[] = [
   {
     title:'小程序面板',
@@ -83,6 +91,8 @@ export const otherMenu:MenuType[] = [
     pop:()=> <SiderPop data={['迁移与备份','锁定','意见反馈','设置']} />
   }
 ]
+
+//首页输入框旁的按钮
 export const correctIconComponent = [
   {
     title:'聊天',
@@ -118,6 +128,8 @@ export interface IconMenu {
   title:string
   component:Function
 }
+
+//聊天界面操作项数据
 export const operationsData = {
   operations:[
     {
@@ -159,6 +171,7 @@ export const operationsData = {
   ]
 }
 
+//水平的更多组件
 export const commonApplicationComponent = {
   moreHorization: <MoreHorizationIconComponent className={'more-horization'} />
 }
@@ -171,6 +184,27 @@ export const friendApplication = {
   correct:<CorrectIconComponent className={'correct-icon'}/>,
   eye:<EyeIconComponent className={'eye-icon'}/>
 }
+
+//收藏页菜单数据
+export const collectionMenu = [
+  {
+    type:'btn',
+    icon:<PlusCircleOutlined style={{fontSize:'.8rem'}} className={'collection-icon'} />,
+    title:'新建笔记'
+  },
+  {
+    icon:<AllIconComponent className={'collection-icon'} />,
+    title:'全部收藏'
+  },
+  {
+    icon:<LinkIconComponent className={'collection-icon'} />,
+    title:'链接'
+  },
+  {
+    icon:<TagIconComponent className={'collection-icon'} />,
+    title:'标签'
+  }
+]
 
 
 export interface EmojiType {

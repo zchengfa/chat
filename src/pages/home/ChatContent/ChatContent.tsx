@@ -1,12 +1,12 @@
 import './chatContent.sass'
 import {Layout, Divider, Input, Button, Upload, message, Avatar, Switch, Modal} from "antd";
-import {operationsData, IconMenu, commonApplicationComponent} from "../../common/staticData/data";
-import MessageContent from "../MessageContent/MessageContent";
+import {operationsData, IconMenu, commonApplicationComponent} from "../../../common/staticData/data";
+import MessageContent from "../../../components/MessageContent/MessageContent";
 import {useEffect, useRef, useState} from "react";
-import {createFileChunk, emojiToUtf16, transMsgToNameCode, Uint8ArrayToBase64} from "../../util/util";
-import withHook from "../../hook/withHook";
+import {createFileChunk, emojiToUtf16, transMsgToNameCode, Uint8ArrayToBase64} from "../../../util/util";
+import withHook from "../../../hook/withHook";
 import {RcFile} from "antd/es/upload";
-import PopoverCommon from "../Common/PopoverCommon/PopoverCommon";
+import PopoverCommon from "../../../components/Common/PopoverCommon/PopoverCommon";
 import {PlusOutlined, MinusOutlined, RightOutlined, SearchOutlined} from "@ant-design/icons";
 
 function ChatContent(props: any) {

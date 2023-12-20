@@ -1,10 +1,10 @@
 import './chatList.sass'
 import { Avatar,Badge,Space } from "antd";
 import { UserOutlined } from '@ant-design/icons'
-import {BellIconComponent, FileTransIconComponent} from '../../common/svg/svg'
-import { MsgDataType } from '../../common/staticData/data'
+import {BellIconComponent, FileTransIconComponent} from '../../../common/svg/svg'
+import { MsgDataType } from '../../../common/staticData/data'
 
-import withHook from "../../hook/withHook";
+import withHook from "../../../hook/withHook";
 
 function ChatList (props:any){
 

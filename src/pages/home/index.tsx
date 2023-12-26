@@ -280,8 +280,8 @@ class Home extends Component<any, any> {
    * 若能搜索到信息则以气泡卡片形式展示用户信息
    * 若没有搜索到则关闭搜索页，展示网络搜索页并告诉用户无法找到该用户
    */
-  searchUsers = async () => {
-
+  searchUsers = async (e:any) => {
+    e.stopPropagation()
     const {customer, friendList} = this.props.Zustand
     const {inputValue} = this.state
     let info: any = {}, isSelf = true, isEmpty = false
@@ -331,6 +331,7 @@ class Home extends Component<any, any> {
         isShowPop: true
       })
     }
+
   }
   /**
    * 1.点击Layout盒子将搜索用户的结果数据清零，道道关闭气泡卡片的效果(需使用事件捕获)

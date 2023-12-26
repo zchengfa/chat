@@ -31,7 +31,6 @@
     height: var(--children-app);
     background-color: var(--white-color);
     border-radius: .5rem;
-
 }
 .ant-input-affix-wrapper:focus,.ant-input-affix-wrapper:hover{
     border: none;

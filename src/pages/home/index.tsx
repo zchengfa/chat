@@ -53,8 +53,26 @@ class Home extends Component<any, any> {
   }
 
   socketMsg = (data: any) => {
-
-    this.props.socket.emit('sendMsg', data)
+    const send = ()=>{
+      this.props.socket.emit('sendMsg', data,(response:any)=>{
+        //有响应，说明消息已经发送给了服务器（可以清除消息发送状态）
+        this.props.Zustand.changeSendMsgStatus({msgId:response,receiver:this.props.Zustand.friendInfo.userId})
+      })
+    }
+    if(this.props.socket.connected){
+      send()
+    }
+    else{
+      let timer = setTimeout(()=>{
+        if(this.props.socket.connected){
+          send()
+        }
+        else{
+          this.props.Zustand.changeSendMsgStatus({msgId:data.id,receiver:this.props.Zustand.friendInfo.userId,isFailed:true})
+        }
+        clearTimeout(timer)
+      },10000)
+    }
   }
   /**
    * 接受SiderMenu子组件发出的点击事件

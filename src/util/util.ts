@@ -106,14 +106,9 @@ export function verifyTime(arr:any[]){
   //3天后过期
   let expired = 1000*60*60*24*3
 
-  arr.map((item:any)=>{
+  arr.forEach((item:any)=>{
 
-    if(time - item.applyTime > expired){
-      item.isExpired = true
-    }
-    else{
-      item.isExpired = false
-    }
+    item.isExpired = time - item.applyTime > expired;
 
   })
 
@@ -343,4 +338,78 @@ export function Uint8ArrayToBase64(arr:Uint8Array) {
     binary += String.fromCharCode(arr[i]);
   }
   return  'data:image/jpg;base64,' + window.btoa(binary).replace(/=/g, "");
+}
+
+type IDOptions = {
+  //是否随机组合
+  random?:boolean,
+  //是否全长度
+  whole?:boolean
+  //长度
+  length?:number,
+  //自定义字母
+  letter?:string,
+  //自定义数字
+  count?:number
+}
+
+/**
+ * 生成数字与字母混合的id
+ * @param options {IDOptions} 参数对象
+ * @param options.random {boolean}是否随机
+ * @param options.whole {boolean}  是否全长
+ * @param options.length {number} 长度
+ * @param options.letter {string} 自定义字母
+ * @param options.count {number}  自定义数字
+ * @return {string} 返回混合后的字符串
+ */
+export function generateID(options:IDOptions = {
+  random:true,
+  whole:true
+}): string{
+  const baseLetter = !options.letter ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' : options.letter
+  const timestamp = !options.count ? new Date().getTime() : options.count
+
+  //若letter提供的是汉字，抛出错误
+  if(new RegExp("[\\u4E00-\\u9FFF]+","g").test(options.letter as string)){
+    throw Error('Not allowed to provide Chinese characters')
+  }
+
+  if(!Object.hasOwn(options,'random')){
+    options.random = true
+  }
+
+  if(!Object.hasOwn(options,'whole')){
+    options.whole = true
+  }
+
+  const data = options.random ? insertRandom(getRandom(baseLetter) , getRandom(timestamp.toString())) : baseLetter + timestamp
+  if(options.whole){
+    return data
+  }
+  else{
+    return data.substring(0,options.length)
+  }
+  function getRandom(data:string){
+    let randomData =  ''
+    const strArr = data.split('')
+    strArr.forEach(()=>{
+      const randomNu = Math.floor(Math.random()*strArr.length)
+      randomData += strArr[randomNu]
+    })
+    return randomData
+  }
+
+  function insertRandom(str:string,strT:string){
+    const arr = str.split(''),arrT = strT.split('')
+    const bigArr = arr.length < arrT.length ? arrT : arr
+    const smallArr = arr.length < arrT.length ? arr : arrT
+    let insertRandomStr = ''
+    for (let i = 0; i < bigArr.length; i++) {
+      if (i < smallArr.length) {
+        insertRandomStr += arr[i] + arrT[i]
+      }
+    }
+    return insertRandomStr
+  }
 }

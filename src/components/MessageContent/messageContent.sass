@@ -32,6 +32,22 @@
       justify-content: flex-start
       align-items: flex-start
       width: 100%
+      .user-msg
+        display: flex
+        align-items: center
+        justify-content: space-between
+        max-width: 50%
+        .msg-status
+          padding: 0 .8rem
+          .failed-icon
+            width: 1.4rem
+            height: 1.4rem
+            text-align: center
+            color: var(--white-color)
+            border-radius: 50%
+            background-color: red
+      .user-msg-right
+        flex-direction: row-reverse
       .msg-avatar
         display: block
         width: 32px

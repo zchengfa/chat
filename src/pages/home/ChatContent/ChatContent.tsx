@@ -3,7 +3,7 @@ import {Layout, Divider, Input, Button, Upload, message, Avatar, Switch, Modal} 
 import {operationsData, IconMenu, commonApplicationComponent} from "../../../common/staticData/data";
 import MessageContent from "../../../components/MessageContent/MessageContent";
 import {useEffect, useRef, useState} from "react";
-import {createFileChunk, emojiToUtf16, transMsgToNameCode, Uint8ArrayToBase64} from "../../../util/util";
+import {createFileChunk, emojiToUtf16, generateID, transMsgToNameCode, Uint8ArrayToBase64} from "../../../util/util";
 import withHook from "../../../hook/withHook";
 import {RcFile} from "antd/es/upload";
 import PopoverCommon from "../../../components/Common/PopoverCommon/PopoverCommon";
@@ -77,8 +77,10 @@ function ChatContent(props: any) {
     let time = new Date().getTime()
     setMsg('')
     if (msg.length) {
-
+      const id = generateID()
       changeChatList({
+        id,
+        isSending:true,
         userId: customer.user_id,
         avatar: customer.avatar,
         user: customer.username,
@@ -96,6 +98,7 @@ function ChatContent(props: any) {
 
       //向父组件发送事件，将消息发动给后端的socket
       props.socketMsg({
+        id,
         type: 'msg',
         sender: customer.username,
         userId: customer.user_id,

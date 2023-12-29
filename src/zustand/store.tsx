@@ -37,6 +37,42 @@ function getMsgDataFromIndexedDB() {
   })
 }
 
+/**
+ * 更新indexedDB数据库
+ * @param id {string | number} 索引值
+ * @param data {any} 需要更新的数据
+ */
+function operateIndexedDB(id:any,data:any){
+  openDB('chats').then((DB: any) => {
+
+    let db = DB.db
+    id = Number(id) ? Number(id) : id
+    getDataByCursorIndex(db, 'chat', true, 'userId', id).then((res: any) => {
+      if (res.list.length) {
+        deleteDataByCursorIndex(db, 'chat', 'userId', id).then(() => {
+          updateDB(db, 'chat', {
+            userId: id,
+            messages: data[id]
+          }).then(() => {
+            closeDB(db)
+          })
+        }).catch(() => {
+          closeDB(db)
+        })
+
+      } else {
+        updateDB(db, 'chat', {
+          userId: id,
+          messages: data[id]
+        }).then(() => {
+          closeDB(db)
+        })
+      }
+    })
+
+  })
+}
+
 // @ts-ignore
 let msgData = await getMsgDataFromIndexedDB().then((res: any) => res)
 
@@ -215,36 +251,8 @@ export const useMessageStore = create((set) => {
           }
         }
 
-
-        //setStorageData('msgData',data)
-        openDB('chats').then((DB: any) => {
-
-          let db = DB.db
-          id = Number(id) ? Number(id) : id
-          getDataByCursorIndex(db, 'chat', true, 'userId', id).then((res: any) => {
-            if (res.list.length) {
-              deleteDataByCursorIndex(db, 'chat', 'userId', id).then(() => {
-                updateDB(db, 'chat', {
-                  userId: id,
-                  messages: data[id]
-                }).then(() => {
-                  closeDB(db)
-                })
-              }).catch(() => {
-                closeDB(db)
-              })
-
-            } else {
-              updateDB(db, 'chat', {
-                userId: id,
-                messages: data[id]
-              }).then(() => {
-                closeDB(db)
-              })
-            }
-          })
-
-        })
+        //更新indexedDB数据库
+        operateIndexedDB(id,data)
 
         return {
           msgData: data
@@ -335,6 +343,29 @@ export const useMessageStore = create((set) => {
         }
       })
     },
+    //改变消息发送状态
+    changeSendMsgStatus:(response:{msgId:string,receiver:number,isFailed?:boolean})=>{
+      set((state:any)=>{
+        let list = state.msgData
+        list[response.receiver].map((item:any)=>{
+          if(item.id === response.msgId){
+            if(response.isFailed){
+              item.isSending = false
+            }
+            else{
+              delete item.isSending
+            }
+          }
+          return true
+        })
+
+        //更新indexedDB数据库
+        operateIndexedDB(response.receiver,list)
+        return {
+          msgData:list
+        }
+      })
+    },
     //通讯过的用户列表
     chatList: getStorageData('chatList', {}),
     changeChatList: (item: MsgDataType, replyId: any = undefined, isReceive: boolean = false) => {
@@ -398,9 +429,11 @@ export const useMessageStore = create((set) => {
         let bgColor = replyId && !isReceive ? 'var(--success-font-color)' : 'var(--white-color)'
         let isLeft = replyId && isReceive
         let id = replyId ? replyId : undefined
-        console.log(item)
+
         if (item.msg.length) {
+
           state.saveMsgData({
+            id:item.id,
             userId: item.userId,
             avatar: item.avatar,
             msg: item.msg,
@@ -408,6 +441,7 @@ export const useMessageStore = create((set) => {
             imgID: item.type === 'img' ? item.imgID : undefined,
             bgColor,
             isLeft,
+            isSending:item.isSending,
             time: item.time,
             username: item.user
           }, id)

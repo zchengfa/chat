@@ -19,7 +19,6 @@ export function SocketEvent(data:any){
 
     socket.on('receiveMessage',(data:any)=>{
         let readStatus = data.isGroupChat ? Zustand.listId?.toString() === data.room.toString()   : Zustand.listId?.toString() === data.userId.toString()
-        console.log(data)
         if(data.type === 'msg'){
            changeListFun(data)
         }

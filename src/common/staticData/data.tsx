@@ -106,6 +106,8 @@ export const correctIconComponent = [
 
 
 export interface MsgDataType {
+  id?:any,
+  isSending?: boolean;
   imgID?: any;
   identity?:string,
   img?: any;

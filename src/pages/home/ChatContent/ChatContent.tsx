@@ -160,8 +160,10 @@ function ChatContent(props: any) {
       reader.onload = function () {
         // @ts-ignore
         let chunkList = createFileChunk(reader.result, reader.result?.byteLength, 100 * 1024)
+        const id = generateID()
 
         changeChatList({
+          id,
           type: 'img',
           userId: customer.user_id,
           avatar: customer.avatar,
@@ -180,6 +182,7 @@ function ChatContent(props: any) {
 
         chunkList.forEach((item: any) => {
           props.socket.emit('sendMsg', {
+            id,
             isGroupChat: friendInfo.isGroupChat,
             ...item,
             sender: customer.username,

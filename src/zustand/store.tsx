@@ -48,29 +48,19 @@ function operateIndexedDB(id:any,data:any){
     let db = DB.db
     id = Number(id) ? Number(id) : id
     getDataByCursorIndex(db, 'chat', true, 'userId', id).then((res: any) => {
-      // if (res.list.length) {
-      //   deleteDataByCursorIndex(db, 'chat', 'userId', id).then(() => {
-      //     updateDB(db, 'chat', {
-      //       userId: id,
-      //       messages: data[id]
-      //     }).then(() => {
-      //       closeDB(db)
-      //     })
-      //   }).catch(() => {
-      //     closeDB(db)
-      //   })
-      //
-      // } else {
-      //   updateDB(db, 'chat', {
-      //     userId: id,
-      //     messages: data[id]
-      //   }).then(() => {
-      //     closeDB(db)
-      //   }).catch((e:any)=>{
-      //     console.log(e)
-      //   })
-      // }
-      deleteDataByCursorIndex(db, 'chat', 'userId', id).then(() => {
+      if (res.list.length) {
+        deleteDataByCursorIndex(db, 'chat', 'userId', id).then(() => {
+          updateDB(db, 'chat', {
+            userId: id,
+            messages: data[id]
+          }).then(() => {
+            closeDB(db)
+          })
+        }).catch(() => {
+          closeDB(db)
+        })
+
+      } else {
         updateDB(db, 'chat', {
           userId: id,
           messages: data[id]
@@ -79,9 +69,7 @@ function operateIndexedDB(id:any,data:any){
         }).catch((e:any)=>{
 
         })
-      }).catch(() => {
-        closeDB(db)
-      })
+      }
     })
 
   })
@@ -389,7 +377,7 @@ export const useMessageStore = create((set) => {
         let data = allList[state.customer.user_id] ? allList[state.customer.user_id] : []
 
         if (replyId && !isReceive) {
-          let index: any = 0
+          let index: any = undefined
           data.map((it: any, i: number) => {
             let myId = item.isGroupChat ? it.room : it.userId
 

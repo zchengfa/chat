@@ -23,12 +23,12 @@ function WaterDroplet(props:any){
         props.operationClick()
     }
 
-    return <div className={'drop-container'}>
+    return <div className={props.justButton ? 'drop-container just-btn-container' : 'drop-container'}>
         {contextHolder}
         {
 
-            props.type === 'form' ? <div className={'drop'} style={{minHeight:'400px',boxShadow:props.dropBoxShadow,width:props.width,height:props.height,backgroundColor:props.waterDropletColor}}>
-                <p className={'form-title'} style={{fontSize:props.fontSize}}>{props.title ? props.title : 'title'}</p>
+            props.type === 'form' ? <div className={'drop'} style={{boxShadow:props.dropBoxShadow,width:props.width,height:props.height,backgroundColor:props.waterDropletColor}}>
+                <span className={'form-title'} style={{fontSize:props.fontSize}}>{props.title ? props.title : 'title'}</span>
                 <Form className={'form'}
                       onFinish={onFinish}
                       onFinishFailed={onFinishFailed}
@@ -49,7 +49,7 @@ function WaterDroplet(props:any){
                         }
                     </Form.Item>
                 </Form>
-            </div>: <div className={'drop'} onClick={operationClick} style={{left:'0',top:'0',boxShadow:props.dropBoxShadow,width:props.width,height:props.height,borderRadius:props.radius,backgroundColor:props.waterDropletColor}}>
+            </div>: <div className={props.justButton ? 'drop just-btn-drop' : 'drop'} onClick={operationClick} style={{left:'0',top:'0',boxShadow:props.dropBoxShadow,width:props.width,height:props.height,borderRadius:props.radius,backgroundColor:props.waterDropletColor}}>
                 <span className={'drop-before'} style={{backgroundColor:props.preCircleBgColor}}></span>
                 <span className={'form-title'} style={{position:'relative',top:'0%',maxWidth:'80%',textAlign:'center',fontSize:props.fontSize,color:props.color}}>{props.title ? props.title : 'title'}</span>
             </div>

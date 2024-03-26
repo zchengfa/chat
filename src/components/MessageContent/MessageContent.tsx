@@ -29,13 +29,17 @@ class MessageContent extends Component<any, any> {
       </div>
       <div className={item.isLeft ? 'user-msg' : 'user-msg user-msg-right'}>
         {item.isLeft && this.props.Zustand.friendInfo.isGroupChat ? <span className={'username'} style={{
-          display: 'block',
-          marginLeft: '1rem',
-          marginBottom: '.4rem',
+          display:'block',
+          position:'relative',
+          marginLeft:'1rem',
+          top:'-.5rem',
           color: 'var(--deep-gray-color)',
           fontSize: 'var(--mini-font-size)'
         }}>{item.username}</span> : null}
-        <div className={'img-msg-box'}>
+        <div className={'img-msg-box'} style={item.isLeft && this.props.Zustand.friendInfo.isGroupChat ?{
+          position:'relative',
+          top:'-.25rem'
+        }:undefined}>
           {item.msg.length <= 15 && !item.imgID ? <div className={'angle'}
                                                        style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div> : null}
           <div className={item.img ? 'msg-img-box' : 'msg-box'}
@@ -48,17 +52,19 @@ class MessageContent extends Component<any, any> {
               <img className={'msg-image'} src={item.img} alt="msg_image"/>
             </div> : <span className={'msg'}>{utf16ToEmoji(item.msg)}</span>}
           </div>
+          {
+            Object.hasOwn(item,'isSending') ?  <div className={'msg-status'}>
+              {
+                item.isSending === true ? <Spin spinning={true} indicator={<LoadingOutlined/>}></Spin>
+                  : <div className={'failed-icon'}>
+                    <ExclamationOutlined/>
+                  </div>
+              }
+            </div> : undefined
+          }
+
         </div>
-        {
-          Object.hasOwn(item,'isSending') ?  <div className={'msg-status'}>
-            {
-              item.isSending === true ? <Spin spinning={true} indicator={<LoadingOutlined/>}></Spin>
-                : <div className={'failed-icon'}>
-                  <ExclamationOutlined/>
-                </div>
-            }
-          </div> : undefined
-        }
+
       </div>
     </div>
   }

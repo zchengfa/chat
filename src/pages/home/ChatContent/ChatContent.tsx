@@ -241,9 +241,9 @@ function ChatContent(props: any) {
       </Modal>
       <Header className={'user-box'}>
         <div className={'title-box'} style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center'}}>
-          <span className={'receiver-title text-ellipsis'}>{friendInfo.user}</span>
+          <span className={'receiver-title text-ellipsis'}>{friendInfo.isGroupChat ? friendInfo.chatName : friendInfo.user}</span>
           {friendInfo.isGroupChat ?
-            <span className={'receiver-title members-count'}>({chatWindowSiderInfo.members.length})</span> : null}
+            <span className={'receiver-title members-count'}>({chatWindowSiderInfo.members?.length})</span> : null}
         </div>
         <div style={{fontSize: '20px'}}
              onClickCapture={() => changeWindowStatus(!chatWindowStatus)}>{moreHorization}</div>

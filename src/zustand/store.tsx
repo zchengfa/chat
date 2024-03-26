@@ -66,6 +66,8 @@ function operateIndexedDB(id:any,data:any){
           messages: data[id]
         }).then(() => {
           closeDB(db)
+        }).catch((e:any)=>{
+
         })
       }
     })

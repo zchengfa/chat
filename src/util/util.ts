@@ -3,6 +3,9 @@ import cryptoJs from 'crypto-js/crypto-js'
 import pinyin from "pinyin";
 import {Md5} from 'ts-md5'
 
+export const URL = 'http://' + window.location.host.toString().split(':')[0] + ':4000'
+export const isMobile = /windows phone|iphone|android/ig.test(window.navigator.userAgent)
+
 const key = cryptoJs.enc.Utf8.parse("1234123412PackMyBoxWithFiveDozenLiquorJugs");  //十六位十六进制数作为密钥
 const iv = cryptoJs.enc.Utf8.parse('PackMyBoxWithFiveDozenLiquorJugs1234123412');   //十六位十六进制数作为密钥偏移量
 

@@ -16,6 +16,8 @@ import FriendListContent from "./FriendListContent/FriendListContent";
 import {SocketEvent} from "../../socket/socket";
 import {CollectionList} from "./CollectionList/CollectionList";
 import {CollectionListContent} from "./CollectionListContent/CollectionListContent";
+import {isMobile} from "../../util/util";
+import NavBar from "../../components/Common/NavBar/NavBar";
 
 class Home extends Component<any, any> {
   constructor(props: any) {
@@ -35,13 +37,13 @@ class Home extends Component<any, any> {
       menuList: {
         '聊天': <ChatList chatWithSender={this.chatWithSender}></ChatList>,
         "通讯录": <FriendList showListContent={this.showListContent}></FriendList>,
-        "收藏":<CollectionList></CollectionList>
+        "收藏": <CollectionList></CollectionList>
       },
       listContent: {
         '聊天': <ChatContent socketMsg={this.socketMsg}></ChatContent>,
         '通讯录': <FriendListContent acceptApply={this.acceptApply}
                                      applyStatus={props.Zustand.isAcceptApply}></FriendListContent>,
-        '收藏':<CollectionListContent></CollectionListContent>
+        '收藏': <CollectionListContent></CollectionListContent>
       },
       searchUserData: {},
       showFriendCom: false,
@@ -53,25 +55,27 @@ class Home extends Component<any, any> {
   }
 
   socketMsg = (data: any) => {
-    const send = ()=>{
-      this.props.socket.emit('sendMsg', data,(response:any)=>{
+    const send = () => {
+      this.props.socket.emit('sendMsg', data, (response: any) => {
         //有响应，说明消息已经发送给了服务器（可以清除消息发送状态）
-        this.props.Zustand.changeSendMsgStatus({msgId:response,receiver:this.props.Zustand.friendInfo.userId})
+        this.props.Zustand.changeSendMsgStatus({msgId: response, receiver: this.props.Zustand.friendInfo.userId})
       })
     }
-    if(this.props.socket.connected){
+    if (this.props.socket.connected) {
       send()
-    }
-    else{
-      let timer = setTimeout(()=>{
-        if(this.props.socket.connected){
+    } else {
+      let timer = setTimeout(() => {
+        if (this.props.socket.connected) {
           send()
-        }
-        else{
-          this.props.Zustand.changeSendMsgStatus({msgId:data.id,receiver:this.props.Zustand.friendInfo.userId,isFailed:true})
+        } else {
+          this.props.Zustand.changeSendMsgStatus({
+            msgId: data.id,
+            receiver: this.props.Zustand.friendInfo.userId,
+            isFailed: true
+          })
         }
         clearTimeout(timer)
-      },10000)
+      }, 10000)
     }
   }
   /**
@@ -174,7 +178,7 @@ class Home extends Component<any, any> {
    * @param index { number } 索引
    */
   getMenuTitle = (name: string, index: number) => {
-    let arr:any[]
+    let arr: any[]
     name === 'menu' ? arr = this.state.menu : arr = this.state.otherMenu
     if (name === 'menu' && [0, 1, 2].indexOf(index) !== -1) {
       this.setState({
@@ -230,7 +234,7 @@ class Home extends Component<any, any> {
   chatWithSender = async (data: MsgDataType, id: any) => {
     const {changeListId, saveFriendInfo} = this.props.Zustand
     //刷新为当前点击的好友信息
-    await this.setState({
+    this.setState({
       recieverInfo: data
     })
     //修改列表激活状态
@@ -298,7 +302,7 @@ class Home extends Component<any, any> {
    * 若能搜索到信息则以气泡卡片形式展示用户信息
    * 若没有搜索到则关闭搜索页，展示网络搜索页并告诉用户无法找到该用户
    */
-  searchUsers = async (e:any) => {
+  searchUsers = async (e: any) => {
     e.stopPropagation()
     const {customer, friendList} = this.props.Zustand
     const {inputValue} = this.state
@@ -518,7 +522,7 @@ class Home extends Component<any, any> {
     const {contextHolder} = this.props.Message
 
     return <Fragment>
-      <Layout onClick={this.blurCom}>
+      {!isMobile ? <Layout onClick={this.blurCom}>
         {contextHolder}
         {/*侧边栏*/}
         <Sider width={'70px'}>
@@ -526,15 +530,17 @@ class Home extends Component<any, any> {
                      changeMenuContent={this.changeMenu}></SiderMenu>
         </Sider>
         {/*中部搜索框及各个菜单项详情列表*/}
-        <div className={'middle-com'} style={currentIndex === 2 ? {backgroundColor:'transparent'} : {}}>
-          <div className={'space-self'} style={currentIndex === 2 ? {width: '100%',backgroundColor:'transparent'} : {width: '100%'}}>
-            <Input ref={inputRef} value={inputValue} style={{flex:1,backgroundColor: 'var(--gray-color)'}}
+        <div className={'middle-com'} style={currentIndex === 2 ? {backgroundColor: 'transparent'} : {}}>
+          <div className={'space-self'}
+               style={currentIndex === 2 ? {width: '100%', backgroundColor: 'transparent'} : {width: '100%'}}>
+            <Input ref={inputRef} value={inputValue} style={{flex: 1, backgroundColor: 'var(--gray-color)'}}
                    onBlur={this.inputBlur} onChange={this.inputChange} suffix={inputProp} onFocus={this.inputFocus}
                    prefix={isShowFriendBtn ? <UserSwitchOutlined/> : <SearchOutlined/>}
                    placeholder={placeholder}></Input>
             {isShowFriendBtn ? <Button className={'cancel-btn'} onClick={this.closeAddFriendBtn}>取消</Button> :
-              currentMenu === '收藏' ? undefined : <Button className={'normal'} style={{marginLeft:'1rem',backgroundColor: 'var(--gray-color)'}}
-                                                 icon={searchRightComponent}></Button>}
+              currentMenu === '收藏' ? undefined :
+                <Button className={'normal'} style={{marginLeft: '1rem', backgroundColor: 'var(--gray-color)'}}
+                        icon={searchRightComponent}></Button>}
           </div>
           {isShowPop ? <PopoverCommon btnClick={this.showFriendApplication} customer={searchUserData} arrow={false}
                                       open={!!searchUserData} isSelf={isSelf}
@@ -581,7 +587,9 @@ class Home extends Component<any, any> {
                                             cancel={this.cancelFriendApp}></FriendApplication> : null}
         {isShowFriendList ?
           <GroupFriendList list={friendList} groupComBtnClick={this.groupComBtnClick}></GroupFriendList> : null}
-      </Layout>
+      </Layout> : <Layout onClick={this.blurCom}>
+        <NavBar add title={'聊天'}></NavBar>
+      </Layout>}
     </Fragment>
   }
 

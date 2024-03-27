@@ -7,20 +7,27 @@ body{
     --gray-color: #eae5e5;
     --deep-gray-color: #c7c3c3;
     --mini-font-size: 12px;
-    --normal-text-color: #000;
+    --normal-text-color: #3a3939;
     --middle-font-size: 14px;
     --success-font-color: #22dc60;
     --deep-green-color: #0aa23d;
     --children-app: 90%;
     --orange-color: #e7ab3e;
     --blue-color: #42a5f6;
-    --image-progress-mask: rgba(155, 152, 152, 0.8)
-}
+    --image-progress-mask: rgba(155, 152, 152, 0.8);
+    --nav-height: 3rem;
 
-.App{
+}
+.App-mobile,.App,.App-container-mobile{
     position: relative;
     width: 100%;
     height: 100vh;
+}
+.App-mobile,.App-container-mobile{
+    max-width: 500px;
+}
+
+.App{
     background-image: url("../images/website_bg.jpg");
     background-size: cover;
     background-repeat: no-repeat;
@@ -86,3 +93,8 @@ input:focus{
     overflow: hidden;
 }
 
+@media  screen and (min-width: 500px) {
+    .App-mobile,.App-container-mobile{
+        margin: 0 auto;
+    }
+}

@@ -17,7 +17,11 @@ import {
   MoreHorizationIconComponent,
   FileTransIconComponent,
   AllIconComponent,
-  LinkIconComponent, TagIconComponent
+  LinkIconComponent,
+  TagIconComponent,
+  BackIconComponent,
+  PayIconComponent,
+  ScanIconComponent
 } from '../svg/svg'
 
 import Emoji from '../../components/Common/Emoji/Emoji'
@@ -207,6 +211,37 @@ export const collectionMenu = [
     title:'标签'
   }
 ]
+
+//NavBar顶部导航条数据
+export const NavBarData = {
+  back:{
+    icon:<BackIconComponent className={'back-icon'}></BackIconComponent>
+  },
+  more:{
+    icon:<MoreHorizationIconComponent className={'nav-more'}></MoreHorizationIconComponent>
+  },
+  add:{
+    icon:<PlusCircleOutlined className={'nav-add'}></PlusCircleOutlined>
+  },
+  dropDownList:[
+    {
+      icon:<MessageIconComponent className={'dropdown-icon'}></MessageIconComponent>,
+      title:'发起群聊'
+    },
+    {
+      icon:<NewFriendIconComponent className={'dropdown-icon'}></NewFriendIconComponent>,
+      title:'添加朋友'
+    },
+    {
+      icon:<ScanIconComponent className={'dropdown-icon'}></ScanIconComponent>,
+      title:'扫一扫'
+    },
+    {
+      icon:<PayIconComponent className={'dropdown-icon'}></PayIconComponent>,
+      title:'收付款'
+    }
+  ]
+}
 
 
 export interface EmojiType {

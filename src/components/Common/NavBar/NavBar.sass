@@ -5,13 +5,19 @@
   display: flex
   justify-content: center
   align-items: center
+.nav-bar
+  display: block
+  padding: 0
+  .dropdown-toggle::after
+    display: none
+
 .nav
   display: flex
   justify-content: space-between
   align-content: center
   min-height: 3rem
   text-align: center
-  line-height: 3rem
+  line-height: 4rem
   .nav-item
     min-width: 3rem
     font-size: 1.5rem
@@ -22,10 +28,13 @@
   .dropdown-nav
     position: relative
     .nav-link
+      padding: 0
       color: var(--normal-text-color)
     .dropdown-menu
+      margin-top: 0
       position: absolute
       top: var(--nav-height)
+      left: unset
       right: .5rem
       display: none
       border-radius: .3rem
@@ -33,15 +42,18 @@
       background-color: var(--normal-text-color)
       .dropdown-item
         @include flexLayoutHorization
-        padding: 0 1rem
-        width: 100%
+
+        padding: 0
+        height: 3rem
         white-space: nowrap
         color: var(--white-color)
         font-size: 1.3rem
         .dropdown-icon
           margin-right: .5rem
         .dropdown-item-title
-          flex: 1
+          width: 4rem
+          height: 3rem
+          line-height: 3rem
           text-align: left
           font-size: var(--middle-font-size)
       .dropdown-item:hover

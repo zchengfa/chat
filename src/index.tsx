@@ -1,9 +1,8 @@
 import React,{ Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
-
 import App from './App';
-
-
+import dotenv_expand from "dotenv-expand";
+dotenv_expand({})
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

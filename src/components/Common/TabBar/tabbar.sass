@@ -1,0 +1,29 @@
+@mixin flexLayoutHorization
+  display: flex
+  justify-content: center
+  align-items: center
+@mixin flexLayoutVertical
+  @include flexLayoutHorization
+  flex-direction: column
+.tab-actived
+  color: var(--actived-color)
+.tabbar-container
+  @include flexLayoutHorization
+  justify-content: space-evenly
+  position: fixed
+  bottom: 0
+  width: 100%
+  height: var(--tabbar-height)
+  background-color: #f5f5f5
+  @media screen and (min-width: 500px)
+    max-width: 500px
+  .tab-item
+    @include flexLayoutVertical
+    width: var(--tabbar-height)
+    height: var(--tabbar-height)
+
+    .tab-title
+      margin-top: .1rem
+      font-size: var(--middle-font-size)
+    .tab-item-icon
+      font-size: 1.4rem

@@ -6,8 +6,15 @@
   justify-content: center
   align-items: center
 .nav-bar
+  position: fixed
+  top: 0
   display: block
   padding: 0
+  width: 100%
+  z-index: 99
+  background-color: rgba(var(--bs-emphasis-color-rgb),.02)
+  @media screen and (min-width: 500px)
+    max-width: 500px
   .dropdown-toggle::after
     display: none
 
@@ -21,6 +28,8 @@
   .nav-item
     min-width: 3rem
     font-size: 1.5rem
+  .nav-more-box,.nav-back-box
+    width: 3rem
   .nav-center
     flex: 1
     font-weight: 400
@@ -30,6 +39,8 @@
     .nav-link
       padding: 0
       color: var(--normal-text-color)
+      svg
+        vertical-align: unset
     .dropdown-menu
       margin-top: 0
       position: absolute
@@ -42,7 +53,6 @@
       background-color: var(--normal-text-color)
       .dropdown-item
         @include flexLayoutHorization
-
         padding: 0
         height: 3rem
         white-space: nowrap

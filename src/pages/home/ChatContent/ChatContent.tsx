@@ -3,11 +3,19 @@ import {Layout, Divider, Input, Button, Upload, message, Avatar, Switch, Modal} 
 import {operationsData, IconMenu, commonApplicationComponent} from "../../../common/staticData/data";
 import MessageContent from "../../../components/MessageContent/MessageContent";
 import {useEffect, useRef, useState} from "react";
-import {createFileChunk, emojiToUtf16, generateID, transMsgToNameCode, Uint8ArrayToBase64} from "../../../util/util";
+import {
+  createFileChunk,
+  emojiToUtf16,
+  generateID,
+  isMobile,
+  transMsgToNameCode,
+  Uint8ArrayToBase64
+} from "../../../util/util";
 import withHook from "../../../hook/withHook";
 import {RcFile} from "antd/es/upload";
-import PopoverCommon from "../../../components/Common/PopoverCommon/PopoverCommon";
-import {PlusOutlined, MinusOutlined, RightOutlined, SearchOutlined} from "@ant-design/icons";
+import NavBar from "../../../components/Common/NavBar/NavBar";
+import Chat from "../../../components/Chat/Chat";
+import ChatSiderWindow from "../../../components/ChatSiderWindow/ChatSiderWindow";
 
 function ChatContent(props: any) {
   const {Header, Content, Footer} = Layout
@@ -27,8 +35,10 @@ function ChatContent(props: any) {
     changeWindowStatus,
     chatWindowStatus,
     chatWindowSiderInfo,
-    changeChatWindowSiderInfo
+    changeChatWindowSiderInfo,
+    changeSendMsgStatus
   } = props.Zustand
+
   const textAreaRef = props.Refs
   const [messageApi, contextHolder] = message.useMessage()
   const {moreHorization} = commonApplicationComponent
@@ -97,7 +107,7 @@ function ChatContent(props: any) {
       setCount(c)
 
       //向父组件发送事件，将消息发动给后端的socket
-      props.socketMsg({
+      const socketData = {
         id,
         type: 'msg',
         sender: customer.username,
@@ -111,7 +121,34 @@ function ChatContent(props: any) {
         isGroupChat: friendInfo.isGroupChat,
         msg: emojiToUtf16(msg),
         msgCode: emojiIndex.length ? transMsgToNameCode(msg, emojiIndex) : ''
-      })
+      }
+      if(isMobile){
+        const send = () => {
+          props.socket.emit('sendMsg', socketData, (response: any) => {
+            //有响应，说明消息已经发送给了服务器（可以清除消息发送状态）
+            changeSendMsgStatus({msgId: response, receiver: friendInfo.userId})
+          })
+        }
+        if (props.socket.connected) {
+          send()
+        } else {
+          let timer = setTimeout(() => {
+            if (props.socket.connected) {
+              send()
+            } else {
+              changeSendMsgStatus({
+                msgId: socketData.id,
+                receiver: friendInfo.userId,
+                isFailed: true
+              })
+            }
+            clearTimeout(timer)
+          }, 10000)
+        }
+      }
+      else{
+        props.socketMsg(socketData)
+      }
 
       setEmojiIndex([])
     }
@@ -202,7 +239,7 @@ function ChatContent(props: any) {
       messageApi.open({
         type: 'error',
         content: '暂时只支持图片传送'
-      })
+      }).then(r => {})
     }
     return false
   }
@@ -230,6 +267,29 @@ function ChatContent(props: any) {
     }
   }
 
+  const addItemClick = (item:any,index:number)=>{
+    messageApi.open({
+      type: 'warning',
+      content: item.title + '功能完善中'
+    }).then(r  =>{})
+  }
+
+  const audioEvent = (item:any,index:number)=>{
+    messageApi.open({
+      type: 'warning',
+      content: '语音功能完善中'
+    }).then(r  =>{})
+  }
+
+  const backEvent = ()=>{
+    //初始化chat组件状态
+    props.Zustand.initStatus()
+  }
+
+  const moreEvent = ()=>{
+    props.router.navigate('/chatWindowInfo')
+  }
+
   return <div className={'content-con'}>
     <Layout className={'content-con-layout'}>
       {contextHolder}
@@ -239,49 +299,58 @@ function ChatContent(props: any) {
       >
         <span>删除聊天记录，包括聊天中的图片、文件、视频等内容</span>
       </Modal>
-      <Header className={'user-box'}>
-        <div className={'title-box'} style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center'}}>
-          <span className={'receiver-title text-ellipsis'}>{friendInfo.isGroupChat ? friendInfo.chatName : friendInfo.user}</span>
-          {friendInfo.isGroupChat ?
-            <span className={'receiver-title members-count'}>({chatWindowSiderInfo.members?.length})</span> : null}
-        </div>
-        <div style={{fontSize: '20px'}}
-             onClickCapture={() => changeWindowStatus(!chatWindowStatus)}>{moreHorization}</div>
+      <Header className={isMobile ? 'user-box user-box-mobile' : 'user-box'}>
+        {
+          isMobile ? <NavBar backEvent={backEvent} back more moreEvent={moreEvent}></NavBar> : <div className={'PC-header'}>
+            <div className={'title-box'} style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center'}}>
+            <span
+              className={'receiver-title text-ellipsis'}>{friendInfo.isGroupChat ? friendInfo.chatName : friendInfo.user}</span>
+              {friendInfo.isGroupChat ?
+                <span className={'receiver-title members-count'}>({chatWindowSiderInfo.members?.length})</span> : null}
+            </div>
+            <div style={{fontSize: '20px'}}
+                 onClickCapture={() => changeWindowStatus(!chatWindowStatus)}>{moreHorization}</div>
+          </div>
+        }
       </Header>
       <Content className={'msg-content'}>
         <MessageContent changeBgColor={changeBgColor} data={currentFriendMsg}></MessageContent>
       </Content>
       <Divider className={'chat-divider'}/>
-      <Footer className={'sender-operations'}>
-        <div className={'icon-list'}>
-          <div className={'operations-box'}>
-            {
-              operations.map((item: IconMenu, index: number) => {
-                return <div className={'icon-box'} key={index} onClick={(e) => iconClick(e, item)}>
-                  {item.title === '发送文件' ? <Upload showUploadList={false}
-                                                       beforeUpload={beforeUpload}>{item.component()}</Upload> : item.component()}
-                </div>
-              })
-            }
+      {
+        isMobile ? <Footer className={'chat-footer'}>
+          <Chat msg={msg} audioEvent={audioEvent} addItemClick={addItemClick} onSend={()=> sendMsg(msg)} keyDownEvent={(e:any)=>keyboardSendMsg(e)} changeEvent={(e:any)=> changeMsg(e)}></Chat>
+        </Footer>  :<Footer className={'sender-operations'}>
+          <div className={'icon-list'}>
+            <div className={'operations-box'}>
+              {
+                operations.map((item: IconMenu, index: number) => {
+                  return <div className={'icon-box'} key={index} onClick={(e) => iconClick(e, item)}>
+                    {item.title === '发送文件' ? <Upload showUploadList={false}
+                                                         beforeUpload={beforeUpload}>{item.component()}</Upload> : item.component()}
+                  </div>
+                })
+              }
+            </div>
+            <div className={'chat-way'}>
+              {
+                chatWay.map((item: IconMenu, index: number) => {
+                  return <div className={'icon-box'} key={index}>
+                    {item.component()}
+                  </div>
+                })
+              }
+            </div>
           </div>
-          <div className={'chat-way'}>
-            {
-              chatWay.map((item: IconMenu, index: number) => {
-                return <div className={'icon-box'} key={index}>
-                  {item.component()}
-                </div>
-              })
-            }
+          <div className={'text-area-box'}>
+            <TextArea ref={textAreaRef} style={{height: '100%', resize: 'none'}} bordered={false} value={msg}
+                      onKeyDown={keyboardSendMsg} onChange={changeMsg} onFocus={textareaFocus}></TextArea>
           </div>
-        </div>
-        <div className={'text-area-box'}>
-          <TextArea ref={textAreaRef} style={{height: '100%', resize: 'none'}} bordered={false} value={msg}
-                    onKeyDown={keyboardSendMsg} onChange={changeMsg} onFocus={textareaFocus}></TextArea>
-        </div>
-        <div className={'send-btn-box'}>
-          <Button className={'send-button'} size={'small'} onClick={() => sendMsg(msg)}>发送(S)</Button>
-        </div>
-      </Footer>
+          <div className={'send-btn-box'}>
+            <Button className={'send-button'} size={'small'} onClick={() => sendMsg(msg)}>发送(S)</Button>
+          </div>
+        </Footer>
+      }
     </Layout>
     <div className={chatWindowStatus ? 'content-sider-actived' : 'content-sider'} style={{
       display: 'flex',
@@ -290,89 +359,7 @@ function ChatContent(props: any) {
       borderLeft: '1px solid var(--deep-gray-color)'
     }}>
       {/*    聊天窗口包含的好友或者群聊信息*/}
-      <div className={'chat-window-info'} style={{overflowY: 'scroll'}} ref={windowRef}>
-        {friendInfo.isGroupChat ?
-          <div className={'input-box'} style={{marginTop: '1.5rem'}}>
-            <Input prefix={<SearchOutlined></SearchOutlined>} placeholder={'搜索群成员'}></Input>
-          </div>
-          : undefined}
-        <div className={'chat-members'} style={!friendInfo.isGroupChat ? {justifyContent: 'flex-start'} : {}}>
-          {chatWindowSiderInfo.members?.map((item: any) => {
-            return <div className={'member-item'} key={item.user_id}
-                        onClick={() => showWindowPop({user_id: item.user_id, isShowPop: !item.isShowPop})}>
-              <Avatar className={'item-avatar'} src={item.avatar} shape={'square'} size={40}></Avatar>
-              <span className={'item-username text-ellipsis'}>{item.username}</span>
-              <PopoverCommon open={item.isShowPop} customer={item}
-                             btnTitle={item.isSelf ? '发消息' : ''}></PopoverCommon>
-            </div>
-          })}
-          <div className={'member-item add-btn'}>
-            <Avatar className={'item-avatar'} size={40} shape={'square'} icon={<PlusOutlined></PlusOutlined>}></Avatar>
-            <span className={'item-username'}>添加</span>
-          </div>
-          {friendInfo.isGroupChat ? <div className={'member-item reduce-btn'}>
-            <Avatar className={'item-avatar'} size={40} shape={'square'}
-                    icon={<MinusOutlined></MinusOutlined>}></Avatar>
-            <span className={'item-username'}>移出</span>
-          </div> : null}
-        </div>
-        {friendInfo.isGroupChat ? <div className={'group-info'}>
-          <div className={'group-name-box info-item'}>
-            <span>群聊名称</span>
-            <span>{friendInfo.user}</span>
-          </div>
-          <div className={'group-notice-box info-item'}>
-            <span>群公告</span>
-            <span>发布后会通知全部群成员</span>
-          </div>
-          <div className={'group-note-box info-item'}>
-            <span>备注</span>
-            <span>群聊的备注仅自己可见</span>
-          </div>
-          <div className={'group-self-name-box info-item'}>
-            <span>我在本群的昵称</span>
-            <span>{customer.username}</span>
-          </div>
-        </div> : undefined}
-        <div className={'clear-history-box'}>
-          <span>聊天记录</span>
-          <RightOutlined style={{color: 'var(--deep-gray-color)'}}></RightOutlined>
-        </div>
-        <div className={'chat-window-operation'}>
-          {friendInfo.isGroupChat ?
-            <div className={'operation-item-box'}>
-              <span>显示群成员昵称</span>
-              <Switch checked={true}
-                      className={chatWindowStatus ? 'operation-switch operation-switch-open' : 'operation-switch'}
-                      size={'small'}></Switch>
-            </div> : undefined}
-          <div className={'operation-item-box'}>
-            <span>消息免打扰</span>
-            <Switch className={!chatWindowStatus ? 'operation-switch operation-switch-open' : 'operation-switch'}
-                    size={'small'}></Switch>
-          </div>
-          <div className={'operation-item-box'}>
-            <span>置顶聊天</span>
-            <Switch className={!chatWindowStatus ? 'operation-switch operation-switch-open' : 'operation-switch'}
-                    size={'small'}></Switch>
-          </div>
-          {friendInfo.isGroupChat ?
-            <div className={'operation-item-box'}>
-              <span>保存到通讯录</span>
-              <Switch className={!chatWindowStatus ? 'operation-switch operation-switch-open' : 'operation-switch'}
-                      size={'small'}></Switch>
-            </div> : undefined}
-        </div>
-        <div className={'btn-box'}>
-          {/*<Button className={'btn'} ghost={true} onClick={()=> showHideModal(true)}>清空聊天记录</Button>*/}
-          <span className={'btn'} onClick={() => showHideModal()}>清空聊天记录</span>
-        </div>
-        {friendInfo.isGroupChat ?
-          <div className={'btn-box'}>
-            <Button className={'btn'} ghost={true}>退出群聊</Button>
-          </div> : undefined
-        }
-      </div>
+      <ChatSiderWindow showWindowPop={showWindowPop} showHideModal={showHideModal}></ChatSiderWindow>
     </div>
   </div>
 }

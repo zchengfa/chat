@@ -21,7 +21,20 @@ import {
   TagIconComponent,
   BackIconComponent,
   PayIconComponent,
-  ScanIconComponent
+  ScanIconComponent,
+  WeChatIconComponent,
+  ChatNoteIconComponent,
+  FindIconComponent,
+  MeIconComponent,
+  GroupChatIconComponent,
+  KeyboardIconComponent,
+  AudioIconComponent,
+  CircleAddIconComponent,
+  AlbumIconComponent,
+  SingleCameraIconComponent,
+  LocationIconComponent,
+  AudioInputIconComponent,
+  CollectionIconComponent, IDCardIconComponent, MusicIconComponent,
 } from '../svg/svg'
 
 import Emoji from '../../components/Common/Emoji/Emoji'
@@ -171,6 +184,14 @@ export const operationsData = {
       component:()=> <NewFriendIconComponent></NewFriendIconComponent>
     },
     {
+      title:'群聊',
+      component:()=> <GroupChatIconComponent></GroupChatIconComponent>
+    },
+    {
+      title:'标签',
+      component:()=> <TagIconComponent></TagIconComponent>
+    },
+    {
       title:'公众号',
       component:()=> <CommonIconComponent></CommonIconComponent>
     }
@@ -182,6 +203,42 @@ export const commonApplicationComponent = {
   moreHorization: <MoreHorizationIconComponent className={'more-horization'} />
 }
 
+//移动端聊天组件数据
+export const chatData = {
+  emojiIcon:<EmojiIconComponent></EmojiIconComponent>,
+  keyboardIcon:<KeyboardIconComponent></KeyboardIconComponent>,
+  addIcon:<CircleAddIconComponent></CircleAddIconComponent>,
+  audioIcon:<AudioIconComponent></AudioIconComponent>,
+  addIcons:[
+    {
+      title:'相册',
+      icon:<AlbumIconComponent></AlbumIconComponent>
+    },
+    {
+      title: '拍摄',
+      icon: <SingleCameraIconComponent></SingleCameraIconComponent>
+    },
+    {
+      title:'位置',
+      icon:<LocationIconComponent></LocationIconComponent>
+    }, {
+      title:'语音输入',
+      icon:<AudioInputIconComponent></AudioInputIconComponent>
+    }, {
+      title:'我的收藏',
+      icon:<CollectionIconComponent></CollectionIconComponent>
+    }, {
+      title:'名片',
+      icon:<IDCardIconComponent></IDCardIconComponent>
+    }, {
+      title:'文件',
+      icon:<FileIconComponent></FileIconComponent>
+    }, {
+      title:'音乐',
+      icon:<MusicIconComponent></MusicIconComponent>
+    },
+  ]
+}
 
 export const friendApplication = {
   circleFriend:<CircleFriendIconComponent />,
@@ -242,6 +299,26 @@ export const NavBarData = {
     }
   ]
 }
+
+//NavBar顶部导航条数据
+export const TabBarData = [
+  {
+    icon:<WeChatIconComponent className={'tab-item-icon'}></WeChatIconComponent>,
+    title:'聊天'
+  },
+  {
+    icon:<ChatNoteIconComponent className={'tab-item-icon'}></ChatNoteIconComponent>,
+    title:'通讯录'
+  },
+  {
+    icon:<FindIconComponent className={'tab-item-icon'}></FindIconComponent>,
+    title:'发现'
+  },
+  {
+    icon:<MeIconComponent className={'tab-item-icon'}></MeIconComponent>,
+    title:'我'
+  },
+]
 
 
 export interface EmojiType {

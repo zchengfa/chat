@@ -1,17 +1,36 @@
 import './NavBar.sass'
-import withHook from "../../../hook/withHook";
-import {Navbar, Container, Nav,NavDropdown} from "react-bootstrap";
+import {Navbar, Nav,NavDropdown} from "react-bootstrap";
 import {NavBarData} from "../../../common/staticData/data";
+import {useMessageStore} from "../../../zustand/store";
+import {useNavigate} from "react-router-dom";
 
 function NavBar(props:any){
+  // @ts-ignore
+  const {friendInfo,chatWindowSiderInfo} = useMessageStore()
+  const title = props.emptyTitle ? undefined : props.title ? props.title : (friendInfo.isGroupChat ? friendInfo.user + `(${chatWindowSiderInfo.members.length})` : friendInfo.user)
+  const navigate = useNavigate()
+
   const addClick = ()=>{
 
   }
+  const back = ()=>{
+    navigate(-1)
+    if (props.backEvent) {
+      props.backEvent()
+    }
+  }
+
+  const moreClick = ()=>{
+    if (props.moreEvent) {
+      props.moreEvent()
+    }
+  }
+
   return <Navbar expand className={'nav-bar'}>
     <Nav className={'nav'}>
-      {props.back ? <div className={'nav-back-box nav-item'}>{NavBarData.back.icon}</div> : <div className={'nav-item'}></div>}
-      <div className={'nav-center'}>{props.title}</div>
-      {props.more ? <div className={'nav-more-box nav-item'}>{NavBarData.more.icon}</div> : null}
+      {props.back ? <div onClick={back} className={'nav-back-box nav-item'}>{NavBarData.back.icon}</div> : <div className={'nav-item'}></div>}
+      <div className={'nav-center'}>{title}</div>
+      {props.more ? <div className={'nav-more-box nav-item'} onClick={moreClick}>{NavBarData.more.icon}</div> : null}
       {props.add ? <div className={'nav-add-box nav-item'} onClick={addClick}>
         <NavDropdown title={NavBarData.add.icon} className={'dropdown-nav'}>
           {
@@ -28,5 +47,8 @@ function NavBar(props:any){
   </Navbar>
 }
 
-export default withHook(NavBar)
+NavBar.defaultProps = {
+  emptyTitle:false
+}
+export default NavBar
 

@@ -1,0 +1,109 @@
+@mixin flexHorization
+  display: flex
+  align-items: center
+  justify-content: space-between
+.hidde-element
+  display: none
+.chat-container
+  width: 100%
+  background-color: rgba(var(--bs-emphasis-color-rgb),.02)
+  .chat-top-box
+    @include flexHorization
+    width: 100%
+    padding: 1rem
+    .icon
+      font-size: 2rem
+    .chat-right
+      @include flexHorization
+      .send-hidde
+        width: 0
+        height: 0
+        color: rgba(var(--bs-emphasis-color-rgb),.02)
+        transition: all .5s ease
+      .send-visible
+        margin-left: 1rem
+        width: 3rem
+        height: 2rem
+        line-height: 2rem
+        text-align: center
+        color: var(--white-color)
+        transition: all .5s ease
+      .send
+        background-color: var(--deep-green-color)
+        border-radius: .5rem
+      .add
+        margin-left: 1rem
+    .chat-center
+      display: flex
+      justify-content: center
+      align-items: center
+      flex: 1
+      .audio-box
+        width: 88%
+        height: 2rem
+        background-color: var(--white-color)
+        border-radius: .3rem
+        text-align: center
+        line-height: 2rem
+        span
+          font-weight: bold
+        span:first-child
+          margin-right: .5rem
+      .chat-input
+        width: 88%
+        height: 2rem
+        border: none
+        border-radius: .3rem
+      .chat-input:focus-visible
+        border: none
+        outline: none
+  .chat-bottom-box
+    height: 0
+    width: 100%
+    transition: height .5s ease
+  .bottom-box-up
+    height: 40vh
+    transition: height .5s ease
+  .bottom-box-up-add
+    height: 35vh
+    transition: height .5s ease
+  .emoji-container
+    padding: 1rem
+    width: 100%
+    height: 100%
+    overflow-y: scroll
+    .emoji-title
+      font-size: 1rem
+      color: var(--bs-gray)
+    .emoji-box
+      display: flex
+      flex-wrap: wrap
+      justify-content: space-between
+      align-items: center
+      .emoji-item
+        width: 14%
+        font-size: 1.8rem
+        text-align: center
+  .add-container
+    @include flexHorization
+    flex-wrap: wrap
+    padding: 2rem
+    width: 100%
+    height: 100%
+    .add-item
+      display: flex
+      flex-direction: column
+      justify-content: center
+      align-items: center
+      margin-right: 1rem
+      .add-title
+        margin-top: .5rem
+      .anticon
+        width: 4rem
+        height: 4rem
+        font-size: 2rem
+        line-height: 4rem
+        border-radius: .5rem
+        background-color: var(--white-color)
+    .add-item:nth-child(4),.add-item:last-child
+      margin-right: 0

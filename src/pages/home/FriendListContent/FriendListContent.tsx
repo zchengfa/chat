@@ -3,6 +3,8 @@ import {useMessageStore} from "../../../zustand/store";
 import './friendListContent.sass'
 import withHook from "../../../hook/withHook";
 import PopoverCommon from "../../../components/Common/PopoverCommon/PopoverCommon";
+import {isMobile} from "../../../util/util";
+import NavBar from "../../../components/Common/NavBar/NavBar";
 function FriendListContent(props:any){
     const { Header,Content } = Layout
     const {title,type} = useMessageStore((state:any)=> state.friendListInfo)
@@ -29,13 +31,14 @@ function FriendListContent(props:any){
         props.acceptApply(data)
     }
 
-    return <Layout className={'content-con'}>
+    return <Layout className={isMobile ? 'mobile-content-con' : 'content-con'}>
+        {isMobile ? <NavBar back more title={type ? title : undefined} emptyTitle={!type}></NavBar> : null}
         {
-            type ? <Header className={'user-box'}>
+            type && !isMobile ? <Header className={'user-box'}>
                 <span className={'receiver-title'}>{title}</span>
             </Header> : null
         }
-        <Content className={type ? 'content-normal' : 'content-center'}>
+        <Content className={isMobile ? 'fl-content' : type ? 'content-normal' : 'content-center'}>
             {type === 'new' ? <List className={'friend-list-request'}
                                     dataSource={friendRequest[user_id]}
                                     locale={{emptyText:<Empty description={<span style={{color:'var(--deep-gray-color)',fontSize:'var(--mini-font-size)'}}>暂无好友申请</span>}></Empty>}}

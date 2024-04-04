@@ -1,6 +1,6 @@
 import {create} from "zustand";
 import {MsgDataType, operationsData} from "../common/staticData/data";
-import {sortByLocaleWithObject, getFirstPinYin, verifyTime, dealMsgTime} from "../util/util";
+import {sortByLocaleWithObject, getFirstPinYin, verifyTime, dealMsgTime, isMobile} from "../util/util";
 import {
   openDB,
   getDataByCursorIndex,
@@ -13,7 +13,7 @@ import {
  * 从indexedDB数据库中获取聊天记录
  * @return {Promise} 返回一个Promise
  */
-function getMsgDataFromIndexedDB() {
+function getMsgDataFromIndexedDB(): Promise<any> {
   return new Promise(resolve => {
     openDB('chats', {
       storeName: 'chat',
@@ -67,23 +67,19 @@ function operateIndexedDB(id:any,data:any){
         }).then(() => {
           closeDB(db)
         }).catch((e:any)=>{
-
+          closeDB(db)
         })
       }
+    }).catch(()=>{
+      closeDB(db)
     })
-
   })
 }
 
 // @ts-ignore
 let msgData = await getMsgDataFromIndexedDB().then((res: any) => res)
 
-const defaultFriendList = [
-  {
-    type: 'btn',
-    avatar: '',
-    username: '通讯录管理'
-  },
+const defaultFriendList = isMobile ? [
   {
     type: 'new',
     title: '新的朋友',
@@ -92,9 +88,39 @@ const defaultFriendList = [
     count: 0
   },
   {
+    type: 'group',
+    title: '群聊',
+    avatar: operationsData.list[1].component(),
+    username: '群聊',
+  },
+  {
+    type: 'tag',
+    title: '标签',
+    avatar: operationsData.list[2].component(),
+    username: '标签',
+  },
+  {
     type: 'common',
     title: '公众号',
-    avatar: operationsData.list[1].component(),
+    avatar: operationsData.list[3].component(),
+    username: '公众号'
+  }
+
+] : [
+  {
+    type: 'btn',
+    avatar: '',
+    username: '通讯录管理'
+  },
+  {
+    type: 'new',
+    avatar: operationsData.list[0].component(),
+    username: '新的朋友',
+    count: 0
+  },
+  {
+    type: 'common',
+    avatar: operationsData.list[3].component(),
     username: '公众号'
   }
 ]
@@ -104,12 +130,11 @@ const defaultFriendList = [
  */
 function getFriendList() {
   let data = getStorageData('friendList', [],)
-  if (data.length) {
-    data.map((item: any) => {
-      defaultFriendList.push(item)
-      return true
-    })
 
+  if (data.length) {
+    data.forEach((item: any) => {
+      defaultFriendList.push(item)
+    })
   }
   return defaultFriendList
 }
@@ -147,7 +172,7 @@ function setStorageData(propertyName: string, data: any) {
  * @param list
  * @return {Array} 返回获得了首字母的数据
  */
-function addFirstPinYin(data: any | any[], PO: string, PT: string, list: any[]) {
+function addFirstPinYin(data: any | any[], PO: string, PT: string, list: any[]): Array<any> {
   const prototype = Object.prototype.toString.call(data)
 
   let newData: any[] = []
@@ -469,7 +494,6 @@ export const useMessageStore = create((set) => {
     //通讯录列表
     friendList: getFriendList(),
     changeFriendList(data: any, isOnline: boolean = false) {
-
       set((state: any) => {
         let list = isOnline ? defaultFriendList : state.friendList
         const prototype = Object.prototype.toString.call(data)
@@ -482,11 +506,12 @@ export const useMessageStore = create((set) => {
             //清空之前查看过的好友信息
             state.changeFriendData({})
           }
-          list = list.splice(0, 3)
         }
-        list.push(...data)
-        let listCopy = JSON.parse(JSON.stringify(list))
-        setStorageData('friendList', sortByLocaleWithObject(listCopy.splice(3, list.length), 'title'))
+        const newArr = list.slice(0, defaultFriendList.length).concat(data)
+
+        let listCopy = JSON.parse(JSON.stringify(newArr))
+
+        setStorageData('friendList', sortByLocaleWithObject(listCopy.splice(defaultFriendList.length, list.length), 'title'))
         return {
           friendList: list
         }
@@ -675,6 +700,65 @@ export const useMessageStore = create((set) => {
   }
 })
 
+//tabbar相关状态数据
+export const useTabbarStore = create((set)=>{
+  return {
+    currentIndex:0,
+    changeIndex:(index:number)=>{
+      set(()=>{
+        return {
+          currentIndex: index
+        }
+      })
+    }
+  }
+})
+
+
+//移动端聊天组件相关状态数据
+export const useChatStore = create((set)=>{
+  return {
+    isShowRightKeyboard: false,
+    isShowLeftKeyboard: false,
+    isShowAddBox:false,
+    isShowInput:true,
+    changeKeyboardStatus:(status:boolean,target:number)=>{
+      set((state:any)=>{
+        let left = state.isShowLeftKeyboard,right = state.isShowRightKeyboard
+        target === 0 ? left = status : right = status
+        return {
+          isShowLeftKeyboard: left,
+          isShowRightKeyboard: right,
+        }
+      })
+    },
+    changeAddBoxStatus:(status:boolean)=>{
+      set(()=>{
+        return {
+          isShowAddBox:status,
+        }
+      })
+    },
+    changeInputStatus:(status:boolean)=>{
+      set(()=>{
+        return {
+          isShowInput:status,
+        }
+      })
+    },
+    initStatus:()=>{
+      set(()=>{
+        return {
+          isShowRightKeyboard: false,
+          isShowLeftKeyboard: false,
+          isShowAddBox:false,
+          isShowInput:true,
+        }
+      })
+    }
+  }
+})
+
 /**
  * 合并Uint8Array
  * @param data
@@ -682,7 +766,7 @@ export const useMessageStore = create((set) => {
  * @param userId
  * @return {Object} 返回含有整合后的数据
  */
-function mergeUint8Array(data: any, fileB: any, userId: any) {
+function mergeUint8Array(data: any, fileB: any, userId: any): object {
 
   let allFB = new Uint8Array(data.totalSize), offset = 0
   fileB[userId][data.identity].forEach((item: any) => {

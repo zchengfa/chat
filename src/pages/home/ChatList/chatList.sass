@@ -30,6 +30,7 @@
     .user-msg
       font-size: var(--middle-font-size)
       .chat-user
+        margin-bottom: 0
         max-width: 88px
         text-align: left
       .chat-msg
@@ -41,6 +42,7 @@
         color: var(--deep-gray-color)
         text-align: left
         overflow: hidden
+        margin-bottom: 0
     .time-mute
       display: flex
       flex-direction: column
@@ -51,4 +53,17 @@
     .chat-msg,.chat-mute
       margin-top: .5rem
 
+.list-container-mobile
+  position: relative
+  top: var(--nav-height)
+  width: 100%
+  padding-left: 0
+  height: var(--mobile-tab-content-height)
+  background-color: var(--white-color)
+  overflow-y: scroll
+  .msg-right
+    padding: .5rem 0
+  .list-item:not(:last-child)
+    .msg-right
+      border-bottom: 1px solid var(--gray-color)
 

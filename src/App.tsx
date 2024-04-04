@@ -2,6 +2,7 @@ import React, {Fragment} from 'react';
 import RouterComponent from "./router/router";
 import './common/style/common.css'
 import {isMobile} from "./util/util";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (

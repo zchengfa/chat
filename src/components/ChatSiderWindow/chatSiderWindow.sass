@@ -1,0 +1,67 @@
+.chat-window-info
+  margin: 0 auto
+  width: 90%
+  height: 100%
+  max-height: 90vh
+  .chat-members
+    margin: 1.5rem 0
+    display: flex
+    justify-content: space-between
+    flex-wrap: wrap
+    align-items: center
+    .member-item
+      display: flex
+      flex-direction: column
+      align-items: center
+      justify-content: center
+      padding-top: .5rem
+      width: 25%
+      .item-username
+        max-width: 40px
+        padding: .5rem 0
+      .item-avatar
+        border: 1px solid var(--deep-gray-color)
+        background-color: transparent
+        color: var(--deep-gray-color)
+  .chat-members::after
+    display: block
+    content: ''
+    width: 25%
+  .group-info
+    border-top: 1px solid var(--deep-gray-color)
+    border-bottom: 1px solid var(--deep-gray-color)
+    .info-item
+      display: flex
+      flex-direction: column
+      padding: 1rem 0
+    .info-item span:last-child
+      margin-top: .5rem
+      color: var(--deep-gray-color)
+  .clear-history-box
+    display: flex
+    justify-content: space-between
+    align-items: center
+    padding: 1.5rem 0
+    border-bottom: 1px solid var(--deep-gray-color)
+  .chat-window-operation
+    padding: 1.5rem 0
+    .operation-item-box
+      display: flex
+      justify-content: space-between
+      align-items: center
+      margin: .8rem 0
+      .operation-switch-open
+        background-color: var(--deep-green-color)
+  .btn-box
+    display: flex
+    justify-content: center
+    align-items: center
+    padding: 1rem 0
+    .btn
+      color: red
+      border: none
+    .btn:hover
+      color: red !important
+  .btn-box:not(:last-child)
+    border-top: 1px solid var(--deep-gray-color)
+    border-bottom: 1px solid var(--deep-gray-color)

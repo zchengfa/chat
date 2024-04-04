@@ -18,6 +18,7 @@ import {CollectionList} from "./CollectionList/CollectionList";
 import {CollectionListContent} from "./CollectionListContent/CollectionListContent";
 import {isMobile} from "../../util/util";
 import NavBar from "../../components/Common/NavBar/NavBar";
+import TabBar from "../../components/Common/TabBar/TabBar";
 
 class Home extends Component<any, any> {
   constructor(props: any) {
@@ -244,6 +245,10 @@ class Home extends Component<any, any> {
     await saveFriendInfo(data);
 
     this.getWindowInfo(data)
+
+    if(isMobile){
+      this.props.router.navigate('/chatContent')
+    }
   }
 
   getWindowInfo = (data: any) => {
@@ -332,16 +337,14 @@ class Home extends Component<any, any> {
 
     function searchUserFromList(value: string | number) {
       let user = {}
-      friendList.map((item: any) => {
+      friendList.forEach((item: any) => {
         if (Array.isArray(item.content)) {
-          item.content.map((obj: any) => {
+          item.content.forEach((obj: any) => {
             if (obj.username === value || obj.account === value) {
               user = obj
             }
-            return user
           })
         }
-        return user
       })
       return user
     }
@@ -443,7 +446,7 @@ class Home extends Component<any, any> {
    * @constructor
    */
   CustomEventSendMsg = (event: any) => {
-    //点击发消息，1.选择聊天菜单项、2.查看聊天列表中是否有与该该好友的通讯记录，有就直接激活与该好友的聊天状态，没有就添加一个聊天记录项
+    //点击发消息，1.选择聊天菜单项、2.查看聊天列表中是否有与该好友的通讯记录，有就直接激活与该好友的聊天状态，没有就添加一个聊天记录项
     this.changeMenu(0, 'menu')
     const list = this.props.Zustand.chatList[this.props.Zustand.customer.user_id]
     const {user_id, username, avatar} = event.detail.data
@@ -516,7 +519,7 @@ class Home extends Component<any, any> {
       isShowPop,
       isShowFriendList,
       currentMenu,
-      currentIndex
+      currentIndex,
     } = this.state
     const {listId, customer, friendListInfo, friendList} = this.props.Zustand
     const {contextHolder} = this.props.Message
@@ -589,6 +592,8 @@ class Home extends Component<any, any> {
           <GroupFriendList list={friendList} groupComBtnClick={this.groupComBtnClick}></GroupFriendList> : null}
       </Layout> : <Layout onClick={this.blurCom}>
         <NavBar add title={'聊天'}></NavBar>
+        <ChatList chatWithSender={this.chatWithSender}></ChatList>
+        <TabBar routes={this.props.routes}></TabBar>
       </Layout>}
     </Fragment>
   }

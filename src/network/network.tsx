@@ -29,6 +29,7 @@ function axiosInterceptors(instance:any){
 
     //axios请求拦截器
     instance.interceptors.request.use(function (config:any){
+
         if (sessionStorage.getItem('token')){
             config.headers.authorization= sessionStorage.getItem('token')
         }

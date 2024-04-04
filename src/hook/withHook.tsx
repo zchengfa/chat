@@ -1,5 +1,5 @@
 import { useNavigate,useLocation,useParams } from "react-router-dom";
-import { useMessageStore } from "../zustand/store";
+import {useMessageStore, useTabbarStore,useChatStore} from "../zustand/store";
 import { useRef } from "react";
 import { socket }  from "../socket/socket";
 import { message } from "antd";
@@ -14,9 +14,19 @@ function WithHook(WrapperComponent:any){
             navigate,params
         }
 
+        const routes = ['/home','/chatNote']
+
         const Ref = useRef(null)
 
-        const Zustand = useMessageStore()
+        const tabbarStore:any = useTabbarStore()
+        const messageStore:any = useMessageStore()
+        const chatStore:any = useChatStore()
+        const Zustand = {
+            ...messageStore,
+            ...tabbarStore,
+            ...chatStore
+        }
+
 
         const [messageApi,contextHolder] = message.useMessage()
 
@@ -26,7 +36,7 @@ function WithHook(WrapperComponent:any){
         }
 
         return <WrapperComponent {...props} router={router} location={location} params={params}
-           Zustand = { Zustand } Refs={ Ref } socket = { socket } Message = { Message }
+           Zustand = { Zustand } Refs={ Ref } routes = {routes} socket = { socket } Message = { Message }
         ></WrapperComponent>
     }
 

@@ -4,10 +4,19 @@ import {operationsData} from "../../../common/staticData/data";
 import {baseURL} from "../../../network/network";
 import {RcFile} from "antd/es/upload";
 import {useMessageStore} from "../../../zustand/store";
+import {isMobile} from "../../../util/util";
+import {useNavigate} from "react-router-dom";
+import withFeature from "../../../hook/withFeature";
 
-export default function PopoverCommon(props: any) {
+function PopoverCommon(props: any) {
   const {customer, children, open, placement, isSelf} = props
   const [messageApi, contextHolder] = message.useMessage()
+  const navigate = useNavigate()
+  const data = {
+    username: customer.username,
+    avatar: customer.avatar,
+    user_id: customer.user_id
+  }
   const btnList = [
     {
       title: '发消息',
@@ -15,13 +24,13 @@ export default function PopoverCommon(props: any) {
       click: () => {
         document.dispatchEvent(new CustomEvent('sendMsg', {
           'detail': {
-            data: {
-              username: customer.username,
-              avatar: customer.avatar,
-              user_id: customer.user_id
-            }
+            data
           }
         }))
+        if(isMobile){
+          props.chat(data)
+          navigate('/chatContent')
+        }
       }
     },
     {
@@ -98,7 +107,7 @@ export default function PopoverCommon(props: any) {
               <span id={'source'}>{customer.source}</span>
             </div>
             <Divider></Divider>
-            <div className={'btn-list item-box'}>
+            <div className={isMobile ? 'mobile-btn-list' : 'btn-list item-box'}>
               {
                 btnList.map((item: any, index: number) => {
                   return <div className={'list-item'} key={index} onClick={item.click}>
@@ -129,3 +138,5 @@ export default function PopoverCommon(props: any) {
 PopoverCommon.defaultProps = {
   isPopover: true
 }
+
+export default withFeature(PopoverCommon)

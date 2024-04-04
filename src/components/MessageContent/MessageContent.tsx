@@ -3,7 +3,7 @@ import './messageContent.sass'
 import {Empty, List, Spin} from "antd";
 import {LoadingOutlined, ExclamationOutlined} from '@ant-design/icons'
 import InfiniteScroll from "react-infinite-scroll-component";
-import {utf16ToEmoji} from "../../util/util";
+import {isMobile, utf16ToEmoji} from "../../util/util";
 import withHook from "../../hook/withHook";
 
 class MessageContent extends Component<any, any> {
@@ -91,7 +91,7 @@ class MessageContent extends Component<any, any> {
 
     data = data ? data : []
 
-    return <div className={'message-content'}>
+    return <div className={isMobile ? Zustand.isShowRightKeyboard ? 'message-content message-content-keyboard' : Zustand.isShowAddBox ? 'message-content message-content-add' : 'message-content message-content-normal' : 'message-content message-content-PC'}>
       <div className={'msg-ul'} id={'scroll'} style={data.length > 8 ? {
         display: 'flex',
         flexDirection: 'column-reverse',

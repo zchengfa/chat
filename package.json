@@ -1,8 +1,12 @@
 {
   "name": "chat",
   "version": "0.1.0",
-  "homepage": "./",
+  "homepage": ".",
+  "type": "commonjs",
+  "main": "./electron/main.js",
   "private": true,
+  "author": "zcf",
+  "description": "chat app",
   "dependencies": {
     "@babel/core": "^7.16.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
@@ -31,6 +35,7 @@
     "css-minimizer-webpack-plugin": "^3.2.0",
     "dotenv": "^10.0.0",
     "dotenv-expand": "^5.1.0",
+    "electron": "^29.2.0",
     "eslint": "^8.3.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-webpack-plugin": "^3.1.1",
@@ -62,6 +67,7 @@
     "resolve": "^1.20.0",
     "resolve-url-loader": "^4.0.0",
     "sass-loader": "^13.3.2",
+    "save-dev": "^0.0.1-security",
     "semver": "^7.3.5",
     "socket.io-client": "^4.7.2",
     "source-map-loader": "^3.0.0",
@@ -80,7 +86,8 @@
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "test": "node scripts/test.js",
+    "electron": "electron ."
   },
   "eslintConfig": {
     "extends": [
@@ -164,6 +171,7 @@
     ]
   },
   "devDependencies": {
-    "@types/bootstrap": "^5.2.10"
+    "@types/bootstrap": "^5.2.10",
+    "electron-reloader": "^1.2.3"
   }
 }

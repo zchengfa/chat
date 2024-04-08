@@ -1,46 +1,40 @@
-# Getting Started with Create React App
+# chat
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+#### 介绍
+本项目是一个聊天项目，目前项目实现了私聊跟群聊，更换头像功能，支持发送图片、文字以及表情
 
-## Available Scripts
+#### 安装
 
-In the project directory, you can run:
+1. 克隆项目
+2. 执行npm install命令安装项目所需依赖包
 
-### `npm start`
+#### 使用
+执行 npm run start命令即可
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+#### 运行在桌面端
+运行前请确保是否已安装了electron,若已安装即可执行 npm run electron指令
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+#### 项目预览图
 
-### `npm test`
+##### PC端
+![image](./ScreenShot/1.png)
+![image](./ScreenShot/2.png)
+![image](./ScreenShot/3.png)
+![image](./ScreenShot/4.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+##### 移动端
+<div style="display: flex;flex-wrap: wrap;justify-content: flex-start;align-items: center;">
+    <img style="margin: 1rem;width: 200px;" src="./ScreenShot/5.png" alt="image"/>
+    <img style="margin: 1rem;width: 200px;" src="./ScreenShot/6.png" alt="image"/>
+    <img style="margin: 1rem;width: 200px;" src="./ScreenShot/7.png" alt="image"/>
+    <img style="margin: 1rem;width: 200px;" src="./ScreenShot/8.png" alt="image"/>
+    <img style="margin: 1rem;width: 200px;" src="./ScreenShot/9.png" alt="image"/>
+    <img style="margin: 1rem;width: 200px;" src="./ScreenShot/10.png" alt="image"/>
+    <img style="margin: 1rem;width: 200px;" src="./ScreenShot/11.png" alt="image"/>
+</div>
 
-### `npm run build`
+##### 桌面端
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+![image](./ScreenShot/12.png)
+![image](./ScreenShot/13.png)
+![image](./ScreenShot/14.png)

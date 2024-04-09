@@ -313,10 +313,22 @@ export const useMessageStore = create((set) => {
     },
     currentFriendMsg: [],
     count: 15,
+    initCount:()=>{
+      set(()=>{
+        return {
+          count:15
+        }
+      })
+    },
     changeCount: () => {
       set((state: any) => {
         let c = state.count
-        c += 15
+        if(state.msgData[state.listId].length - state.currentFriendMsg.length >= 15){
+          c += 15
+        }
+        else{
+          c += (state.msgData[state.listId].length - state.currentFriendMsg.length)
+        }
         state.getCurrentMsgData(undefined, c)
         return {
           count: c
@@ -330,10 +342,12 @@ export const useMessageStore = create((set) => {
           currentData = id ? [] : state.currentFriendMsg
         let msg = state.msgData[listId] ? JSON.parse(JSON.stringify(state.msgData[listId])) : []
 
-        msg = msg?.length > c ? msg.splice(msg.length - c, 15) : msg
+        msg = msg?.length >= c ? msg.splice(msg.length - c, 15) : msg
         if (data) {
+          console.log(currentData)
           currentData.push(...data)
         } else {
+          console.log(currentData)
           currentData.unshift(...msg)
         }
         return {
@@ -349,6 +363,7 @@ export const useMessageStore = create((set) => {
           id = Number(id)
         }
         state.changeReadStatus(id)
+        state.initCount()
         setStorageData('listId', id)
         state.getCurrentMsgData(id)
         return {

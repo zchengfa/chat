@@ -1,17 +1,17 @@
 # chat
 
 #### 介绍
-本项目是一个聊天项目，目前项目实现了私聊跟群聊，更换头像功能，支持发送图片、文字以及表情
+本项目是一个聊天项目，目前项目实现了`私聊`跟`群聊`，`更换头像`功能，支持`发送图片、文字以及表情`
 
 #### 安装
 
 1. 克隆项目
-2. 执行npm install命令安装项目所需依赖包
+2. 执行`npm install`命令安装项目所需依赖包
 
 #### 使用
-执行 npm run start命令即可
+执行 `npm run start`命令即可
 
-<h6 style="color:red;">注意：运行前还需在项目的根目录下创建一个.env文件，为了保护一些隐秘数据，采用了环境变量的方式进行引用，所以请在.env文件中设置好以下变量</h6>
+<h6 style="color:red;">注意：运行前还需在项目的根目录下创建一个`.env`文件，为了保护一些隐秘数据，采用了环境变量的方式进行引用，所以请在`.env`文件中设置好以下变量</h6>
 <div style="padding: 2rem;display: flex;flex-direction: column;justify-content: center;align-items: flex-start;background-color: #fff;color: #e850e1">
     <span style="padding:.5rem;background-color: #000">REACT_APP_BASE_URL(api请求的基本路径)</span>
     <span style="margin-top:1rem;padding:.5rem;background-color: #000">REACT_APP_KEY9(密码加密的密钥)</span>
@@ -20,7 +20,7 @@
 </div>
 
 #### 运行在桌面端
-运行前请确保是否已安装了electron,若已安装即可执行 npm run electron指令
+运行前请确保是否已安装了`electron`,若已安装即可执行 `npm run electron`指令
 
 #### 项目预览图
 

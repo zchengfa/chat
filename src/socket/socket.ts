@@ -53,7 +53,7 @@ export function SocketEvent(data:any){
                room:data.isGroupChat ?data.room : undefined,
                hasBeenRead:readStatus,
                isGroupChat:data.isGroupChat
-           },data.isGroupChat ? data.room : data.userId,true)
+           } as unknown as MsgDataType,data.isGroupChat ? data.room : data.userId,true)
         }
     })
     /**

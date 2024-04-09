@@ -53,7 +53,7 @@ class MessageContent extends Component<any, any> {
             </div> : <span className={'msg'}>{utf16ToEmoji(item.msg)}</span>}
           </div>
           {
-            Object.hasOwn(item,'isSending') ?  <div className={'msg-status'}>
+            Object.hasOwn(item,'isSending') && item.isSending !== undefined ?  <div className={'msg-status'}>
               {
                 item.isSending === true ? <Spin spinning={true} indicator={<LoadingOutlined/>}></Spin>
                   : <div className={'failed-icon'}>

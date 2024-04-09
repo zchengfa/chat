@@ -522,13 +522,15 @@ export const useMessageStore = create((set) => {
             state.changeFriendData({})
           }
         }
-        const newArr = list.slice(0, defaultFriendList.length).concat(data)
+        let sliceLength = isMobile ? 4 : 3
+
+        const newArr = list.slice(0, sliceLength).concat(data)
 
         let listCopy = JSON.parse(JSON.stringify(newArr))
 
         setStorageData('friendList', sortByLocaleWithObject(listCopy.splice(defaultFriendList.length, list.length), 'title'))
         return {
-          friendList: list
+          friendList: newArr
         }
       })
 

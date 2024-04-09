@@ -10,8 +10,8 @@ reloader(module)
 
 const createWindow = () => {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 800,
     backgroundColor: '#2e2c29',
     webPreferences: {
       nodeIntegration: true

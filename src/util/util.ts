@@ -3,8 +3,6 @@ import cryptoJs from 'crypto-js/crypto-js'
 import pinyin from "pinyin";
 import {Md5} from 'ts-md5'
 
-
-//export const URL = 'http://192.168.1.104:4000'
 export const URL = process.env.REACT_APP_BASE_URL
 export const isMobile = /windows phone|iphone|android/ig.test(window.navigator.userAgent)
 

@@ -258,7 +258,6 @@ class Home extends Component<any, any> {
     let friendList = JSON.parse(localStorage.getItem('friendList') as string), list: any[] = []
     if (data.isGroupChat) {
       strangerInfoForGroup(data.room, Number(customer.user_id)).then((res: any) => {
-        console.log(res)
         list.push({
           isSelf: true,
           ...customer

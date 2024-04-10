@@ -344,10 +344,8 @@ export const useMessageStore = create((set) => {
 
         msg = msg?.length >= c ? msg.splice(msg.length - c, 15) : msg
         if (data) {
-          console.log(currentData)
           currentData.push(...data)
         } else {
-          console.log(currentData)
           currentData.unshift(...msg)
         }
         return {
@@ -528,7 +526,7 @@ export const useMessageStore = create((set) => {
 
         let listCopy = JSON.parse(JSON.stringify(newArr))
 
-        setStorageData('friendList', sortByLocaleWithObject(listCopy.splice(defaultFriendList.length, list.length), 'title'))
+        setStorageData('friendList', sortByLocaleWithObject(listCopy.splice(sliceLength, list.length), 'title'))
         return {
           friendList: newArr
         }

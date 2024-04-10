@@ -78,7 +78,9 @@ function PopoverCommon(props: any) {
   }
 
   const showF = () => {
-    props.btnClick()
+    if(props.btnClick){
+      props.btnClick()
+    }
   }
 
 

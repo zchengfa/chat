@@ -356,7 +356,8 @@ function ChatContent(props: any) {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'flex-start',
-      borderLeft: '1px solid var(--deep-gray-color)'
+      borderLeft: '1px solid var(--deep-gray-color)',
+      overflowY:'scroll'
     }}>
       {/*    聊天窗口包含的好友或者群聊信息*/}
       <ChatSiderWindow showWindowPop={showWindowPop} showHideModal={showHideModal}></ChatSiderWindow>

@@ -17,7 +17,7 @@ export default function ChatSiderWindow (props:any) {
     props.showHideModal()
   }
 
-  return <div className={'chat-window-info'} style={{overflowY: 'scroll'}} ref={windowRef}>
+  return <div className={'chat-window-info'} ref={windowRef}>
     {friendInfo.isGroupChat ?
       <div className={'input-box'} style={{marginTop: '1.5rem'}}>
         <Input prefix={<SearchOutlined></SearchOutlined>} placeholder={'搜索群成员'}></Input>

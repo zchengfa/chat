@@ -2,15 +2,16 @@ import './chatList.sass'
 import { Avatar,Badge,Space } from "antd";
 import { UserOutlined } from '@ant-design/icons'
 import {BellIconComponent, FileTransIconComponent} from '../../../common/svg/svg'
-import { MsgDataType } from '../../../common/staticData/data'
+import { MsgDataType,contextMenuChatList } from '../../../common/staticData/data'
 import {isMobile} from "../../../util/util";
+import {useContextMenuStore} from "../../../zustand/store";
 
 import withHook from "../../../hook/withHook";
 
 function ChatList (props:any){
 
   const { chatList,listId,customer } = props.Zustand
-
+ const {changeContextMenu} = useContextMenuStore((state:any)=> state)
   const chatWithSender = (item:MsgDataType,id:any)=>{
     //判断点击项是否是在激活状态，防止重复点击
     if(listId !== id && !isMobile){
@@ -21,9 +22,20 @@ function ChatList (props:any){
     }
   }
 
+  const contextMenuEvent = (e:any,index:number)=>{
+    e.preventDefault()
+    const contextMenuEl:any = document.getElementById(props.contextMenuTarget)
+    contextMenuEl.style.display = 'block'
+    contextMenuEl.style.left = e.clientX + 'px'
+    contextMenuEl.style.top = e.clientY + 'px'
+    const liEl:any =document.getElementsByClassName('list-item').item(index)
+    let data = liEl.dataset.chattype === 'true' ? contextMenuChatList.isGroupChat : contextMenuChatList.isNormal
+    changeContextMenu(data)
+  }
+
   const chatListElement = ()=>{
     return chatList[customer.user_id].map((item:any,index:number)=>{
-      return <li key={index} className={'list-item'}>
+      return <li key={index} className={'list-item'} data-index={index} data-chattype={item.isGroupChat} onContextMenu={(event)=> contextMenuEvent(event,index)}>
         <div className={(item.isGroupChat ? listId?.toString() === item.room?.toString() : listId?.toString() === item.userId?.toString() ) && !isMobile ? 'message-box actived' : 'message-box'} onClick={()=> chatWithSender(item,item.isGroupChat ? item.room : item.userId)}>
           <Space className={'msg-left'}>
             <Badge dot={!item.hasBeenRead}>

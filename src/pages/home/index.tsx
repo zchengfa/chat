@@ -36,7 +36,7 @@ class Home extends Component<any, any> {
       isShowAddFriendBtn: undefined,
       inputValue: undefined,
       menuList: {
-        '聊天': <ChatList chatWithSender={this.chatWithSender}></ChatList>,
+        '聊天': <ChatList contextMenuTarget={'context-menu'} chatWithSender={this.chatWithSender}></ChatList>,
         "通讯录": <FriendList showListContent={this.showListContent}></FriendList>,
         "收藏": <CollectionList></CollectionList>
       },
@@ -54,7 +54,6 @@ class Home extends Component<any, any> {
       isShowFriendList: false
     }
   }
-
   socketMsg = (data: any) => {
     const send = () => {
       this.props.socket.emit('sendMsg', data, (response: any) => {
@@ -361,6 +360,7 @@ class Home extends Component<any, any> {
   /**
    * 1.点击Layout盒子将搜索用户的结果数据清零，道道关闭气泡卡片的效果(需使用事件捕获)
    * 2.关闭显示中的表情组件
+   * 2.隐藏contextMenu组件
    */
   blurCom = () => {
     this.setState({
@@ -371,6 +371,8 @@ class Home extends Component<any, any> {
     if (emojiStatus) {
       changeEmojiStatus()
     }
+    let contextMenuEl:any = document.getElementById('context-menu')
+    contextMenuEl.style.display = 'none'
   }
   /**
    * 需判断是否是自己，若是自己则是发消息操作，反之则是显示好友申请组件

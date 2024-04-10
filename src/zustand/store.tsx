@@ -1,4 +1,4 @@
-import {create} from "zustand";
+import {create, createStore} from "zustand";
 import {MsgDataType, operationsData} from "../common/staticData/data";
 import {sortByLocaleWithObject, getFirstPinYin, verifyTime, dealMsgTime, isMobile} from "../util/util";
 import {
@@ -770,6 +770,21 @@ export const useChatStore = create((set)=>{
           isShowLeftKeyboard: false,
           isShowAddBox:false,
           isShowInput:true,
+        }
+      })
+    }
+  }
+})
+
+//右键菜单状态
+export const useContextMenuStore = create((set)=>{
+  return {
+    contextMenu:[],
+    changeContextMenu:(menu:any[])=>{
+      set(()=>{
+
+        return {
+          contextMenu:menu
         }
       })
     }

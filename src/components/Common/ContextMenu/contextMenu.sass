@@ -1,0 +1,16 @@
+.context-menu-container
+  display: none
+  position: fixed
+  background-color: var(--white-color)
+  border-radius: .2rem
+  box-shadow: var(--deep-gray-color) 0 0 2px 2px
+  z-index: 999
+  .context-menu-item
+    .context-menu-title
+      display: block
+      padding: .3rem 1rem
+      font-size: var(--mini-font-size)
+  .context-menu-item:nth-last-child(2)
+    border-top: 1px solid var(--deep-gray-color)
+  .context-menu-item:hover
+    background-color: var(--deep-gray-color)

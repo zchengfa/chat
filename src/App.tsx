@@ -3,6 +3,7 @@ import RouterComponent from "./router/router";
 import './common/style/common.css'
 import {isMobile} from "./util/util";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ContextMenu from "./components/Common/ContextMenu/ContextMenu";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
                 <RouterComponent></RouterComponent>
             </div>
         </div>
+        <ContextMenu></ContextMenu>
     </Fragment>
   );
 }

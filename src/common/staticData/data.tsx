@@ -49,6 +49,12 @@ export interface MenuType {
   pop?:Function
 }
 
+
+export const contextMenuChatList = {
+  isGroupChat:['置顶','标为未读','消息免打扰','修改群聊名称','设置备注','在独立窗口中打开','保存到通讯录','不显示聊天','删除聊天'],
+  isNormal:['置顶','标为未读','消息免打扰','在独立窗口中打开','不显示聊天','删除聊天']
+}
+
 //首页侧边栏数据
 export const menu:MenuType[] = [
   {

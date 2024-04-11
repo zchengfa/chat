@@ -13,7 +13,7 @@ import {searchUserInfo, strangerInfoForGroup} from "../../network/request";
 import PopoverCommon from "../../components/Common/PopoverCommon/PopoverCommon";
 import FriendApplication from "../../components/FriendApplication/FriendApplication";
 import FriendListContent from "./FriendListContent/FriendListContent";
-import {SocketEvent} from "../../socket/socket";
+import {socket, SocketEvent} from "../../socket/socket";
 import {CollectionList} from "./CollectionList/CollectionList";
 import {CollectionListContent} from "./CollectionListContent/CollectionListContent";
 import {isMobile} from "../../util/util";
@@ -278,9 +278,7 @@ class Home extends Component<any, any> {
             ...item
           })
         })
-        changeChatWindowSiderInfo({
-          members: list
-        })
+        changeChatWindowSiderInfo(list)
       })
     } else {
       friendList.forEach((item: any) => {
@@ -293,9 +291,7 @@ class Home extends Component<any, any> {
           }
         })
       })
-      changeChatWindowSiderInfo({
-        members: list
-      })
+      changeChatWindowSiderInfo(list)
     }
   }
   /**
@@ -366,10 +362,15 @@ class Home extends Component<any, any> {
       isShowPop: false
     })
 
-    const {emojiStatus, changeEmojiStatus} = this.props.Zustand
+    const {emojiStatus, customer,changeEmojiStatus,chatWindowStatus,changeWindowStatus,changeChatWindowSiderInfo,chatWindowSiderInfo} = this.props.Zustand
     if (emojiStatus) {
       changeEmojiStatus()
     }
+    if(chatWindowStatus){
+      changeWindowStatus(false)
+    }
+    changeChatWindowSiderInfo(chatWindowSiderInfo[customer.user_id])
+
     let contextMenuEl:any = document.getElementById('context-menu')
     contextMenuEl.style.display = 'none'
   }
@@ -632,7 +633,10 @@ class Home extends Component<any, any> {
     }
 
     //防止多次进出首页时socket的_callbacks里会有多个重复方法
-    if(Object.keys(this.props.socket['_callbacks']).length === 0){
+    if(socket['_callbacks'] === undefined){
+      SocketEvent({Zustand: this.props.Zustand, Message: this.props.Message})
+    }
+    else if(typeof socket['_callbacks'] === "object" && Object.keys(socket['_callbacks']).length === 0){
       SocketEvent({Zustand: this.props.Zustand, Message: this.props.Message})
     }
     document.addEventListener('sendMsg', this.CustomEventSendMsg)

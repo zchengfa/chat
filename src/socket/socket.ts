@@ -2,7 +2,7 @@ import { io } from 'socket.io-client'
 import {MsgDataType} from "../common/staticData/data";
 import { Uint8ArrayToBase64 } from "../util/util";
 
-export const socket = io((process.env.REACT_APP_SOCKET_IO)as string)
+export const socket:any = io((process.env.REACT_APP_SOCKET_IO)as string)
 
 export function SocketEvent(data:any){
     const {Zustand,Message} = data

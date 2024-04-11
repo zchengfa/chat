@@ -9,24 +9,24 @@ export default function ChatSiderWindow (props:any) {
   const {friendInfo,chatWindowSiderInfo,chatWindowStatus,customer} = useMessageStore((state:any)=> state)
   const windowRef = useRef(null)
 
-  const showWindowPop = (data:any)=>{
+  const showWindowPop = (e:any,data:any)=>{
+    e.stopPropagation()
     props.showWindowPop(data)
   }
 
   const showHideModal = ()=>{
     props.showHideModal()
   }
-
   return <div className={'chat-window-info'} ref={windowRef}>
-    {friendInfo.isGroupChat ?
+    {friendInfo[customer.user_id]?.isGroupChat ?
       <div className={'input-box'} style={{marginTop: '1.5rem'}}>
         <Input prefix={<SearchOutlined></SearchOutlined>} placeholder={'搜索群成员'}></Input>
       </div>
       : undefined}
-    <div className={'chat-members'} style={!friendInfo.isGroupChat ? {justifyContent: 'flex-start'} : {}}>
-      {chatWindowSiderInfo.members?.map((item: any) => {
+    <div className={'chat-members'} style={!friendInfo[customer.user_id]?.isGroupChat ? {justifyContent: 'flex-start'} : {}}>
+      {chatWindowSiderInfo[customer.user_id]?.map((item: any) => {
         return <div className={'member-item'} key={item.user_id}
-                    onClick={() => showWindowPop({user_id: item.user_id, isShowPop: !item.isShowPop})}>
+                    onClick={(event) => showWindowPop(event,{user_id: item.user_id, isShowPop: !item.isShowPop})}>
           <Avatar className={'item-avatar'} src={item.avatar} shape={'square'} size={40}></Avatar>
           <span className={'item-username text-ellipsis'}>{item.username}</span>
           <PopoverCommon open={item.isShowPop} customer={item}
@@ -37,16 +37,16 @@ export default function ChatSiderWindow (props:any) {
         <Avatar className={'item-avatar'} size={40} shape={'square'} icon={<PlusOutlined></PlusOutlined>}></Avatar>
         <span className={'item-username'}>添加</span>
       </div>
-      {friendInfo.isGroupChat ? <div className={'member-item reduce-btn'}>
+      {friendInfo[customer.user_id]?.isGroupChat ? <div className={'member-item reduce-btn'}>
         <Avatar className={'item-avatar'} size={40} shape={'square'}
                 icon={<MinusOutlined></MinusOutlined>}></Avatar>
         <span className={'item-username'}>移出</span>
       </div> : null}
     </div>
-    {friendInfo.isGroupChat ? <div className={'group-info'}>
+    {friendInfo[customer.user_id]?.isGroupChat ? <div className={'group-info'}>
       <div className={'group-name-box info-item'}>
         <span>群聊名称</span>
-        <span>{friendInfo.user}</span>
+        <span>{friendInfo[customer.user_id]?.user}</span>
       </div>
       <div className={'group-notice-box info-item'}>
         <span>群公告</span>
@@ -66,7 +66,7 @@ export default function ChatSiderWindow (props:any) {
       <RightOutlined style={{color: 'var(--deep-gray-color)'}}></RightOutlined>
     </div>
     <div className={'chat-window-operation'}>
-      {friendInfo.isGroupChat ?
+      {friendInfo[customer.user_id]?.isGroupChat ?
         <div className={'operation-item-box'}>
           <span>显示群成员昵称</span>
           <Switch checked={true}
@@ -83,7 +83,7 @@ export default function ChatSiderWindow (props:any) {
         <Switch className={!chatWindowStatus ? 'operation-switch operation-switch-open' : 'operation-switch'}
                 size={'small'}></Switch>
       </div>
-      {friendInfo.isGroupChat ?
+      {friendInfo[customer.user_id]?.isGroupChat ?
         <div className={'operation-item-box'}>
           <span>保存到通讯录</span>
           <Switch className={!chatWindowStatus ? 'operation-switch operation-switch-open' : 'operation-switch'}
@@ -94,7 +94,7 @@ export default function ChatSiderWindow (props:any) {
       {/*<Button className={'btn'} ghost={true} onClick={()=> showHideModal(true)}>清空聊天记录</Button>*/}
       <span className={'btn'} onClick={() => showHideModal()}>清空聊天记录</span>
     </div>
-    {friendInfo.isGroupChat ?
+    {friendInfo[customer.user_id]?.isGroupChat ?
       <div className={'btn-box'}>
         <Button className={'btn'} ghost={true}>退出群聊</Button>
       </div> : undefined

@@ -411,7 +411,6 @@ export const useMessageStore = create((set) => {
     //通讯过的用户列表
     chatList: getStorageData('chatList', {}),
     changeChatList: (item: MsgDataType, replyId: any = undefined, isReceive: boolean = false) => {
-      console.log(item)
       let separator: any[] = ['/', ':']
       set((state: any) => {
         let allList = state.chatList
@@ -688,10 +687,10 @@ export const useMessageStore = create((set) => {
     //获取聊天窗口右侧更多信息（成员信息、消息免打扰等）
     changeChatWindowSiderInfo(data: any,newData:any = {}) {
       set((state:any) => {
+        let d = state.chatWindowSiderInfo
         let customer = state.customer.user_id
-        let d = JSON.parse(JSON.stringify(data))
         if(Object.keys(newData).length){
-          d[customer]?.members.forEach((item:any)=>{
+          d[customer]?.forEach((item:any)=>{
             if(item.user_id === newData.user_id){
 
               item.isShowPop = newData.isShowPop
@@ -702,9 +701,10 @@ export const useMessageStore = create((set) => {
           })
         }
         else{
-          d[customer]?.members.forEach((item:any)=>{
+          data?.forEach((item:any)=>{
             item.isShowPop = false
           })
+          d[customer] = data
           setStorageData('chatWindowSiderInfo', d)
         }
         return {

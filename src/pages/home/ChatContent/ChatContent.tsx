@@ -312,7 +312,7 @@ function ChatContent(props: any) {
             </div>
             {
               friendInfo[customer.user_id]?.type !== 'self' ?
-                <div style={{fontSize: '20px'}} onClickCapture={() => changeWindowStatus(!chatWindowStatus)}>{moreHorization}</div>
+                <div style={{fontSize: '20px'}} onClick={() => changeWindowStatus(!chatWindowStatus)}>{moreHorization}</div>
                 : null
             }
 
@@ -358,16 +358,22 @@ function ChatContent(props: any) {
         </Footer>
       }
     </Layout>
-    <div className={chatWindowStatus ? 'content-sider-actived' : 'content-sider'} style={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      borderLeft: '1px solid var(--deep-gray-color)',
-      overflowY:'scroll'
-    }}>
-      {/*    聊天窗口包含的好友或者群聊信息*/}
-      <ChatSiderWindow showWindowPop={showWindowPop} showHideModal={showHideModal}></ChatSiderWindow>
-    </div>
+
+    {
+      friendInfo[customer.user_id]?.type !== 'self' ?
+        <div className={chatWindowStatus ? 'content-sider-actived' : 'content-sider'} style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'flex-start',
+          borderLeft: '1px solid var(--deep-gray-color)',
+          overflowY: 'scroll',
+        }}>
+          {/*    聊天窗口包含的好友或者群聊信息*/}
+          <ChatSiderWindow showWindowPop={showWindowPop} showHideModal={showHideModal}></ChatSiderWindow>
+        </div>
+        : null
+    }
+
   </div>
 }
 

@@ -43,7 +43,6 @@ function ChatContent(props: any) {
   const [messageApi, contextHolder] = message.useMessage()
   const {moreHorization} = commonApplicationComponent
   const [modalOpen, setModalOpen] = useState(false)
-  const windowRef = useRef(null)
 
   useEffect(() => {
     changeWindowStatus(false)
@@ -73,7 +72,7 @@ function ChatContent(props: any) {
       return true
 
     })
-    changeBg(data[index], index, listId)
+    changeBg(data[index], index, listId[customer.user_id])
 
   }
 
@@ -99,9 +98,9 @@ function ChatContent(props: any) {
         msg: emojiToUtf16(msg),
         msgCode: transMsgToNameCode(msg, emojiIndex),
         time,
-        isGroupChat: friendInfo.isGroupChat,
-        room: friendInfo.isGroupChat ? listId : undefined
-      }, listId)
+        isGroupChat: friendInfo[customer.user_id]?.isGroupChat,
+        room: friendInfo[customer.user_id]?.isGroupChat ? listId[customer.user_id] : undefined
+      }, listId[customer.user_id])
       let c = count
       c++
       setCount(c)
@@ -112,13 +111,13 @@ function ChatContent(props: any) {
         type: 'msg',
         sender: customer.username,
         userId: customer.user_id,
-        receiver: friendInfo.user,
+        receiver: friendInfo[customer.user_id]?.user,
         avatar: customer.avatar,
         sendTime: time,
-        room: friendInfo.isGroupChat ? listId : undefined,
-        chatName: friendInfo.user,
-        chatAvatar: friendInfo.isGroupChat ? friendInfo.avatar : undefined,
-        isGroupChat: friendInfo.isGroupChat,
+        room: friendInfo[customer.user_id]?.isGroupChat ? listId[customer.user_id] : undefined,
+        chatName: friendInfo[customer.user_id]?.user,
+        chatAvatar: friendInfo[customer.user_id]?.isGroupChat ? friendInfo[customer.user_id]?.avatar : undefined,
+        isGroupChat: friendInfo[customer.user_id]?.isGroupChat,
         msg: emojiToUtf16(msg),
         msgCode: emojiIndex.length ? transMsgToNameCode(msg, emojiIndex) : ''
       }
@@ -126,7 +125,7 @@ function ChatContent(props: any) {
         const send = () => {
           props.socket.emit('sendMsg', socketData, (response: any) => {
             //有响应，说明消息已经发送给了服务器（可以清除消息发送状态）
-            changeSendMsgStatus({msgId: response, receiver: friendInfo.userId})
+            changeSendMsgStatus({msgId: response, receiver: friendInfo[customer.user_id]?.userId})
           })
         }
         if (props.socket.connected) {
@@ -138,7 +137,7 @@ function ChatContent(props: any) {
             } else {
               changeSendMsgStatus({
                 msgId: socketData.id,
-                receiver: friendInfo.userId,
+                receiver: friendInfo[customer.user_id]?.userId,
                 isFailed: true
               })
             }
@@ -211,27 +210,27 @@ function ChatContent(props: any) {
           imgID: chunkList[0]['identity'],
           img: Uint8ArrayToBase64(new Uint8Array((reader.result) as ArrayBufferLike)),
           time: new Date().getTime(),
-          isGroupChat: friendInfo.isGroupChat,
-          room: friendInfo.isGroupChat ? listId : undefined,
-          chatName: friendInfo.user,
-          chatAvatar: friendInfo.isGroupChat ? friendInfo.avatar : undefined,
-        }, listId)
+          isGroupChat: friendInfo[customer.user_id]?.isGroupChat,
+          room: friendInfo[customer.user_id]?.isGroupChat ? listId[customer.user_id] : undefined,
+          chatName: friendInfo[customer.user_id]?.user,
+          chatAvatar: friendInfo[customer.user_id]?.isGroupChat ? friendInfo[customer.user_id]?.avatar : undefined,
+        }, listId[customer.user_id])
 
         chunkList.forEach((item: any) => {
           props.socket.emit('sendMsg', {
             id,
-            isGroupChat: friendInfo.isGroupChat,
+            isGroupChat: friendInfo[customer.user_id]?.isGroupChat,
             ...item,
             sender: customer.username,
             userId: customer.user_id,
-            receiver: friendInfo.user,
-            rID: friendInfo.userId,
+            receiver: friendInfo[customer.user_id]?.user,
+            rID: friendInfo[customer.user_id]?.userId,
             avatar: customer.avatar,
             chunkCount: chunkList.length,
             sendTime: new Date().getTime(),
-            room: friendInfo.isGroupChat ? listId : undefined,
-            chatName: friendInfo.user,
-            chatAvatar: friendInfo.isGroupChat ? friendInfo.avatar : undefined,
+            room: friendInfo[customer.user_id]?.isGroupChat ? listId[customer.user_id] : undefined,
+            chatName: friendInfo[customer.user_id]?.user,
+            chatAvatar: friendInfo[customer.user_id]?.isGroupChat ? friendInfo[customer.user_id]?.avatar : undefined,
           })
         })
       }
@@ -284,6 +283,9 @@ function ChatContent(props: any) {
   const backEvent = ()=>{
     //初始化chat组件状态
     props.Zustand.initStatus()
+    //修改listId,以确保后续在首页接受消息时可保证都在未读状态
+    props.Zustand.changeListId(0)
+
   }
 
   const moreEvent = ()=>{
@@ -304,12 +306,16 @@ function ChatContent(props: any) {
           isMobile ? <NavBar backEvent={backEvent} back more moreEvent={moreEvent}></NavBar> : <div className={'PC-header'}>
             <div className={'title-box'} style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center'}}>
             <span
-              className={'receiver-title text-ellipsis'}>{friendInfo.isGroupChat ? friendInfo.chatName : friendInfo.user}</span>
-              {friendInfo.isGroupChat ?
+              className={'receiver-title text-ellipsis'}>{friendInfo[customer.user_id]?.isGroupChat ? friendInfo[customer.user_id]?.chatName : friendInfo[customer.user_id]?.user}</span>
+              {friendInfo[customer.user_id]?.isGroupChat ?
                 <span className={'receiver-title members-count'}>({chatWindowSiderInfo.members?.length})</span> : null}
             </div>
-            <div style={{fontSize: '20px'}}
-                 onClickCapture={() => changeWindowStatus(!chatWindowStatus)}>{moreHorization}</div>
+            {
+              friendInfo[customer.user_id]?.type !== 'self' ?
+                <div style={{fontSize: '20px'}} onClickCapture={() => changeWindowStatus(!chatWindowStatus)}>{moreHorization}</div>
+                : null
+            }
+
           </div>
         }
       </Header>

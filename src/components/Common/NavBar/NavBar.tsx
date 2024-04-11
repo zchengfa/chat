@@ -6,8 +6,8 @@ import {useNavigate} from "react-router-dom";
 
 function NavBar(props:any){
   // @ts-ignore
-  const {friendInfo,chatWindowSiderInfo} = useMessageStore()
-  const title = props.emptyTitle ? undefined : props.title ? props.title : (friendInfo.isGroupChat ? friendInfo.user + `(${chatWindowSiderInfo.members.length})` : friendInfo.user)
+  const {friendInfo,chatWindowSiderInfo,customer} = useMessageStore()
+  const title = props.emptyTitle ? undefined : props.title ? props.title : (friendInfo[customer.user_id]?.isGroupChat ? friendInfo[customer.user_id]?.user + `(${chatWindowSiderInfo?.members.length})` : friendInfo[customer.user_id]?.user)
   const navigate = useNavigate()
 
   const addClick = ()=>{

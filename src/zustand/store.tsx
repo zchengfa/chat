@@ -1,4 +1,4 @@
-import {create, createStore} from "zustand";
+import {create} from "zustand";
 import {MsgDataType, operationsData} from "../common/staticData/data";
 import {sortByLocaleWithObject, getFirstPinYin, verifyTime, dealMsgTime, isMobile} from "../util/util";
 import {
@@ -272,7 +272,7 @@ export const useMessageStore = create((set) => {
 
           data[id].push(item)
           newMsg.push(item)
-          if (state.listId?.toString() === id.toString()) {
+          if (state.listId[state.customer.user_id]?.toString() === id.toString()) {
 
             state.getCurrentMsgData(undefined, undefined, newMsg)
           }
@@ -323,11 +323,11 @@ export const useMessageStore = create((set) => {
     changeCount: () => {
       set((state: any) => {
         let c = state.count
-        if(state.msgData[state.listId].length - state.currentFriendMsg.length >= 15){
+        if(state.msgData[state.listId[state.customer.user_id]].length - state.currentFriendMsg.length >= 15){
           c += 15
         }
         else{
-          c += (state.msgData[state.listId].length - state.currentFriendMsg.length)
+          c += (state.msgData[state.listId[state.customer.user_id]].length - state.currentFriendMsg.length)
         }
         state.getCurrentMsgData(undefined, c)
         return {
@@ -338,7 +338,7 @@ export const useMessageStore = create((set) => {
     //获取与当前好友的聊天记录(指定消息数)
     getCurrentMsgData: (id: number | undefined = undefined, count?: number, data?: any) => {
       set((state: any) => {
-        let listId = id ? id : state.listId, c = count ? count : state.count,
+        let listId = id ? id : state.listId[state.customer.user_id], c = count ? count : state.count,
           currentData = id ? [] : state.currentFriendMsg
         let msg = state.msgData[listId] ? JSON.parse(JSON.stringify(state.msgData[listId])) : []
 
@@ -354,18 +354,20 @@ export const useMessageStore = create((set) => {
       })
     },
     //消息列表激活的索引
-    listId: getStorageData('listId', undefined),
+    listId: getStorageData('listId', {}),
     changeListId: (id: number) => {
       set((state: any) => {
+        let listIds = state.listId,customer = state.customer
         if (!isNaN(id)) {
           id = Number(id)
         }
+        listIds[customer.user_id] = id
         state.changeReadStatus(id)
         state.initCount()
-        setStorageData('listId', id)
+        setStorageData('listId', listIds)
         state.getCurrentMsgData(id)
         return {
-          listId: id
+          listId: listIds
         }
       })
     },
@@ -409,6 +411,7 @@ export const useMessageStore = create((set) => {
     //通讯过的用户列表
     chatList: getStorageData('chatList', {}),
     changeChatList: (item: MsgDataType, replyId: any = undefined, isReceive: boolean = false) => {
+      console.log(item)
       let separator: any[] = ['/', ':']
       set((state: any) => {
         let allList = state.chatList
@@ -419,11 +422,13 @@ export const useMessageStore = create((set) => {
           data.map((it: any, i: number) => {
             let myId = item.isGroupChat ? it.room : it.userId
 
-            if (myId?.toString() === replyId.toString() && !it.isAssistant) {
+            //暂时不排除给助手发送消息的情况myId?.toString() === replyId.toString() && !it.isAssistant
+            if (myId?.toString() === replyId.toString()) {
               index = i
             }
             return data
           })
+
 
           if (item.msgCode?.length) {
             data[index].msg = item.msgCode
@@ -437,13 +442,15 @@ export const useMessageStore = create((set) => {
           data.map((it: any, i: number) => {
             let myId = item.isGroupChat ? it.room : it.userId
 
-            if (myId?.toString() === replyId.toString() && !it.isAssistant) {
+            //暂时不排除给助手发送消息的情况myId?.toString() === replyId.toString() && !it.isAssistant
+            if (myId?.toString() === replyId.toString()) {
               index = i
             }
             return true
           })
           if (index !== undefined) {
-            data[index].hasBeenRead = item.isGroupChat ? state.listId?.toString() === item.room.toString() : state.listId?.toString() === item.userId.toString()
+            //data[index].hasBeenRead = isMobile ? false : item.isGroupChat ? state.listId[state.customer.user_id]?.toString() === item.room.toString() : state.listId[state.customer.user_id]?.toString() === item.userId.toString()
+            data[index].hasBeenRead = item.hasBeenRead
             item.msgCode?.length ? data[index].msg = item.msgCode : data[index].msg = item.msg
             data[index].showTime = dealMsgTime(Number(item.time), separator)
             data[index].time = item.time
@@ -496,11 +503,12 @@ export const useMessageStore = create((set) => {
     //最新沟通过的好友信息
     friendInfo: getStorageData('friendInfo', {}),
     saveFriendInfo: (item: MsgDataType) => {
-      set(() => {
-
-        setStorageData('friendInfo', item)
+      set((state:any) => {
+        let customer = state.customer.user_id,friendInfo = state.friendInfo
+        friendInfo[customer] = item
+        setStorageData('friendInfo', friendInfo)
         return {
-          friendInfo: item
+          friendInfo: friendInfo
         }
       })
     },
@@ -679,11 +687,11 @@ export const useMessageStore = create((set) => {
     chatWindowSiderInfo: getStorageData('chatWindowSiderInfo', {}),
     //获取聊天窗口右侧更多信息（成员信息、消息免打扰等）
     changeChatWindowSiderInfo(data: any,newData:any = {}) {
-
-      set(() => {
+      set((state:any) => {
+        let customer = state.customer.user_id
         let d = JSON.parse(JSON.stringify(data))
         if(Object.keys(newData).length){
-          d.members.forEach((item:any)=>{
+          d[customer]?.members.forEach((item:any)=>{
             if(item.user_id === newData.user_id){
 
               item.isShowPop = newData.isShowPop
@@ -694,10 +702,10 @@ export const useMessageStore = create((set) => {
           })
         }
         else{
-          d.members.forEach((item:any)=>{
+          d[customer]?.members.forEach((item:any)=>{
             item.isShowPop = false
           })
-          setStorageData('chatWindowSiderInfo', data)
+          setStorageData('chatWindowSiderInfo', d)
         }
         return {
           chatWindowSiderInfo: d

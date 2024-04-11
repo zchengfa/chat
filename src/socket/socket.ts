@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client'
 import {MsgDataType} from "../common/staticData/data";
-import {Uint8ArrayToBase64} from "../util/util";
+import { Uint8ArrayToBase64 } from "../util/util";
 
 export const socket = io((process.env.REACT_APP_SOCKET_IO)as string)
 
@@ -18,9 +18,10 @@ export function SocketEvent(data:any){
     })
 
     socket.on('receiveMessage',(data:any)=>{
-        let readStatus = data.isGroupChat ? Zustand.listId?.toString() === data.room.toString()   : Zustand.listId?.toString() === data.userId.toString()
+        let readStatus = data.isGroupChat ? Zustand.listId[Zustand.customer.user_id]?.toString() === data.room.toString()   : Zustand.listId[Zustand.customer.user_id]?.toString() === data.userId.toString()
+
         if(data.type === 'msg'){
-           changeListFun(data)
+           changeListFun(data,readStatus)
         }
         else if(data.type === 'img'){
            data.file =new Uint8Array(data.file)
@@ -33,10 +34,10 @@ export function SocketEvent(data:any){
                   avatar,isGroupChat,sendTime,sender,type,userId,room,chatName,chatAvatar,
                   img:Uint8ArrayToBase64(file),
                   imgID:identity
-              })
+              },readStatus)
            }
         }
-        function changeListFun(data:any){
+        function changeListFun(data:any,status:boolean){
            Zustand.changeChatList({
                userId:data.isGroupChat ? data.room : Number(data.userId),
                user:data.sender,
@@ -51,7 +52,7 @@ export function SocketEvent(data:any){
                img:data.img ? data.img : undefined,
                imgID:data.imgID,
                room:data.isGroupChat ?data.room : undefined,
-               hasBeenRead:readStatus,
+               hasBeenRead:status,
                isGroupChat:data.isGroupChat
            } as unknown as MsgDataType,data.isGroupChat ? data.room : data.userId,true)
         }

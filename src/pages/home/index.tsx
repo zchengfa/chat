@@ -58,7 +58,7 @@ class Home extends Component<any, any> {
     const send = () => {
       this.props.socket.emit('sendMsg', data, (response: any) => {
         //有响应，说明消息已经发送给了服务器（可以清除消息发送状态）
-        this.props.Zustand.changeSendMsgStatus({msgId: response, receiver: this.props.Zustand.friendInfo.userId})
+        this.props.Zustand.changeSendMsgStatus({msgId: response, receiver: this.props.Zustand.friendInfo[this.props.Zustand.customer.user_id]?.userId})
       })
     }
     if (this.props.socket.connected) {
@@ -70,7 +70,7 @@ class Home extends Component<any, any> {
         } else {
           this.props.Zustand.changeSendMsgStatus({
             msgId: data.id,
-            receiver: this.props.Zustand.friendInfo.userId,
+            receiver: this.props.Zustand.friendInfo[this.props.Zustand.customer.user_id]?.userId,
             isFailed: true
           })
         }
@@ -285,7 +285,7 @@ class Home extends Component<any, any> {
     } else {
       friendList.forEach((item: any) => {
         item.content.forEach((it: any) => {
-          if (friendInfo.userId === it.user_id) {
+          if (friendInfo[customer.user_id]?.userId === it.user_id) {
             list.push({
               isFriend: true,
               ...it
@@ -584,7 +584,7 @@ class Home extends Component<any, any> {
           </div>
         </div>
         <Content className={'index-content'}>
-          {listId !== undefined || friendListInfo?.index !== undefined ? this.state.listContent[this.state.currentMenu] : null}
+          {listId[customer.user_id] !== undefined || friendListInfo?.index !== undefined ? this.state.listContent[this.state.currentMenu] : null}
           {/*{friendListIndexAc !== undefined ? this.state.listContent[this.state.currentMenu] : null}*/}
         </Content>
         {showFriendCom ? <FriendApplication btnClick={this.showFriendApplication} confirm={this.confirmSendRequest}
@@ -613,7 +613,7 @@ class Home extends Component<any, any> {
     //处理聊天列表与聊天记录的时间
     changeStorageTime()
 
-    if (msgData[listId]) {
+    if (msgData[listId[customer.user_id]]) {
       getCurrentMsgData()
     }
 
@@ -630,7 +630,11 @@ class Home extends Component<any, any> {
         isAssistant: true
       } as unknown as MsgDataType)
     }
-    SocketEvent({Zustand: this.props.Zustand, Message: this.props.Message})
+
+    //防止多次进出首页时socket的_callbacks里会有多个重复方法
+    if(Object.keys(this.props.socket['_callbacks']).length === 0){
+      SocketEvent({Zustand: this.props.Zustand, Message: this.props.Message})
+    }
     document.addEventListener('sendMsg', this.CustomEventSendMsg)
   }
 

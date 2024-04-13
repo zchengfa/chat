@@ -416,3 +416,8 @@ export function generateID(options:IDOptions = {
     return insertRandomStr
   }
 }
+
+
+export function adjustAvatarIsDiff(data:{userId:string | number,avatar:string},avatarObj:any){
+  return avatarObj[data.userId] === data.avatar
+}

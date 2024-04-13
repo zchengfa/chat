@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client'
 import {MsgDataType} from "../common/staticData/data";
-import { Uint8ArrayToBase64 } from "../util/util";
+import {adjustAvatarIsDiff, Uint8ArrayToBase64} from "../util/util";
 
 export const socket:any = io((process.env.REACT_APP_SOCKET_IO)as string)
 
@@ -14,12 +14,26 @@ export function SocketEvent(data:any){
     })
     socket.on('reciever',(data:any)=>{
         const {friendList} = data
+        if(friendList.length){
+            let avatar:any = {}
+            friendList.forEach((item:any)=>{
+                avatar[item.user_id] = item.avatar
+            })
+            Zustand.changeUserAvatar(0,avatar)
+        }
         Zustand.changeFriendList(friendList,true)
     })
 
     socket.on('receiveMessage',(data:any)=>{
         let readStatus = data.isGroupChat ? Zustand.listId[Zustand.customer.user_id]?.toString() === data.room.toString()   : Zustand.listId[Zustand.customer.user_id]?.toString() === data.userId.toString()
-
+        let existAvatar = Boolean(Zustand.userAvatar[data.isGroupChat ? data.room : data.userId])
+        //本地没有对方的头像数据，需要获取一下
+        if(!existAvatar){
+            let userId = data.isGroupChat ? data.room : data.userId
+            socket.emit('getAvatar',{isGroupChat:data.isGroupChat,id:userId},(response:any)=>{
+                Zustand.changeUserAvatar(userId,response)
+            })
+        }
         if(data.type === 'msg'){
            changeListFun(data,readStatus)
         }
@@ -29,9 +43,9 @@ export function SocketEvent(data:any){
            let d = Zustand.fileBuffer[data.userId][data.identity][0]
            if(d.file.length === d.totalSize){
                //待完善，当前已得到图片的base64数据
-              let {file,avatar,isGroupChat,sendTime,sender,type,userId,identity,room,chatName,chatAvatar} = d
+              let {file,isGroupChat,sendTime,sender,type,userId,identity,room,chatName} = d
               changeListFun({
-                  avatar,isGroupChat,sendTime,sender,type,userId,room,chatName,chatAvatar,
+                  isGroupChat,sendTime,sender,type,userId,room,chatName,
                   img:Uint8ArrayToBase64(file),
                   imgID:identity
               },readStatus)
@@ -39,14 +53,12 @@ export function SocketEvent(data:any){
         }
         function changeListFun(data:any,status:boolean){
            Zustand.changeChatList({
-               userId:data.isGroupChat ? data.room : Number(data.userId),
+               userId:data.userId,
                user:data.sender,
                chatName:data.isGroupChat?data.chatName:undefined,
-               chatAvatar:data.isGroupChat?data.chatAvatar:undefined,
                type:data.type,
                msg:data.type === 'msg' ? data.msg : '[图片]',
                msgCode:data.type === 'msg' ? data.msgCode : data.file,
-               avatar:data.avatar,
                time:data.sendTime,
                isMute:true,
                img:data.img ? data.img : undefined,
@@ -85,7 +97,7 @@ export function SocketEvent(data:any){
             content: '接受该好友申请成功',
         })
         Zustand.changeFriendRequest(info,'shift')
-        let {user_id,avatar} = Zustand.customer
+        let {user_id} = Zustand.customer
         Zustand.changeChatList({
             userId: info.user_id,
             type: '',
@@ -94,12 +106,12 @@ export function SocketEvent(data:any){
             time: new Date().getTime(),
             hasBeenRead: false,
             isGroupChat: false,
-            avatar: info.avatar
+            //avatar: info.avatar
         } as unknown as MsgDataType)
 
         Zustand.changeChatList({
             userId:user_id,
-            avatar:avatar,
+            //avatar:avatar,
             isLeft:false,
             bgColor:'var(--success-font-color)',
             msg:'您已同意了对方的好友申请，现在可以开始聊天了',
@@ -121,7 +133,7 @@ export function SocketEvent(data:any){
             time: new Date().getTime(),
             hasBeenRead: false,
             isGroupChat: false,
-            avatar:info.avatar
+            //avatar:info.avatar
         } as unknown as MsgDataType,info.user_id,true)
     })
 
@@ -138,9 +150,10 @@ export function SocketEvent(data:any){
             hasBeenRead: false,
             isGroupChat: true,
             room:e.userId,
-            chatAvatar:e.avatar,
+            //chatAvatar:e.avatar,
             chatName:e.user
         } as unknown as MsgDataType)
+        Zustand.changeUserAvatar(e.userId,e.avatar)
     })
 
     socket.on('sendImageProgress',(data:any)=>{

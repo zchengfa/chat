@@ -54,11 +54,14 @@ class Home extends Component<any, any> {
       isShowFriendList: false
     }
   }
+
   socketMsg = (data: any) => {
+    const {changeSendMsgStatus,friendInfo,customer} = this.props.Zustand
+    let receiver = friendInfo[customer.user_id].isGroupChat ? friendInfo[customer.user_id].room : friendInfo[customer.user_id].userId
     const send = () => {
       this.props.socket.emit('sendMsg', data, (response: any) => {
         //有响应，说明消息已经发送给了服务器（可以清除消息发送状态）
-        this.props.Zustand.changeSendMsgStatus({msgId: response, receiver: this.props.Zustand.friendInfo[this.props.Zustand.customer.user_id]?.userId})
+        changeSendMsgStatus({msgId: response, receiver})
       })
     }
     if (this.props.socket.connected) {
@@ -70,7 +73,7 @@ class Home extends Component<any, any> {
         } else {
           this.props.Zustand.changeSendMsgStatus({
             msgId: data.id,
-            receiver: this.props.Zustand.friendInfo[this.props.Zustand.customer.user_id]?.userId,
+            receiver,
             isFailed: true
           })
         }
@@ -251,13 +254,14 @@ class Home extends Component<any, any> {
   }
 
   getWindowInfo = (data: any) => {
-    let {customer, friendInfo, changeChatWindowSiderInfo} = this.props.Zustand
+    let {customer, friendInfo, changeChatWindowSiderInfo,changeUserAvatar} = this.props.Zustand
     //如果点击的列表项是属于群聊（发起带有当前群聊房间id的请求，获取与当前用户不是好友关系的用户信息，
     // 属于好友关系的用户信息可以从已获得的好友信息列表获取）
     //从本地存储中获取该用户的好友列表数据
-    let friendList = JSON.parse(localStorage.getItem('friendList') as string), list: any[] = []
+    let friendList = JSON.parse(localStorage.getItem('friendList') as string), list: any[] = [],avatar:any = {}
     if (data.isGroupChat) {
       strangerInfoForGroup(data.room, Number(customer.user_id)).then((res: any) => {
+        avatar[customer.user_id] = customer.avatar
         list.push({
           isSelf: true,
           ...customer
@@ -265,6 +269,7 @@ class Home extends Component<any, any> {
         friendList.forEach((item: any) => {
           item.content.forEach((it: any) => {
             if (res.data.friendIds.indexOf(it.user_id) !== -1) {
+              avatar[it.user_id] = it.avatar
               list.push({
                 isFriend: true,
                 ...it
@@ -273,12 +278,14 @@ class Home extends Component<any, any> {
           })
         })
         res.data.strangerUsers.forEach((item: any) => {
+          avatar[item.user_id] = item.avatar
           list.push({
             isStranger: true,
             ...item
           })
         })
         changeChatWindowSiderInfo(list)
+        changeUserAvatar(0,avatar)
       })
     } else {
       friendList.forEach((item: any) => {
@@ -451,7 +458,7 @@ class Home extends Component<any, any> {
     //点击发消息，1.选择聊天菜单项、2.查看聊天列表中是否有与该好友的通讯记录，有就直接激活与该好友的聊天状态，没有就添加一个聊天记录项
     this.changeMenu(0, 'menu')
     const list = this.props.Zustand.chatList[this.props.Zustand.customer.user_id]
-    const {user_id, username, avatar} = event.detail.data
+    const {user_id, username} = event.detail.data
     let isInclude = false
     let data = {
       userId: user_id,
@@ -460,12 +467,10 @@ class Home extends Component<any, any> {
       time: new Date().getTime(),
       hasBeenRead: true,
       isGroupChat: false,
-      avatar,
     } as unknown as MsgDataType
 
     list.map((item: any) => {
       if (item.userId === user_id) {
-        //console.log(item.userId,user_id)
         isInclude = true
       }
       return true
@@ -491,10 +496,10 @@ class Home extends Component<any, any> {
         }
         this.CustomEventSendMsg(e)
       } else {
-        const {user_id, username, avatar} = this.props.Zustand.customer
+        const {user_id, username} = this.props.Zustand.customer
         //socket加入群聊
         this.props.socket.emit('inviteFriendJoinGroup', {
-          creator: {user_id, username, avatar},
+          creator: {user_id, username},
           members: data
         })
       }
@@ -503,7 +508,6 @@ class Home extends Component<any, any> {
       isShowFriendList: false
     })
   }
-
   render() {
     const {Sider, Content} = Layout
     const {
@@ -586,7 +590,6 @@ class Home extends Component<any, any> {
         </div>
         <Content className={'index-content'}>
           {listId[customer.user_id] !== undefined || friendListInfo?.index !== undefined ? this.state.listContent[this.state.currentMenu] : null}
-          {/*{friendListIndexAc !== undefined ? this.state.listContent[this.state.currentMenu] : null}*/}
         </Content>
         {showFriendCom ? <FriendApplication btnClick={this.showFriendApplication} confirm={this.confirmSendRequest}
                                             cancel={this.cancelFriendApp}></FriendApplication> : null}
@@ -627,7 +630,6 @@ class Home extends Component<any, any> {
         time: new Date().getTime(),
         hasBeenRead: true,
         isGroupChat: false,
-        avatar: '',
         isAssistant: true
       } as unknown as MsgDataType)
     }

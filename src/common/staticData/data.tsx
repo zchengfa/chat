@@ -139,7 +139,6 @@ export interface MsgDataType {
   user:string,
   type:string,
   msg:string,
-  avatar:string,
   time:string,
   isMute:boolean,
   hasBeenRead:boolean,

@@ -16,6 +16,7 @@ function Login(){
     const navigate = useNavigate()
     const setToken = useMessageStore((state:any)=> state.setToken)
     const setUserInfo = useMessageStore((state:any)=> state.setUserInfo)
+    const {changeUserAvatar} = useMessageStore((state:any)=> state)
     const login = (data:{username:string,password:string},status:boolean)=>{
         data.password = encrypt(data.password)
         loginRegisterAxios(data,status).then(res=>{
@@ -24,6 +25,7 @@ function Login(){
              *  1.1将token以及用户信息交给Zustand管理
              *  1.2将信息反馈给用户
              *  1.3跳转到首页
+             *  1.4保存头像数据
              * 2.出现错误
              *  2.1将错误信息反馈给用户
              */
@@ -32,6 +34,7 @@ function Login(){
                 if(status){
                     setToken(res.data.token)
                     setUserInfo(res.data.userInfo)
+                    changeUserAvatar(res.data.userInfo['user_id'],res.data.userInfo['avatar'])
                     let timer = setTimeout(()=>{
                         navigate('/home')
                         clearTimeout(timer)

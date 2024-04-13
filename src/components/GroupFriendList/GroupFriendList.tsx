@@ -73,7 +73,6 @@ export default function GroupFriendList(props:any){
                 return data.push({
                     user_id:item.user_id,
                     username:item.username,
-                    avatar:item.avatar
                 })
             })
             props.groupComBtnClick(isAdd,data.splice(0,8))

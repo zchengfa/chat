@@ -10,8 +10,8 @@ import withHook from "../../../hook/withHook";
 
 function ChatList (props:any){
 
-  const { chatList,listId,customer } = props.Zustand
- const {changeContextMenu} = useContextMenuStore((state:any)=> state)
+  const { chatList,listId,customer,userAvatar } = props.Zustand
+  const {changeContextMenu} = useContextMenuStore((state:any)=> state)
   const chatWithSender = (item:MsgDataType,id:any)=>{
     //判断点击项是否是在激活状态，防止重复点击
     if(listId[customer.user_id] !== id && !isMobile){
@@ -41,7 +41,7 @@ function ChatList (props:any){
         <div className={(item.isGroupChat ? listId[customer.user_id]?.toString() === item.room?.toString() : listId[customer.user_id]?.toString() === item.userId?.toString() ) && !isMobile ? 'message-box actived' : 'message-box'} onClick={()=> chatWithSender(item,item.isGroupChat ? item.room : item.userId)}>
           <Space className={'msg-left'}>
             <Badge dot={!item.hasBeenRead}>
-              { item.avatar.length ? <div className={'avatar'}><img style={item.isGroupChat ?{width:'2.5rem',borderRadius:'.2rem'} : {width:'2.5rem',height:'2.5rem',borderRadius:'.2rem'}} src={item.isGroupChat ? item.chatAvatar : item.avatar} alt=""/></div> : item.type === 'text' ? <Avatar shape={'square'} icon={<UserOutlined />}></Avatar> : <div className={'avatar'} style={{alignItems:'center',backgroundColor:'var(--success-font-color)'}}><FileTransIconComponent /></div> }
+              { userAvatar[item.userId]?.length && !item.isAssistant ? <div className={'avatar'}><img style={item.isGroupChat ?{width:'2.5rem',borderRadius:'.2rem'} : {width:'2.5rem',height:'2.5rem',borderRadius:'.2rem'}} src={item.isGroupChat ? userAvatar[item.room] : userAvatar[item.userId]} alt="avatar"/></div> : item.type === 'text' ? <Avatar shape={'square'} icon={<UserOutlined />}></Avatar> : <div className={'avatar'} style={{alignItems:'center',backgroundColor:'var(--success-font-color)'}}><FileTransIconComponent /></div> }
             </Badge>
           </Space>
           <Space className={'msg-right'}>

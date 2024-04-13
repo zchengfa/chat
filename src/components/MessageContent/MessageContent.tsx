@@ -22,7 +22,7 @@ class MessageContent extends Component<any, any> {
     return <div
       className={direction ? "message-item-left-box message-item-box" : "message-item-right-box message-item-box"}>
       <div className={'msg-avatar-box'}>
-        <img className={'msg-avatar'} src={item.avatar} alt="avatar"/>
+        <img className={'msg-avatar'} src={this.props.Zustand.userAvatar[item.userId]} alt="avatar"/>
         {item.msg.length > 15 || item.imgID ?
           <div className={item.isLeft && this.props.Zustand.friendInfo.isGroupChat ? 'angle angle-down' : 'angle'}
                style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div> : null}

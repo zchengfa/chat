@@ -1,8 +1,8 @@
 import './chatContent.sass'
-import {Layout, Divider, Input, Button, Upload, message, Avatar, Switch, Modal} from "antd";
+import {Layout, Divider, Input, Button, Upload, message, Modal} from "antd";
 import {operationsData, IconMenu, commonApplicationComponent} from "../../../common/staticData/data";
 import MessageContent from "../../../components/MessageContent/MessageContent";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import {
   createFileChunk,
   emojiToUtf16,
@@ -91,7 +91,6 @@ function ChatContent(props: any) {
         id,
         isSending:true,
         userId: customer.user_id,
-        avatar: customer.avatar,
         user: customer.username,
         isLeft: false,
         bgColor: 'var(--success-font-color)',
@@ -112,11 +111,9 @@ function ChatContent(props: any) {
         sender: customer.username,
         userId: customer.user_id,
         receiver: friendInfo[customer.user_id]?.user,
-        avatar: customer.avatar,
         sendTime: time,
         room: friendInfo[customer.user_id]?.isGroupChat ? listId[customer.user_id] : undefined,
         chatName: friendInfo[customer.user_id]?.user,
-        chatAvatar: friendInfo[customer.user_id]?.isGroupChat ? friendInfo[customer.user_id]?.avatar : undefined,
         isGroupChat: friendInfo[customer.user_id]?.isGroupChat,
         msg: emojiToUtf16(msg),
         msgCode: emojiIndex.length ? transMsgToNameCode(msg, emojiIndex) : ''
@@ -202,7 +199,6 @@ function ChatContent(props: any) {
           id,
           type: 'img',
           userId: customer.user_id,
-          avatar: customer.avatar,
           user: customer.username,
           isLeft: false,
           bgColor: 'var(--success-font-color)',
@@ -213,7 +209,6 @@ function ChatContent(props: any) {
           isGroupChat: friendInfo[customer.user_id]?.isGroupChat,
           room: friendInfo[customer.user_id]?.isGroupChat ? listId[customer.user_id] : undefined,
           chatName: friendInfo[customer.user_id]?.user,
-          chatAvatar: friendInfo[customer.user_id]?.isGroupChat ? friendInfo[customer.user_id]?.avatar : undefined,
         }, listId[customer.user_id])
 
         chunkList.forEach((item: any) => {
@@ -225,12 +220,10 @@ function ChatContent(props: any) {
             userId: customer.user_id,
             receiver: friendInfo[customer.user_id]?.user,
             rID: friendInfo[customer.user_id]?.userId,
-            avatar: customer.avatar,
             chunkCount: chunkList.length,
             sendTime: new Date().getTime(),
             room: friendInfo[customer.user_id]?.isGroupChat ? listId[customer.user_id] : undefined,
             chatName: friendInfo[customer.user_id]?.user,
-            chatAvatar: friendInfo[customer.user_id]?.isGroupChat ? friendInfo[customer.user_id]?.avatar : undefined,
           })
         })
       }
@@ -308,7 +301,7 @@ function ChatContent(props: any) {
             <span
               className={'receiver-title text-ellipsis'}>{friendInfo[customer.user_id]?.isGroupChat ? friendInfo[customer.user_id]?.chatName : friendInfo[customer.user_id]?.user}</span>
               {friendInfo[customer.user_id]?.isGroupChat ?
-                <span className={'receiver-title members-count'}>({chatWindowSiderInfo.members?.length})</span> : null}
+                <span className={'receiver-title members-count'}>({chatWindowSiderInfo[customer.user_id]?.length})</span> : null}
             </div>
             {
               friendInfo[customer.user_id]?.type !== 'self' ?

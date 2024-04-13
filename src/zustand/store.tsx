@@ -1,6 +1,13 @@
 import {create} from "zustand";
 import {MsgDataType, operationsData} from "../common/staticData/data";
-import {sortByLocaleWithObject, getFirstPinYin, verifyTime, dealMsgTime, isMobile} from "../util/util";
+import {
+  sortByLocaleWithObject,
+  getFirstPinYin,
+  verifyTime,
+  dealMsgTime,
+  isMobile,
+  adjustAvatarIsDiff
+} from "../util/util";
 import {
   openDB,
   getDataByCursorIndex,
@@ -377,7 +384,7 @@ export const useMessageStore = create((set) => {
         let data = allList[state.customer.user_id]
 
         data.map((item: any) => {
-          return item.userId === id || item.room === id ? item.hasBeenRead = status : null
+          return item?.userId?.toString() === id.toString() || item?.room?.toString() === id.toString() ? item.hasBeenRead = status : null
         })
         setStorageData('chatList', allList)
         return {
@@ -386,7 +393,7 @@ export const useMessageStore = create((set) => {
       })
     },
     //改变消息发送状态
-    changeSendMsgStatus:(response:{msgId:string,receiver:number,isFailed?:boolean})=>{
+    changeSendMsgStatus:(response:{msgId:string,receiver:number | string,isFailed?:boolean})=>{
       set((state:any)=>{
         let list = state.msgData
         list[response.receiver].map((item:any)=>{
@@ -481,7 +488,7 @@ export const useMessageStore = create((set) => {
           state.saveMsgData({
             id:item.id,
             userId: item.userId,
-            avatar: item.avatar,
+            //avatar: item.avatar,
             msg: item.msg,
             img: item.type === 'img' ? item.img : undefined,
             imgID: item.type === 'img' ? item.imgID : undefined,
@@ -717,6 +724,27 @@ export const useMessageStore = create((set) => {
       set(()=>{
         return {
           chatWindowStatus:status
+        }
+      })
+    },
+    //头像数据
+    userAvatar:getStorageData('userAvatar',{}),
+    changeUserAvatar(userId:string | number,avatar:any){
+      set((state:any)=>{
+        let data = state.userAvatar
+        if(typeof avatar === 'object'){
+          for (const keyTwo in avatar) {
+            if(!adjustAvatarIsDiff({userId:keyTwo,avatar:avatar[keyTwo]},data)){
+              data[keyTwo] = avatar[keyTwo]
+            }
+          }
+        }
+        else{
+          data[userId]= avatar
+        }
+        setStorageData('userAvatar',data)
+        return {
+          userAvatar: data
         }
       })
     }

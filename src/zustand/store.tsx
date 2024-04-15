@@ -506,6 +506,45 @@ export const useMessageStore = create((set) => {
         }
       })
     },
+    changeChatListByOfflineMsg(data:any){
+      set((state:any)=>{
+        let allList = state.chatList,index = undefined
+        //判断chatList中是否有该好友数据
+        allList[state.customer.user_id].forEach((item:any,i:number)=>{
+          if(item.userId.toString() === data.userId.toString()){
+            index = i
+            allList[state.customer.user_id][i] = data
+          }
+        })
+        if(index === undefined){
+          allList[state.customer.user_id].unshift(data)
+        }
+        setStorageData('chatList', allList)
+        return {
+          chatList:allList
+        }
+      })
+    },
+    saveMsgDataByOfflineMessage(msgArr:MsgDataType[],id:string | number){
+      set((state:any)=>{
+        let data = state.msgData
+        msgArr.forEach((item:any)=>{
+          item.bgColor = 'var(--white-color)'
+          item.time = item['sendTime']
+          delete item['sendTime']
+          item.isLeft = true
+          if(!data[id]){
+            data[id] = []
+          }
+          data[id].push(item)
+        })
+        operateIndexedDB(id,data)
+        state.getCurrentMsgData(Number(id))
+        return {
+          msgData: data
+        }
+      })
+    },
     //最新沟通过的好友信息
     friendInfo: getStorageData('friendInfo', {}),
     saveFriendInfo: (item: MsgDataType) => {
@@ -545,8 +584,6 @@ export const useMessageStore = create((set) => {
           friendList: newArr
         }
       })
-
-
     },
     changeBadgeCount(count: number = 1) {
       set((state: any) => {

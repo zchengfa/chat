@@ -7,6 +7,23 @@ export const socket:any = io((process.env.REACT_APP_SOCKET_IO)as string)
 export function SocketEvent(data:any){
     const {Zustand,Message} = data
     const user = Zustand.customer
+    function changeListFun(data:any,status:boolean){
+        Zustand.changeChatList({
+            userId:data.userId,
+            user:data.sender,
+            chatName:data.isGroupChat?data.chatName:undefined,
+            type:data.type,
+            msg:data.type === 'msg' ? data.msg : '[图片]',
+            msgCode:data.type === 'msg' ? data.msgCode : data.file,
+            time:data.sendTime,
+            isMute:true,
+            img:data.img ? data.img : undefined,
+            imgID:data.imgID,
+            room:data.isGroupChat ?data.room : undefined,
+            hasBeenRead:status,
+            isGroupChat:data.isGroupChat
+        } as unknown as MsgDataType,data.isGroupChat ? data.room : data.userId,true)
+    }
     socket.emit('online',{
         name:user.username,
         account:user.account,
@@ -24,6 +41,29 @@ export function SocketEvent(data:any){
         Zustand.changeFriendList(friendList,true)
     })
 
+    socket.on('receiveOfflineMessage',(message:any)=>{
+        let senderArr:any[] = [],data:any = {}
+        for (const item of message) {
+            item.user = item.sender
+            delete item.sender
+            if(senderArr.indexOf(item.userId) === -1){
+                senderArr.push(item.userId)
+                data[item.userId] = []
+            }
+        }
+
+        for (const item of message) {
+            data[item.userId].push(item)
+        }
+
+        senderArr.forEach((item:any)=>{
+            data[item].length > 1 ? Zustand.changeChatListByOfflineMsg(data[item][data[item].length -1]) : Zustand.changeChatListByOfflineMsg(data[item][0])
+            //store保存聊天消息
+            Zustand.saveMsgDataByOfflineMessage(data[item],item)
+        })
+
+    })
+
     socket.on('receiveMessage',(data:any)=>{
         let readStatus = data.isGroupChat ? Zustand.listId[Zustand.customer.user_id]?.toString() === data.room.toString()   : Zustand.listId[Zustand.customer.user_id]?.toString() === data.userId.toString()
         let existAvatar = Boolean(Zustand.userAvatar[data.isGroupChat ? data.room : data.userId])
@@ -35,38 +75,21 @@ export function SocketEvent(data:any){
             })
         }
         if(data.type === 'msg'){
-           changeListFun(data,readStatus)
+            changeListFun(data,readStatus)
         }
         else if(data.type === 'img'){
-           data.file =new Uint8Array(data.file)
-           Zustand.changeFileBuffer(data)
-           let d = Zustand.fileBuffer[data.userId][data.identity][0]
-           if(d.file.length === d.totalSize){
-               //待完善，当前已得到图片的base64数据
-              let {file,isGroupChat,sendTime,sender,type,userId,identity,room,chatName} = d
-              changeListFun({
-                  isGroupChat,sendTime,sender,type,userId,room,chatName,
-                  img:Uint8ArrayToBase64(file),
-                  imgID:identity
-              },readStatus)
-           }
-        }
-        function changeListFun(data:any,status:boolean){
-           Zustand.changeChatList({
-               userId:data.userId,
-               user:data.sender,
-               chatName:data.isGroupChat?data.chatName:undefined,
-               type:data.type,
-               msg:data.type === 'msg' ? data.msg : '[图片]',
-               msgCode:data.type === 'msg' ? data.msgCode : data.file,
-               time:data.sendTime,
-               isMute:true,
-               img:data.img ? data.img : undefined,
-               imgID:data.imgID,
-               room:data.isGroupChat ?data.room : undefined,
-               hasBeenRead:status,
-               isGroupChat:data.isGroupChat
-           } as unknown as MsgDataType,data.isGroupChat ? data.room : data.userId,true)
+            data.file =new Uint8Array(data.file)
+            Zustand.changeFileBuffer(data)
+            let d = Zustand.fileBuffer[data.userId][data.identity][0]
+            if(d.file.length === d.totalSize){
+                //待完善，当前已得到图片的base64数据
+                let {file,isGroupChat,sendTime,sender,type,userId,identity,room,chatName} = d
+                changeListFun({
+                    isGroupChat,sendTime,sender,type,userId,room,chatName,
+                    img:Uint8ArrayToBase64(file),
+                    imgID:identity
+                },readStatus)
+            }
         }
     })
     /**

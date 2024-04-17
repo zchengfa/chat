@@ -292,7 +292,7 @@ function ChatContent(props: any) {
              open={modalOpen} onCancel={() => showHideModal(false)}
              onOk={deleteHistory}
       >
-        <span>删除聊天记录，包括聊天中的图片、文件、视频等内容</span>
+        <span style={{display:"inline-block",textAlign:'center'}}>删除聊天记录，包括聊天中的图片、文件、视频等内容</span>
       </Modal>
       <Header className={isMobile ? 'user-box user-box-mobile' : 'user-box'}>
         {

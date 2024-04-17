@@ -4,7 +4,7 @@ import { UserOutlined } from '@ant-design/icons'
 import {BellIconComponent, FileTransIconComponent} from '../../../common/svg/svg'
 import { MsgDataType,contextMenuChatList } from '../../../common/staticData/data'
 import {isMobile} from "../../../util/util";
-import {useContextMenuStore} from "../../../zustand/store";
+import {useContextMenuStore,useMessageStore} from "../../../zustand/store";
 
 import withHook from "../../../hook/withHook";
 
@@ -12,6 +12,7 @@ function ChatList (props:any){
 
   const { chatList,listId,customer,userAvatar } = props.Zustand
   const {changeContextMenu} = useContextMenuStore((state:any)=> state)
+  const {changeContextMenuOperateTarget} = useMessageStore((state:any)=> state)
   const chatWithSender = (item:MsgDataType,id:any)=>{
     //判断点击项是否是在激活状态，防止重复点击
     if(listId[customer.user_id] !== id && !isMobile){
@@ -31,7 +32,10 @@ function ChatList (props:any){
       contextMenuEl.style.top = e.clientY + 'px'
       const liEl:any =document.getElementsByClassName('list-item').item(index)
       let data = liEl.dataset.chattype === 'true' ? contextMenuChatList.isGroupChat : contextMenuChatList.isNormal
+      //改变右键菜单
       changeContextMenu(data)
+      //改变右键操作目标
+      changeContextMenuOperateTarget(index)
     }
   }
 

@@ -589,7 +589,9 @@ class Home extends Component<any, any> {
           </div>
         </div>
         <Content className={'index-content'}>
-          {listId[customer.user_id] !== undefined || friendListInfo?.index !== undefined ? this.state.listContent[this.state.currentMenu] : null}
+          {this.state.currentMenu === '聊天' && listId[customer.user_id] !== undefined ? this.state.listContent['聊天'] : null}
+          {this.state.currentMenu === '通讯录' && friendListInfo?.index !== undefined ? this.state.listContent['通讯录'] : null}
+          {this.state.currentMenu === '收藏' ? this.state.listContent['收藏'] : null}
         </Content>
         {showFriendCom ? <FriendApplication btnClick={this.showFriendApplication} confirm={this.confirmSendRequest}
                                             cancel={this.cancelFriendApp}></FriendApplication> : null}

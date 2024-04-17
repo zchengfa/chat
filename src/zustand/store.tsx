@@ -35,7 +35,10 @@ function getMsgDataFromIndexedDB(): Promise<any> {
       getDataByCursorIndex(db, 'chat').then((res: any) => {
         let msgData: any = {}
         res.list.forEach((item: any) => {
-          msgData[item.userId] = [...item.messages]
+          if(msgData[item.userId]){
+            msgData[item.userId] = [...item.messages]
+          }
+
         })
         resolve(msgData)
         closeDB(db)
@@ -782,6 +785,42 @@ export const useMessageStore = create((set) => {
         setStorageData('userAvatar',data)
         return {
           userAvatar: data
+        }
+      })
+    },
+    //chatList鼠标右键操作目标
+    contextMenuOperateTarget:undefined,
+    changeContextMenuOperateTarget(target:number){
+      set(()=>{
+        return {
+          contextMenuOperateTarget:target
+        }
+      })
+    },
+    //删除聊天
+    deleteChat(keepMessageRecords:boolean = false){
+      set((state:any)=>{
+        let target = state.contextMenuOperateTarget
+        let allList = state.chatList,targetObj = allList[state.customer.user_id][target]
+        let id = targetObj.isGroupChat ? targetObj.room : targetObj.userId
+        let listId = state.listId
+        //将该目标从chatList中删除
+        allList[state.customer.user_id].splice(target,1)
+
+        //还需判断当前删除的是不是正在聊天的那个，若是，则需要删除侧边窗口信息，并且激活id也需要清除
+        if(id === listId[state.customer.user_id]){
+          listId[state.customer.user_id] = undefined
+        }
+        //删除聊天记录
+        if(!keepMessageRecords){
+          operateIndexedDB(id,[])
+        }
+        setStorageData('chatList',allList)
+        setStorageData('listId',listId)
+        return {
+          contextMenuOperateTarget:undefined,
+          chatList:allList,
+          listId
         }
       })
     }

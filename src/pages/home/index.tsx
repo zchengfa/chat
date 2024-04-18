@@ -19,6 +19,7 @@ import {CollectionListContent} from "./CollectionListContent/CollectionListConte
 import {isMobile} from "../../util/util";
 import NavBar from "../../components/Common/NavBar/NavBar";
 import TabBar from "../../components/Common/TabBar/TabBar";
+import ChatMoments from "./ChatMoments/ChatMoments";
 
 class Home extends Component<any, any> {
   constructor(props: any) {
@@ -143,7 +144,10 @@ class Home extends Component<any, any> {
       })
       if ([0, 1, 2].indexOf(childIndex) === -1) {
         //点击的是顶部除前三个菜单项
-        //console.log(m)
+        //点的是顶部朋友圈选项，显示/隐藏朋友圈组件
+        if(childIndex === 4){
+          this.props.Zustand.showChatMoments()
+        }
       }
     } else {
       //点击的是底部三个菜单项
@@ -527,7 +531,7 @@ class Home extends Component<any, any> {
       currentMenu,
       currentIndex,
     } = this.state
-    const {listId, customer, friendListInfo, friendList} = this.props.Zustand
+    const {listId, customer, friendListInfo, friendList,isShowChatMoments} = this.props.Zustand
     const {contextHolder} = this.props.Message
 
     return <Fragment>
@@ -597,6 +601,7 @@ class Home extends Component<any, any> {
                                             cancel={this.cancelFriendApp}></FriendApplication> : null}
         {isShowFriendList ?
           <GroupFriendList list={friendList} groupComBtnClick={this.groupComBtnClick}></GroupFriendList> : null}
+        {isShowChatMoments ? <ChatMoments></ChatMoments> : null}
       </Layout> : <Layout onClick={this.blurCom}>
         <NavBar add title={'聊天'}></NavBar>
         <ChatList chatWithSender={this.chatWithSender}></ChatList>

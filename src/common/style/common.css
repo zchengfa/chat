@@ -19,6 +19,8 @@ body{
     --tabbar-height: 4rem;
     --actived-color: #219130;
     --mobile-tab-content-height: calc(100vh - var(--nav-height) - var(--tabbar-height));
+    --error-color: #e56161;
+    --moments-blue-color: #6e96d5;
 }
 .anticon svg{
     vertical-align: initial;
@@ -55,8 +57,7 @@ body{
     color: var(--white-color);
 }
 div::-webkit-scrollbar{
-    width: .4rem;
-    display: block;
+    width: 0;
     scroll-behavior: smooth;
 }
 div:hover::-webkit-scrollbar-thumb{

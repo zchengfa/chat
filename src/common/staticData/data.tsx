@@ -1,5 +1,5 @@
 
-import {PlusCircleOutlined,PlusOutlined, UserAddOutlined} from '@ant-design/icons'
+import {PlusCircleOutlined,PlusOutlined, UserAddOutlined,CloseOutlined} from '@ant-design/icons'
 import {
   EmojiIconComponent,
   FileIconComponent,
@@ -34,7 +34,12 @@ import {
   SingleCameraIconComponent,
   LocationIconComponent,
   AudioInputIconComponent,
-  CollectionIconComponent, IDCardIconComponent, MusicIconComponent,
+  CollectionIconComponent,
+  IDCardIconComponent,
+  MusicIconComponent,
+  BellMsgIconComponent,
+  RefreshIconComponent,
+  FixedIconComponent, MinimizeIconComponent,
 } from '../svg/svg'
 
 import Emoji from '../../components/Common/Emoji/Emoji'
@@ -53,6 +58,34 @@ export interface MenuType {
 export const contextMenuChatList = {
   isGroupChat:['置顶','标为未读','消息免打扰','修改群聊名称','设置备注','在独立窗口中打开','保存到通讯录','不显示聊天','删除聊天'],
   isNormal:['置顶','标为未读','消息免打扰','在独立窗口中打开','不显示聊天','删除聊天']
+}
+
+//朋友圈顶部操作栏数据
+export const chatMomentsTopData = {
+  left:[
+    {
+      title:'消息',
+      icon:<BellMsgIconComponent></BellMsgIconComponent>
+    },
+    {
+      title:'刷新',
+      icon:<RefreshIconComponent></RefreshIconComponent>
+    }
+  ],
+  right:[
+    {
+      title:'置顶',
+      icon:<FixedIconComponent></FixedIconComponent>
+    },
+    {
+      title:'最小化',
+      icon:<MinimizeIconComponent></MinimizeIconComponent>
+    },
+    {
+      title:'关闭',
+      icon:<CloseOutlined></CloseOutlined>
+    }
+  ]
 }
 
 //首页侧边栏数据

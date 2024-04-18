@@ -823,6 +823,16 @@ export const useMessageStore = create((set) => {
           listId
         }
       })
+    },
+    //朋友圈
+    isShowChatMoments:false,
+    showChatMoments(){
+      set((state:any)=>{
+        let status = state.isShowChatMoments
+        return {
+          isShowChatMoments:!status
+        }
+      })
     }
   }
 })
@@ -892,7 +902,6 @@ export const useContextMenuStore = create((set)=>{
     contextMenu:[],
     changeContextMenu:(menu:any[])=>{
       set(()=>{
-
         return {
           contextMenu:menu
         }

@@ -1,0 +1,141 @@
+@mixin flexHorization
+  display: flex
+  justify-content: space-between
+  align-items: center
+.chat-moments-container
+  position: absolute
+  left: 50%
+  top: -5vh
+  width: 40vw
+  min-width: 22rem
+  height: 100vh
+  background-color: var(--white-color)
+  transform: translateX(-50%)
+  z-index: 99
+  .moments-operate-btn
+    width: 100%
+    position: absolute
+  .btn-item-box,.moments-operate-btn,.btn-icon
+    @include flexHorization
+  .btn-icon
+    justify-content: center
+    width: 2.2rem
+    height: 2.2rem
+    cursor: pointer
+    color: var(--white-color)
+    font-size: 1.2rem
+  .right-btn-box .btn-icon:last-child:hover
+    background-color: var(--error-color)
+  .moments-content
+    width: 100%
+    height: 100%
+    overflow-y: scroll
+    .content-header
+      width: 100%
+      height: 30%
+      background: url("https://img1.baidu.com/it/u=2833240280,2198243692&fm=253&fmt=auto&app=138&f=JPEG?w=890&h=500")
+      background-size: cover
+      .moments-user
+        position: relative
+        right: .5rem
+        top: 100%
+        padding: 0 1rem
+        width: auto
+        @include flexHorization
+        justify-content: flex-end
+        align-items: flex-start
+        transform: translateY(-70%)
+        .user
+          margin-top: .5rem
+          margin-right: 1rem
+          color: var(--white-color)
+        .user-avatar
+          width: 4rem
+          height: 4rem
+          border-radius: .2rem
+    .moments-list
+      padding: 1.5rem
+      color: var(--moments-blue-color)
+      .moments-item
+        margin-top: 1rem
+        @include flexHorization
+        align-items: flex-start
+        .moments-left,.moments-avatar
+          width: 2.4rem
+          height: 2.4rem
+          border-radius: .2rem
+        .moments-left
+          margin-right: .8rem
+        .moments-right
+          flex: 1
+          display: flex
+          flex-direction: column
+          justify-content: flex-start
+          align-items: flex-start
+          .moments-images
+            margin-left: -.5rem
+            @include flexHorization
+            flex-wrap: wrap
+            width: 100%
+            .content-img-item
+              padding-left: .5rem
+              padding-top: .5rem
+              width: 33.33%
+          .right-item-span
+            padding: .4rem 0
+          .username
+            padding-top: 0
+          .moments-text
+            color: var(--normal-text-color)
+          .send-time
+            color: var(--deep-gray-color)
+          .time-operate
+            padding-right: .3rem
+            width: 100%
+            @include flexHorization
+            font-size: var(--middle-font-size)
+            .like-operate-box
+              position: relative
+              @include flexHorization
+              padding: .5rem .5rem 0
+              font-size: 1rem
+              line-height: 1rem
+              border-radius: .2rem
+              background-color: var(--gray-color)
+              cursor: pointer
+              &:hover
+                background-color: var(--deep-gray-color)
+              .operate-box
+                position: absolute
+                top: 50%
+                right: 120%
+                @include flexHorization
+                transform: translateY(-50%)
+                border-radius: .2rem
+                overflow: hidden
+                z-index: 99
+                .operate-item-btn
+                  width: 5rem
+                  height: 2rem
+                  border: none
+                  font-size: var(--middle-font-size)
+                  color: var(--white-color)
+                  background-color: #545252
+                  &:hover
+                    background-color: var(--normal-text-color)
+          .moments-comment
+            margin-top: .5rem
+            padding: .5rem
+            width: 100%
+            background-color: var(--gray-color)
+            border-radius: .3rem
+            .empty-love-icon
+              margin-right: .5rem
+              font-size: 1.3rem
+            .liked-box
+              @include flexHorization
+              justify-content: flex-start
+            .comments-item
+              margin-top: .2rem
+      .moments-item:not(:last-child) .moments-right
+        border-bottom: 1px solid var(--gray-color)

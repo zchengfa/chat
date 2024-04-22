@@ -21,6 +21,7 @@ body{
     --mobile-tab-content-height: calc(100vh - var(--nav-height) - var(--tabbar-height));
     --error-color: #e56161;
     --moments-blue-color: #6e96d5;
+    --aside-color: #6c53de;
 }
 .anticon svg{
     vertical-align: initial;

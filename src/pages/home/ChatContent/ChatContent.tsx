@@ -362,7 +362,7 @@ function ChatContent(props: any) {
           overflowY: 'scroll',
         }}>
           {/*    聊天窗口包含的好友或者群聊信息*/}
-          <ChatSiderWindow showWindowPop={showWindowPop} showHideModal={showHideModal}></ChatSiderWindow>
+          {chatWindowStatus ? <ChatSiderWindow showWindowPop={showWindowPop} showHideModal={showHideModal}></ChatSiderWindow> : null}
         </div>
         : null
     }

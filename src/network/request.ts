@@ -49,6 +49,15 @@ export function strangerInfoForGroup(groupId:string | number,user_id:number){
   })
 }
 
+export function getChatMomentsData(user_id:string | bigint){
+  return Post({
+    url:'/getChatMoments',
+    data:{
+      user_id
+    }
+  })
+}
+
 
 
 

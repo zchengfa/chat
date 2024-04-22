@@ -52,7 +52,8 @@ class Home extends Component<any, any> {
       isSelf: undefined,
       isShowPop: undefined,
       acceptApplyData: null,
-      isShowFriendList: false
+      isShowFriendList: false,
+      hiddeOperateBtn: false
     }
   }
 
@@ -189,7 +190,13 @@ class Home extends Component<any, any> {
     name === 'menu' ? arr = this.state.menu : arr = this.state.otherMenu
     if (name === 'menu' && [0, 1, 2].indexOf(index) !== -1) {
       this.setState({
-        currentMenu: arr[index].title
+        currentMenu: arr[index].title,
+        hiddeOperateBtn: false
+      })
+    }
+    else if(name === 'menu' && [3,4,5].indexOf(index) !== -1){
+      this.setState({
+        hiddeOperateBtn: true
       })
     }
   }
@@ -530,6 +537,7 @@ class Home extends Component<any, any> {
       isShowFriendList,
       currentMenu,
       currentIndex,
+      hiddeOperateBtn
     } = this.state
     const {listId, customer, friendListInfo, friendList,isShowChatMoments} = this.props.Zustand
     const {contextHolder} = this.props.Message
@@ -551,7 +559,7 @@ class Home extends Component<any, any> {
                    prefix={isShowFriendBtn ? <UserSwitchOutlined/> : <SearchOutlined/>}
                    placeholder={placeholder}></Input>
             {isShowFriendBtn ? <Button className={'cancel-btn'} onClick={this.closeAddFriendBtn}>取消</Button> :
-              currentMenu === '收藏' ? undefined :
+              currentMenu === '收藏' || hiddeOperateBtn ? undefined :
                 <Button className={'normal'} style={{marginLeft: '1rem', backgroundColor: 'var(--gray-color)'}}
                         icon={searchRightComponent}></Button>}
           </div>

@@ -5,9 +5,31 @@ import {EmptyLoveIconComponent, TwoDotIconComponent} from "../../../common/svg/s
 import {useEffect, useState} from "react";
 import {dealMsgTime} from "../../../util/util";
 import {message} from "antd";
+import {getChatMomentsData} from "../../../network/request";
+
+//import axios, { AxiosResponse} from "axios";
 
 function ChatMoments (props:any){
   const [messageApi,contextHolder] = message.useMessage()
+  const {showChatMoments,customer} = useMessageStore((state:any)=> state)
+
+  // axios.post('http://localhost:4000/saveMoments', {
+  //   user_id: customer.user_id,
+  //   text: '天气特别好，不仅让人们感受到大自然的美丽，还启示着人们珍惜当下的美好时光。在这美好的天气里，勇敢面对生活的挑战，让人生更加充实而有意义。',
+  //   images: [
+  //     'https://img2.baidu.com/it/u=3561988920,3951379968&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
+  //     'https://img2.baidu.com/it/u=1280140863,2947445516&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
+  //     'https://img0.baidu.com/it/u=3102940913,2464544074&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
+  //     'https://img0.baidu.com/it/u=4236361924,4020603376&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
+  //   ],
+  //   sendTime: new Date().getTime(),
+  // },{
+  //   headers:{
+  //     Authorization:sessionStorage.getItem('token')
+  //   }
+  // }).then ((res:AxiosResponse) => {
+  //   console.log(res)
+  // })
 
   const momentsData:any[] = [
     {
@@ -69,6 +91,9 @@ function ChatMoments (props:any){
   ]
 
   const [operateStatus,setOperateStatus] = useState(()=>{
+    getChatMomentsData(customer.user_id).then((res:any)=>{
+      console.log(res)
+    })
     let data:any = {}
     momentsData?.forEach((item:any)=>{
       data[item.user.user_id] = false
@@ -76,8 +101,6 @@ function ChatMoments (props:any){
     return data
   })
 
-
-  const {showChatMoments} = useMessageStore((state:any)=> state)
   const btnClick = (type:number,index:number)=>{
     if(type === 1 && index === 2){
       showChatMoments()

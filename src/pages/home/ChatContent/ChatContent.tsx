@@ -16,6 +16,7 @@ import {RcFile} from "antd/es/upload";
 import NavBar from "../../../components/Common/NavBar/NavBar";
 import Chat from "../../../components/Chat/Chat";
 import ChatSiderWindow from "../../../components/ChatSiderWindow/ChatSiderWindow";
+import screenShot from 'js-web-screen-shot'
 
 function ChatContent(props: any) {
   const {Header, Content, Footer} = Layout
@@ -43,6 +44,7 @@ function ChatContent(props: any) {
   const [messageApi, contextHolder] = message.useMessage()
   const {moreHorization} = commonApplicationComponent
   const [modalOpen, setModalOpen] = useState(false)
+  const [screenShotImg,setScreenShot] = useState([])
 
   useEffect(() => {
     changeWindowStatus(false)
@@ -162,9 +164,30 @@ function ChatContent(props: any) {
       case '表情':
         changeEmojiStatus()
         break;
+      case '截图':
+        screenShotEvent()
+        break;
     }
   }
 
+  /**
+   * 截图
+   * @constructor
+   */
+  const screenShotEvent = ()=>{
+    new screenShot({
+      completeCallback:(res:{base64:string,cutInfo:any})=>{
+        //保存截图
+        screenShotImg.push((res.base64) as never)
+        setScreenShot(JSON.parse(JSON.stringify(screenShotImg)))
+        //输入框聚焦
+        textAreaRef.current?.focus()
+      },
+      closeCallback:()=>{
+        console.log('截图窗口关闭')
+      }
+    })
+  }
   const CustomEventChooseEmoji = (event: any) => {
 
     let data = msg + event.detail.emoji
@@ -342,7 +365,12 @@ function ChatContent(props: any) {
             </div>
           </div>
           <div className={'text-area-box'}>
-            <TextArea ref={textAreaRef} style={{height: '100%', resize: 'none'}} bordered={false} value={msg}
+            {
+              screenShotImg?.map((item:any,index:number)=>{
+                return <img style={{width:'100px',height:'auto'}} src={item} alt="screent shot" key={index}/>
+              })
+            }
+            <TextArea ref={textAreaRef} style={{flex:1,height: '100%', resize: 'none'}} bordered={false} value={msg}
                       onKeyDown={keyboardSendMsg} onChange={changeMsg} onFocus={textareaFocus}></TextArea>
           </div>
           <div className={'send-btn-box'}>

@@ -17,6 +17,7 @@ import NavBar from "../../../components/Common/NavBar/NavBar";
 import Chat from "../../../components/Chat/Chat";
 import ChatSiderWindow from "../../../components/ChatSiderWindow/ChatSiderWindow";
 import screenShot from 'js-web-screen-shot'
+import {Md5} from "ts-md5";
 
 function ChatContent(props: any) {
   const {Header, Content, Footer} = Layout
@@ -156,6 +157,56 @@ function ChatContent(props: any) {
     if (e.keyCode === 13 && msg.length) {
       sendMsg(msg)
     }
+    if(e.keyCode === 13 && screenShotImg.length){
+      sendScreenShot()
+    }
+  }
+
+  /**
+   *@description 发送截图
+   */
+  const sendScreenShot = ()=>{
+    let id = generateID(),imgID = Md5.hashAsciiStr('encrypt file' + new Date().getTime())
+    screenShotImg.forEach((item:any)=> {
+      props.socket.emit('sendMsg',{
+        id,
+        type:'msg',
+        img:item,
+        imgID,
+        isLeft: false,
+        msg:'[图片]',
+        sender: customer.username,
+        userId: customer.user_id,
+        receiver: friendInfo[customer.user_id]?.user,
+        rID: friendInfo[customer.user_id]?.userId,
+        sendTime: new Date().getTime(),
+        room: friendInfo[customer.user_id]?.isGroupChat ? listId[customer.user_id] : undefined,
+        chatName: friendInfo[customer.user_id]?.user,
+      },(response: any) => {
+        //有响应，说明消息已经发送给了服务器（可以清除消息发送状态）
+        changeSendMsgStatus({msgId: response, receiver:friendInfo[customer.user_id]?.userId})
+      })
+
+      changeChatList({
+        id,
+        type: 'img',
+        userId: customer.user_id,
+        user: customer.username,
+        isLeft: false,
+        bgColor: 'var(--success-font-color)',
+        msg: '[图片]',
+        imgID,
+        img: item,
+        time: new Date().getTime(),
+        isGroupChat: friendInfo[customer.user_id]?.isGroupChat,
+        room: friendInfo[customer.user_id]?.isGroupChat ? listId[customer.user_id] : undefined,
+        chatName: friendInfo[customer.user_id]?.user,
+      }, listId[customer.user_id])
+    })
+
+    //清空截图数据
+    setScreenShot([])
+
   }
 
   const iconClick = (e: any, item: any) => {
@@ -187,6 +238,14 @@ function ChatContent(props: any) {
         console.log('截图窗口关闭')
       }
     })
+  }
+
+  //发送按钮
+  const send = ()=>{
+    sendMsg(msg)
+    if(screenShotImg.length){
+      sendScreenShot()
+    }
   }
   const CustomEventChooseEmoji = (event: any) => {
 
@@ -374,7 +433,7 @@ function ChatContent(props: any) {
                       onKeyDown={keyboardSendMsg} onChange={changeMsg} onFocus={textareaFocus}></TextArea>
           </div>
           <div className={'send-btn-box'}>
-            <Button className={'send-button'} size={'small'} onClick={() => sendMsg(msg)}>发送(S)</Button>
+            <Button className={'send-button'} size={'small'} onClick={send}>发送(S)</Button>
           </div>
         </Footer>
       }

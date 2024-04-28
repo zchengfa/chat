@@ -65,6 +65,7 @@ export function SocketEvent(data:any){
     })
 
     socket.on('receiveMessage',(data:any)=>{
+        console.log(data)
         let readStatus = data.isGroupChat ? Zustand.listId[Zustand.customer.user_id]?.toString() === data.room.toString()   : Zustand.listId[Zustand.customer.user_id]?.toString() === data.userId.toString()
         let existAvatar = Boolean(Zustand.userAvatar[data.isGroupChat ? data.room : data.userId])
         //本地没有对方的头像数据，需要获取一下

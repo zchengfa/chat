@@ -124,10 +124,10 @@ export function verifyTime(arr:any[]){
  * @param separator { string | string[] | undefined } 时间分割符
  * @return { string } 返回处理后的时间
  */
-export function dealMsgTime (time:number,separator:string | any[] = ['/',':']){
+export function dealMsgTime (time:number,separator:string | any[] = ['/',':']): string{
 
   //返回处理后的时间
-  let showTime = undefined,S = Object.prototype.toString.call(separator),YS = '',HS = ''
+  let showTime: string,S = Object.prototype.toString.call(separator),YS = '',HS = ''
 
   if( S === '[object String]' ){
     YS = `YYYY` + separator + `MM` + separator + `DD`
@@ -285,7 +285,7 @@ export function utf16ToEmoji(str:string){
  * @param indexArr { any[] } 带有表情在消息中的位置，以及需要转换的字符
  * @return { string } 返回转换后的消息
  */
-export function transMsgToNameCode(str:string,indexArr:any[]){
+export function transMsgToNameCode(str:string,indexArr:any[]): string{
   let strCode = '',preStrArr:any[] = []
   let i = 0
   indexArr?.map((item:any,index:number)=>{

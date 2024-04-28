@@ -32,13 +32,14 @@ function getMsgDataFromIndexedDB(): Promise<any> {
       indexOptions: {userId: true}
     }).then((DB: any) => {
       let db = DB.db
+
       getDataByCursorIndex(db, 'chat').then((res: any) => {
         let msgData: any = {}
         res.list.forEach((item: any) => {
-          if(msgData[item.userId]){
-            msgData[item.userId] = [...item.messages]
+          if(!item.messages){
+            item.messages = []
           }
-
+          msgData[item.userId] = [...item.messages]
         })
         resolve(msgData)
         closeDB(db)

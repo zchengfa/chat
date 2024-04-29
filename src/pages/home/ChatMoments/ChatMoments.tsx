@@ -30,70 +30,68 @@ function ChatMoments (props:any){
   // }).then ((res:AxiosResponse) => {
   //   console.log(res)
   // })
-
-  const momentsData:any[] = [
-    {
-      user:{
-        user_id:1234,
-        username:'小沫',
-        avatar:'https://img1.baidu.com/it/u=2763978340,265256553&fm=253&fmt=auto&app=120&f=JPEG?w=200&h=200'
+  const [momentsData,setMomentsData] = useState(()=>{
+    return [
+      {
+        user:{
+          user_id:1234,
+          username:'小沫',
+          avatar:'https://img1.baidu.com/it/u=2763978340,265256553&fm=253&fmt=auto&app=120&f=JPEG?w=200&h=200'
+        },
+        content:{
+          moments_text:'天气特别好，不仅让人们感受到大自然的美丽，还启示着人们珍惜当下的美好时光。在这美好的天气里，勇敢面对生活的挑战，让人生更加充实而有意义。',
+          images:[
+            'https://img2.baidu.com/it/u=3561988920,3951379968&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
+            'https://img2.baidu.com/it/u=1280140863,2947445516&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
+            'https://img0.baidu.com/it/u=3102940913,2464544074&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
+            'https://img0.baidu.com/it/u=4236361924,4020603376&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
+          ],
+          send_time:1713416890871,
+          content_id:374284
+        },
+        location:'加利福尼亚',
+        liked:['靓仔','alen'],
+        comments:[
+          {
+            comments_user_id:24334,
+            username:'靓仔',
+            comment_content:'真好啊',
+            comment_id:6666
+          }
+        ]
       },
-      content:{
-        text:'天气特别好，不仅让人们感受到大自然的美丽，还启示着人们珍惜当下的美好时光。在这美好的天气里，勇敢面对生活的挑战，让人生更加充实而有意义。',
-        images:[
-          'https://img2.baidu.com/it/u=3561988920,3951379968&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
-          'https://img2.baidu.com/it/u=1280140863,2947445516&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
-          'https://img0.baidu.com/it/u=3102940913,2464544074&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
-          'https://img0.baidu.com/it/u=4236361924,4020603376&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
-        ],
-        sendTime:1713416890871,
-        content_id:374284
-      },
-      location:'加利福尼亚',
-      liked:['靓仔','alen'],
-      comments:[
-        {
-          user_id:24334,
-          username:'靓仔',
-          comment_content:'真好啊',
-          comment_id:6666
-        }
-      ]
-    },
-    {
-      user:{
-        user_id:54674,
-        username:'默默',
-        avatar:'https://img0.baidu.com/it/u=1772830230,3996007766&fm=253&fmt=auto&app=138&f=JPEG?w=200&h=200'
-      },
-      content:{
-        text:'风景真好',
-        images:[
-          'https://img2.baidu.com/it/u=3561988920,3951379968&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
-          'https://img2.baidu.com/it/u=1280140863,2947445516&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
-          'https://img0.baidu.com/it/u=3102940913,2464544074&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
-          'https://img0.baidu.com/it/u=4236361924,4020603376&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
-        ],
-        sendTime:1713316890871,
-        content_id:374284
-      },
-      location:'非洲',
-      liked:['非洲人'],
-      comments:[
-        {
-          user_id:98797,
-          username:'靓仔',
-          comment_content:'nice',
-          comment_id:66688
-        }
-      ]
-    }
-  ]
+      {
+        user:{
+          user_id:54674,
+          username:'默默',
+          avatar:'https://img0.baidu.com/it/u=1772830230,3996007766&fm=253&fmt=auto&app=138&f=JPEG?w=200&h=200'
+        },
+        content:{
+          moments_text:'风景真好',
+          images:[
+            'https://img2.baidu.com/it/u=3561988920,3951379968&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
+            'https://img2.baidu.com/it/u=1280140863,2947445516&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
+            'https://img0.baidu.com/it/u=3102940913,2464544074&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
+            'https://img0.baidu.com/it/u=4236361924,4020603376&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500'
+          ],
+          send_time:1713316890871,
+          content_id:374284
+        },
+        location:'非洲',
+        liked:['非洲人'],
+        comments:[
+          {
+            comments_user_id:98797,
+            username:'靓仔',
+            comment_text:'nice',
+            comment_id:66688
+          }
+        ]
+      }
+    ]
+  })
 
   const [operateStatus,setOperateStatus] = useState(()=>{
-    getChatMomentsData(customer.user_id).then((res:any)=>{
-      console.log(res)
-    })
     let data:any = {}
     momentsData?.forEach((item:any)=>{
       data[item.user.user_id] = false
@@ -130,6 +128,20 @@ function ChatMoments (props:any){
   }
 
   useEffect(()=>{
+    const getData = async ()=>{
+      let res = await getChatMomentsData(customer.user_id)
+      let data = JSON.parse(JSON.stringify(momentsData))
+      data.push(...res.data['moments'])
+      setMomentsData(data)
+
+      let status:any = {}
+      data?.forEach((item:any)=>{
+        status[item.user.user_id] = false
+      })
+      setOperateStatus(status)
+    }
+
+    getData().then()
     const changeBg = (e:any)=>{
       let targetEl:any = document.getElementsByClassName('content-header').item(0)
       let changeEl:any = document.getElementsByClassName('moments-operate-btn').item(0)
@@ -143,7 +155,7 @@ function ChatMoments (props:any){
     return ()=>{
       el?.removeEventListener('scroll',changeBg)
     }
-  })
+  },[])
 
   return <div className={'chat-moments-container'}>
     {contextHolder}
@@ -184,7 +196,7 @@ function ChatMoments (props:any){
               </div>
               <div className={'moments-right'}>
                 <span className={'username right-item-span'}>{item.user.username}</span>
-                <span className={'moments-text right-item-span'}>{item.content.text}</span>
+                <span className={'moments-text right-item-span'}>{item.content.moments_text}</span>
                 <div className={'moments-images'}>
                   {
                     item.content?.images?.map((content:any,ci:number)=>{
@@ -194,7 +206,7 @@ function ChatMoments (props:any){
                 </div>
                 {item.location ? <span className={'location right-item-span'}>{item.location}</span> : null}
                 <div className={'time-operate'}>
-                  <span className={'send-time'}>{dealMsgTime(item.content.sendTime)}</span>
+                  <span className={'send-time'}>{dealMsgTime(item.content.send_time)}</span>
                   <div className={'like-operate-box'} title={'评论'} onClick={()=> changeOperateStatus(item.user.user_id,operateStatus[item.user.user_id])}>
                     <TwoDotIconComponent className={'like-operate'}></TwoDotIconComponent>
                     {
@@ -209,24 +221,28 @@ function ChatMoments (props:any){
                     }
                   </div>
                 </div>
-                <div className={'moments-comment'}>
-                  <div className={'liked-box'}>
-                    <EmptyLoveIconComponent className={'empty-love-icon'}></EmptyLoveIconComponent>
+                {
+                  item.liked?.length || item.comments?.length ?
+                  <div className={'moments-comment'}>
+                    <div className={'liked-box'}>
+                      {item.liked ? <EmptyLoveIconComponent className={'empty-love-icon'}></EmptyLoveIconComponent> : null}
+                      {
+                        item.liked?.map((l: any, lIndex: number) => {
+                          return <span
+                            key={lIndex}>{item.liked.length - 1 === lIndex && item.liked.length > 1 ? '，' + l : l}</span>
+                        })
+                      }
+                    </div>
                     {
-                      item.liked?.map((l: any, lIndex: number) => {
-                        return <span key={lIndex}>{item.liked.length -1 === lIndex && item.liked.length > 1 ? '，' + l : l}</span>
+                      item.comments?.map((comment: any, coi: number) => {
+                        return <div className={'comments-item'} key={coi}>
+                          <span>{comment.username}：</span>
+                          <span style={{color: 'var(--normal-text-color)'}}>{comment.comment_content}</span>
+                        </div>
                       })
                     }
-                  </div>
-                  {
-                    item.comments?.map((comment:any,coi:number)=>{
-                      return <div className={'comments-item'} key={coi}>
-                        <span>{comment.username}：</span>
-                        <span style={{color:'var(--normal-text-color)'}}>{comment.comment_content}</span>
-                      </div>
-                    })
-                  }
-                </div>
+                  </div> : null
+                }
               </div>
             </div>
           })

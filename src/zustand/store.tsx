@@ -585,7 +585,7 @@ export const useMessageStore = create((set) => {
 
         let listCopy = JSON.parse(JSON.stringify(newArr))
 
-        setStorageData('friendList', sortByLocaleWithObject(listCopy.splice(sliceLength, list.length), 'title'))
+        setStorageData('friendList', sortByLocaleWithObject(listCopy.splice(sliceLength, newArr.length), 'title'))
         return {
           friendList: newArr
         }

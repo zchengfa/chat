@@ -219,6 +219,13 @@ function ChatContent(props: any) {
       case '截图':
         screenShotEvent()
         break;
+      case '发送文件':
+        break;
+      default:
+        messageApi.open({
+          type:'error',
+          content:item.title + '功能完善中'
+        }).then()
     }
   }
 
@@ -368,7 +375,7 @@ function ChatContent(props: any) {
     props.router.navigate('/chatWindowInfo')
   }
 
-  return <div className={'content-con'}>
+  return <div className={isMobile ? 'content-con' : 'content-con content-con-h-PC'}>
     <Layout className={'content-con-layout'}>
       {contextHolder}
       <Modal centered={true} mask={false} okText={'清空'} closeIcon={false} width={300} cancelText={'取消'}
@@ -417,7 +424,7 @@ function ChatContent(props: any) {
             <div className={'chat-way'}>
               {
                 chatWay.map((item: IconMenu, index: number) => {
-                  return <div className={'icon-box'} key={index}>
+                  return <div className={'icon-box'} key={index} onClick={(e) => iconClick(e, item)}>
                     {item.component()}
                   </div>
                 })
@@ -441,7 +448,7 @@ function ChatContent(props: any) {
     </Layout>
 
     {
-      friendInfo[customer.user_id]?.type !== 'self' ?
+      friendInfo[customer.user_id]?.type !== 'self' && !isMobile ?
         <div className={chatWindowStatus ? 'content-sider-actived' : 'content-sider'} style={{
           display: 'flex',
           justifyContent: 'center',

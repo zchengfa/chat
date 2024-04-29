@@ -255,6 +255,7 @@ export const useMessageStore = create((set) => {
     //聊天记录
     msgData: msgData,
     saveMsgData: (item: any, id: number | string) => {
+
       set((state: any) => {
         let data = state.msgData
 
@@ -264,7 +265,8 @@ export const useMessageStore = create((set) => {
             data[item.userId].push(item)
           }
 
-        } else {
+        }
+        else {
           if (!data[id]) {
             data[id] = []
           }
@@ -486,13 +488,11 @@ export const useMessageStore = create((set) => {
         let bgColor = replyId && !isReceive ? 'var(--success-font-color)' : 'var(--white-color)'
         let isLeft = replyId && isReceive
         let id = replyId ? replyId : undefined
-
         if (item.msg.length) {
 
           state.saveMsgData({
             id:item.id,
             userId: item.userId,
-            //avatar: item.avatar,
             msg: item.msg,
             img: item.img,
             imgID: item.imgID,

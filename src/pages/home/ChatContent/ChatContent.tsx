@@ -116,7 +116,7 @@ function ChatContent(props: any) {
         receiver: friendInfo[customer.user_id]?.user,
         sendTime: time,
         room: friendInfo[customer.user_id]?.isGroupChat ? listId[customer.user_id] : undefined,
-        chatName: friendInfo[customer.user_id]?.user,
+        chatName: friendInfo[customer.user_id]?.isGroupChat ? friendInfo[customer.user_id]?.chatName : friendInfo[customer.user_id]?.user,
         isGroupChat: friendInfo[customer.user_id]?.isGroupChat,
         msg: emojiToUtf16(msg),
         msgCode: emojiIndex.length ? transMsgToNameCode(msg, emojiIndex) : ''
@@ -175,6 +175,7 @@ function ChatContent(props: any) {
         imgID,
         isLeft: false,
         msg:'[图片]',
+        isGroupChat: friendInfo[customer.user_id]?.isGroupChat,
         sender: customer.username,
         userId: customer.user_id,
         receiver: friendInfo[customer.user_id]?.user,
@@ -184,7 +185,7 @@ function ChatContent(props: any) {
         chatName: friendInfo[customer.user_id]?.user,
       },(response: any) => {
         //有响应，说明消息已经发送给了服务器（可以清除消息发送状态）
-        changeSendMsgStatus({msgId: response, receiver:friendInfo[customer.user_id]?.userId})
+        changeSendMsgStatus({msgId: response, receiver:friendInfo[customer.user_id]?.isGroupChat ? friendInfo[customer.user_id]?.room :  friendInfo[customer.user_id]?.userId})
       })
 
       changeChatList({

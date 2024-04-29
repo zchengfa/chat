@@ -18,17 +18,18 @@ class MessageContent extends Component<any, any> {
     this.props.changeBgColor(isEnter, direction, index)
   }
   msgBox = (direction: boolean, item: any, index: number) => {
+    const {userAvatar,friendInfo,customer} = this.props.Zustand
 
     return <div
       className={direction ? "message-item-left-box message-item-box" : "message-item-right-box message-item-box"}>
       <div className={'msg-avatar-box'}>
-        <img className={'msg-avatar'} src={this.props.Zustand.userAvatar[item.userId]} alt="avatar"/>
+        <img className={'msg-avatar'} src={userAvatar[item.userId]} alt="avatar"/>
         {item.msg.length > 15 || item.imgID ?
-          <div className={item.isLeft && this.props.Zustand.friendInfo.isGroupChat ? 'angle angle-down' : 'angle'}
+          <div className={item.isLeft && friendInfo[customer.user_id].isGroupChat ? 'angle angle-down' : 'angle'}
                style={direction ? {borderRightColor: item.bgColor} : {borderLeftColor: item.bgColor}}></div> : null}
       </div>
       <div className={item.isLeft ? 'user-msg' : 'user-msg user-msg-right'}>
-        {item.isLeft && this.props.Zustand.friendInfo.isGroupChat ? <span className={'username'} style={{
+        {item.isLeft && friendInfo[customer.user_id].isGroupChat ? <span className={'username'} style={{
           display:'block',
           position:'relative',
           marginLeft:'1rem',
@@ -36,7 +37,7 @@ class MessageContent extends Component<any, any> {
           color: 'var(--deep-gray-color)',
           fontSize: 'var(--mini-font-size)'
         }}>{item.username}</span> : null}
-        <div className={'img-msg-box'} style={item.isLeft && this.props.Zustand.friendInfo.isGroupChat ?{
+        <div className={'img-msg-box'} style={item.isLeft && friendInfo[customer.user_id].isGroupChat ?{
           position:'relative',
           top:'-.25rem'
         }:undefined}>

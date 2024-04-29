@@ -308,6 +308,8 @@ export const useMessageStore = create((set) => {
             item.progress = Number((((index + 1) / totalCount) * 100).toFixed(0))
           }
         })
+        //更新indexedDB数据库
+        operateIndexedDB(userId,data)
         return {
           msgData: data
         }
